@@ -858,18 +858,19 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'morhetz/gruvbox',
     'folke/tokyonight.nvim',
-    'ellisonleao/gruvbox.nvim',
-    'rebelot/kanagawa.nvim',
-    'catppuccin/nvim',
+    -- 'rebelot/kanagawa.nvim',
+    -- 'morhetz/gruvbox',
+    -- 'catppuccin/nvim',
+    -- 'EdenEast/nightfox.nvim',
+    -- 'rose-pine/neovim',
+    -- 'ellisonleao/gruvbox.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      -- vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.colorscheme 'catppuccin-mocha'
+      vim.cmd.colorscheme 'tokyonight-night'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -975,14 +976,15 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
+  --  auto import all plugins in custom dir
   { import = 'custom.plugins' },
   --
-  require 'custom.plugins.go-nvim',
-  require 'custom.plugins.copilot',
-  require 'custom.plugins.notice',
-  require 'custom.plugins.vim-surround',
-  require 'custom.plugins.avante-nvim',
-  require 'custom.plugins.dap',
+  -- require 'custom.plugins.go-nvim',
+  -- require 'custom.plugins.copilot',
+  -- require 'custom.plugins.notice',
+  -- require 'custom.plugins.vim-surround',
+  -- require 'custom.plugins.avante-nvim',
+  -- require 'custom.plugins.dap',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
