@@ -978,14 +978,21 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --  auto import all plugins in custom dir
-  { import = 'custom.plugins' },
+  -- { import = 'custom.plugins' },
   --
-  -- require 'custom.plugins.go-nvim',
-  -- require 'custom.plugins.copilot',
-  -- require 'custom.plugins.notice',
-  -- require 'custom.plugins.vim-surround',
+  -- manually import plugins
   -- require 'custom.plugins.avante-nvim',
-  -- require 'custom.plugins.dap',
+  -- require 'custom.plugins.copilot',
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.dap',
+  require 'custom.plugins.go-nvim',
+  require 'custom.plugins.gruvbox',
+  require 'custom.plugins.kanagawa',
+  require 'custom.plugins.rustaceanvim',
+  require 'custom.plugins.solarized',
+  require 'custom.plugins.notice',
+  require 'custom.plugins.trouble',
+  require 'custom.plugins.vim-surround',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
