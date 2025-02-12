@@ -856,20 +856,19 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    -- 'folke/tokyonight.nvim',
+    'joshdick/onedark.vim',
     -- 'rebelot/kanagawa.nvim',
-    -- 'morhetz/gruvbox',
     -- 'catppuccin/nvim',
-    -- 'EdenEast/nightfox.nvim',
-    -- 'rose-pine/neovim',
-    -- 'ellisonleao/gruvbox.nvim',
+    -- 'maxmx03/solarized.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       -- vim.cmd.colorscheme 'tokyonight-night'
-      vim.cmd.colorscheme 'solarized'
+      -- vim.cmd.colorscheme 'solarized'
+      vim.cmd.colorscheme 'onedark'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -877,8 +876,8 @@ require('lazy').setup({
     config = function()
       vim.opt.termguicolors = true
       -- vim.opt.background = 'dark' -- or "light"
-      -- vim.opt.background = 'dark'
-      vim.opt.background = 'light'
+      vim.opt.background = 'dark'
+      -- vim.opt.background = 'light'
     end,
   },
 
@@ -983,16 +982,18 @@ require('lazy').setup({
   -- manually import plugins
   -- require 'custom.plugins.avante-nvim',
   -- require 'custom.plugins.copilot',
-  require 'custom.plugins.catppuccin',
-  require 'custom.plugins.dap',
-  require 'custom.plugins.go-nvim',
-  require 'custom.plugins.gruvbox',
-  require 'custom.plugins.kanagawa',
-  require 'custom.plugins.rustaceanvim',
-  require 'custom.plugins.solarized',
+  require 'custom.plugins.vim-surround',
   require 'custom.plugins.notice',
   require 'custom.plugins.trouble',
-  require 'custom.plugins.vim-surround',
+  require 'custom.plugins.dap',
+  require 'custom.plugins.go-nvim',
+  require 'custom.plugins.rustaceanvim',
+  require 'custom.plugins.solarized',
+  -- require 'custom.plugins.onedark',
+  -- require 'custom.plugins.tokyonight',
+  -- require 'custom.plugins.catppuccin',
+  -- require 'custom.plugins.gruvbox',
+  -- require 'custom.plugins.kanagawa',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
