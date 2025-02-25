@@ -6,15 +6,24 @@ return {
   version = false, -- set this if you want to always pull the latest change
   opts = {
     -- add any opts here
-    provider = 'deepseek',
-    vendors = {
-      deepseek = {
-        __inherited_from = 'openai',
-        api_key_name = 'DEEPSEEK_API_KEY',
-        endpoint = 'https://api.deepseek.com',
-        model = 'deepseek-coder',
-      },
+    provider = 'copilot',
+    auto_suggestions_provider = 'copilot',
+    cursor_applying_provider = 'copilot',
+    copilot = {
+      model = 'claude-3.7-sonnet',
     },
+    behaviour = {
+      enable_cursor_planning_mode = true,
+    },
+    -- provider = 'deepseek',
+    -- vendors = {
+    --   deepseek = {
+    --     __inherited_from = 'openai',
+    --     api_key_name = 'DEEPSEEK_API_KEY',
+    --     endpoint = 'https://api.deepseek.com',
+    --     model = 'deepseek-coder',
+    --   },
+    -- },
   },
   -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
   build = 'make',

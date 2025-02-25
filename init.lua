@@ -980,8 +980,8 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
   --
   -- manually import plugins
-  -- require 'custom.plugins.avante-nvim',
-  -- require 'custom.plugins.copilot',
+  require 'custom.plugins.copilot',
+  require 'custom.plugins.avante-nvim',
   require 'custom.plugins.vim-surround',
   require 'custom.plugins.notice',
   require 'custom.plugins.trouble',
