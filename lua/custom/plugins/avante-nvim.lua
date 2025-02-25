@@ -6,11 +6,14 @@ return {
   version = false, -- set this if you want to always pull the latest change
   opts = {
     -- add any opts here
-    provider = 'copilot',
     auto_suggestions_provider = 'copilot',
     cursor_applying_provider = 'copilot',
+    provider = 'copilot',
     copilot = {
       model = 'claude-3.7-sonnet',
+      -- model = 'claude-3.7-sonnet-thought',
+      -- temperature = 1,
+      -- max_tokens = 20000,
     },
     behaviour = {
       enable_cursor_planning_mode = true,
