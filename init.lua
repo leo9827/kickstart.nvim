@@ -985,10 +985,16 @@ require('lazy').setup({
   require 'custom.plugins.vim-surround',
   require 'custom.plugins.notice',
   require 'custom.plugins.trouble',
-  -- require 'custom.plugins.dap',
+  require 'custom.plugins.dap',
   require 'custom.plugins.nvim-ufo',
+  require 'custom.plugins.lualine',
+  require 'custom.plugins.bufferline',
+
+  -- language support
   require 'custom.plugins.go-nvim',
-  require 'custom.plugins.rustaceanvim',
+  -- require 'custom.plugins.rustaceanvim',
+
+  -- themes
   require 'custom.plugins.solarized',
   -- require 'custom.plugins.onedark',
   -- require 'custom.plugins.tokyonight',
