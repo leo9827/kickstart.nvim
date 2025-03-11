@@ -994,11 +994,11 @@ require('lazy').setup({
   require 'custom.plugins.go-nvim',
   -- require 'custom.plugins.rustaceanvim',
 
-  -- themes
-  require 'custom.plugins.solarized',
+  -- themes, exmpale:
   -- require 'custom.plugins.onedark',
-  -- require 'custom.plugins.tokyonight',
-  -- require 'custom.plugins.catppuccin',
+  require 'custom.plugins.solarized',
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.tokyonight',
   -- require 'custom.plugins.gruvbox',
   -- require 'custom.plugins.kanagawa',
 
