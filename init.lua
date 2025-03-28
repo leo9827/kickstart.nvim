@@ -865,8 +865,8 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-      -- vim.cmd.colorscheme 'solarized'
+      -- vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'solarized'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
@@ -983,7 +983,7 @@ require('lazy').setup({
   require 'custom.plugins.trouble',
   require 'custom.plugins.dap', -- 虚拟提示文字
   require 'custom.plugins.nvim-ufo',
-  require 'custom.plugins.lualine',
+  -- require 'custom.plugins.lualine',
   require 'custom.plugins.bufferline',
   require 'custom.plugins.aerial-nvim', -- 显示大纲
   require 'custom.plugins.copilot',
@@ -994,11 +994,11 @@ require('lazy').setup({
   -- require 'custom.plugins.rustaceanvim',
 
   -- themes import
+  -- require 'custom.plugins.tokyonight',
   require 'custom.plugins.solarized',
   require 'custom.plugins.catppuccin',
-  -- require 'custom.plugins.tokyonight',
-  -- require 'custom.plugins.gruvbox',
-  -- require 'custom.plugins.kanagawa',
+  require 'custom.plugins.kanagawa',
+  require 'custom.plugins.gruvbox',
   -- require 'custom.plugins.onedark',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
