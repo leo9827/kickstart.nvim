@@ -1,0 +1,39 @@
+return {
+  'nvim-lualine/lualine.nvim',
+  dependencies = { 'nvim-tree/nvim-web-devicons' }, -- 用于显示文件图标
+  opts = function()
+    return {
+      options = {
+        theme = 'auto', -- 主题，'auto' 表示自动跟随 Neovim 主题
+        globalstatus = true, -- 是否在所有窗口显示状态栏
+        disabled_filetypes = { statusline = { 'dashboard', 'alpha' } }, -- 在哪些文件类型中禁用状态栏
+      },
+      extensions = { 'neo-tree', 'lazy' }, -- 扩展，支持 neo-tree 和 lazy 插件
+      sections = {
+        lualine_a = {
+          { 'mode', separator = { left = '' }, right_padding = 2 }, -- 显示当前模式
+        },
+        lualine_b = {
+          { 'branch', icon = '' }, -- 显示 Git 分支
+          { 'diff', icons_enabled = true }, -- 显示 Git 差异
+        },
+        lualine_c = {
+          { 'filename', file_status = true, path = 1 }, -- 显示文件名和路径
+          { 'diagnostics', sources = { 'nvim_diagnostic' } }, -- 显示诊断信息
+        },
+        lualine_x = {
+          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } }, -- 显示文件类型图标
+          { 'encoding' }, -- 显示文件编码
+          { 'fileformat' }, -- 显示文件格式
+        },
+        lualine_y = {
+          { 'progress', separator = ' ', padding = { left = 1, right = 0 } }, -- 显示光标位置
+          { 'location', padding = { left = 0, right = 1 } }, -- 显示光标位置
+        },
+        lualine_z = {
+          { 'datetime', style = '%H:%M', separator = { right = '' }, left_padding = 2 }, -- 显示时间
+        },
+      },
+    }
+  end,
+}

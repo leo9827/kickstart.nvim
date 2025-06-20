@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -150,7 +150,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -165,6 +165,13 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- set tabstop and shiftwidth to 2 spaces
+vim.o.tabstop = 2
+vim.o.shiftwidth = 2
+-- config for avante.nvim
+-- views can only be fully collapsed with the global statusline
+vim.opt.laststatus = 3
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -684,6 +691,7 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        gopls = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -891,10 +899,23 @@ require('lazy').setup({
         },
       }
 
+      -- vim.opt.background = 'dark' -- Set the background to light mode
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- vim.cmd.colorscheme 'default'
+      -- vim.cmd.colorscheme 'tokyonight'
+      -- vim.cmd.colorscheme 'catppuccin'
+      -- vim.cmd.colorscheme 'nightfox'
+      -- vim.cmd.colorscheme 'solarized'
+      -- vim.cmd.colorscheme 'gruvbox'
+      -- vim.cmd.colorscheme 'nord'
+      --
+      -- light backgroud and light themes
+      vim.opt.background = 'light' -- Set the background to light mode
+      -- vim.cmd.colorscheme 'tokyonight-day'
+      -- vim.cmd.colorscheme 'rose-pine'
+      vim.cmd.colorscheme 'dawnfox'
     end,
   },
 
@@ -973,12 +994,12 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -986,6 +1007,41 @@ require('lazy').setup({
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   -- { import = 'custom.plugins' },
   --
+  -- manually import plugins
+  -- require 'custom.plugins.dashborad-nvim',
+  require 'custom.plugins.alpha-nvim',
+  require 'custom.plugins.noice',
+  require 'custom.plugins.trouble',
+  require 'custom.plugins.dap', -- 虚拟提示文字
+  require 'custom.plugins.dap-ui',
+  require 'custom.plugins.nvim-ufo',
+  require 'custom.plugins.lualine',
+  require 'custom.plugins.bufferline',
+  require 'custom.plugins.aerial-nvim', -- 显示大纲
+
+  require 'custom.plugins.copilot',
+  require 'custom.plugins.avante-nvim',
+  require 'custom.plugins.dropbar',
+  require 'custom.plugins.oil-nvim',
+  require 'custom.plugins.flash-nvim',
+  require 'custom.plugins.nvim-navic',
+  require 'custom.plugins.nvim-surround',
+  require 'custom.plugins.refactoring',
+
+  -- language support
+  require 'custom.plugins.go-nvim',
+
+  -- themes import
+  require 'custom.plugins.gruvbox',
+  require 'custom.plugins.gruvbox-material',
+  require 'custom.plugins.solarized',
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.nightfox',
+  require 'custom.plugins.nord',
+  require 'custom.plugins.onedark',
+  require 'custom.plugins.kanagawa',
+  require 'custom.plugins.rose-pine',
+
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`

@@ -1,0 +1,5 @@
+return {
+  'morhetz/gruvbox',
+  name = 'gruvbox',
+  config = function() end,
+}

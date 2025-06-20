@@ -1,0 +1,71 @@
+return {
+  'akinsho/bufferline.nvim',
+  version = '*',
+  dependencies = 'nvim-tree/nvim-web-devicons',
+  config = function()
+    require('bufferline').setup {
+      -- Display settings
+      options = {
+        -- Display mode: 'buffers' | 'tabs'
+        mode = 'buffers',
+        -- Show numbers
+        numbers = 'ordinal',
+        -- Show file icons
+        show_buffer_icons = true,
+        -- Show close button
+        show_close_icon = true,
+        -- Show buffer name
+        show_buffer_close_icons = true,
+        -- Show tab indicators
+        show_tab_indicators = true,
+        -- Show modified status
+        show_modified_icon = true,
+        -- Show separator
+        show_separator = true,
+        -- Always show bufferline
+        always_show_bufferline = true,
+        -- Sort method
+        sort_by = 'insert_after_current',
+        -- Max preview length
+        max_name_length = 18,
+        -- Max prefix length
+        max_prefix_length = 15,
+        -- Tab size
+        tab_size = 18,
+        -- Separator style
+        separator_style = 'slant',
+        -- Highlight settings
+        highlights = {
+          fill = {
+            fg = { attribute = 'fg', highlight = 'Normal' },
+            bg = { attribute = 'bg', highlight = 'StatusLineNC' },
+          },
+          background = {
+            fg = { attribute = 'fg', highlight = 'Normal' },
+            bg = { attribute = 'bg', highlight = 'StatusLine' },
+          },
+          buffer_visible = {
+            fg = { attribute = 'fg', highlight = 'Normal' },
+            bg = { attribute = 'bg', highlight = 'StatusLine' },
+          },
+          buffer_selected = {
+            fg = { attribute = 'fg', highlight = 'Normal' },
+            bg = { attribute = 'bg', highlight = 'StatusLine' },
+            bold = true,
+            italic = true,
+          },
+        },
+      },
+    }
+
+    -- Keybindings
+    vim.keymap.set('n', '<leader>ti', '<cmd>BufferLinePick<CR>', { desc = 'Pick buffer' })
+    vim.keymap.set('n', '<leader>tc', '<cmd>BufferLinePickClose<CR>', { desc = 'Pick and close buffer' })
+    vim.keymap.set('n', '<leader>tl', '<cmd>BufferLineCloseLeft<CR>', { desc = 'Close buffers to the left' })
+    vim.keymap.set('n', '<leader>tr', '<cmd>BufferLineCloseRight<CR>', { desc = 'Close buffers to the right' })
+    vim.keymap.set('n', '<leader>to', '<cmd>BufferLineCloseOthers<CR>', { desc = 'Close other buffers' })
+    vim.keymap.set('n', '<leader>ts', '<cmd>BufferLineSortByDirectory<CR>', { desc = 'Sort buffers by directory' })
+    vim.keymap.set('n', '<leader>tn', '<cmd>BufferLineMoveNext<CR>', { desc = 'Move buffer to next position' })
+    vim.keymap.set('n', '<leader>tp', '<cmd>BufferLineMovePrev<CR>', { desc = 'Move buffer to previous position' })
+  end,
+}
