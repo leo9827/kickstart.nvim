@@ -915,7 +915,8 @@ require('lazy').setup({
       vim.opt.background = 'light' -- Set the background to light mode
       -- vim.cmd.colorscheme 'tokyonight-day'
       -- vim.cmd.colorscheme 'rose-pine'
-      vim.cmd.colorscheme 'dawnfox'
+      -- vim.cmd.colorscheme 'dawnfox'
+      vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 
@@ -1035,12 +1036,14 @@ require('lazy').setup({
   require 'custom.plugins.gruvbox',
   require 'custom.plugins.gruvbox-material',
   require 'custom.plugins.solarized',
+  require 'custom.plugins.selenized',
   require 'custom.plugins.catppuccin',
   require 'custom.plugins.nightfox',
   require 'custom.plugins.nord',
   require 'custom.plugins.onedark',
   require 'custom.plugins.kanagawa',
   require 'custom.plugins.rose-pine',
+  require 'custom.plugins.flexoki',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
