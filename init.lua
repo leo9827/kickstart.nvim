@@ -899,7 +899,8 @@ require('lazy').setup({
         },
       }
 
-      -- vim.opt.background = 'dark' -- Set the background to light mode
+      -- Set the background to dark / light mode
+      vim.opt.background = 'dark'
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
@@ -909,14 +910,16 @@ require('lazy').setup({
       -- vim.cmd.colorscheme 'nightfox'
       -- vim.cmd.colorscheme 'solarized'
       -- vim.cmd.colorscheme 'gruvbox'
+      vim.cmd.colorscheme 'kanagawa-dragon'
       -- vim.cmd.colorscheme 'nord'
+      -- vim.cmd.colorscheme 'gruvbox-material'
       --
       -- light backgroud and light themes
-      vim.opt.background = 'light' -- Set the background to light mode
+      -- vim.opt.background = 'light' -- Set the background to light mode
       -- vim.cmd.colorscheme 'tokyonight-day'
       -- vim.cmd.colorscheme 'rose-pine'
       -- vim.cmd.colorscheme 'dawnfox'
-      vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'gruvbox-material'
     end,
   },
 
@@ -1011,39 +1014,40 @@ require('lazy').setup({
   -- manually import plugins
   -- require 'custom.plugins.dashborad-nvim',
   require 'custom.plugins.alpha-nvim',
-  require 'custom.plugins.noice',
-  require 'custom.plugins.trouble',
-  require 'custom.plugins.dap', -- 虚拟提示文字
-  require 'custom.plugins.dap-ui',
-  require 'custom.plugins.nvim-ufo',
-  require 'custom.plugins.lualine',
-  require 'custom.plugins.bufferline',
+  -- require 'custom.plugins.noice',
+  -- require 'custom.plugins.trouble',
+  -- require 'custom.plugins.dap', -- 虚拟提示文字
+  -- require 'custom.plugins.dap-ui',
+  -- require 'custom.plugins.nvim-ufo',
+  -- require 'custom.plugins.lualine',
+  -- require 'custom.plugins.bufferline',
   require 'custom.plugins.aerial-nvim', -- 显示大纲
 
-  require 'custom.plugins.copilot',
-  require 'custom.plugins.avante-nvim',
-  require 'custom.plugins.dropbar',
-  require 'custom.plugins.oil-nvim',
-  require 'custom.plugins.flash-nvim',
+  -- require 'custom.plugins.copilot',
+  -- require 'custom.plugins.avante-nvim',
+  -- require 'custom.plugins.dropbar',
+  require 'custom.plugins.toggleterm-nvim',
+  -- require 'custom.plugins.oil-nvim',
+  -- require 'custom.plugins.flash-nvim',
   require 'custom.plugins.nvim-navic',
   require 'custom.plugins.nvim-surround',
-  require 'custom.plugins.refactoring',
+  -- require 'custom.plugins.refactoring',
 
   -- language support
-  require 'custom.plugins.go-nvim',
+  -- require 'custom.plugins.go-nvim',
 
   -- themes import
-  require 'custom.plugins.gruvbox',
-  require 'custom.plugins.gruvbox-material',
-  require 'custom.plugins.solarized',
-  require 'custom.plugins.selenized',
-  require 'custom.plugins.catppuccin',
-  require 'custom.plugins.nightfox',
-  require 'custom.plugins.nord',
-  require 'custom.plugins.onedark',
+  -- require 'custom.plugins.gruvbox',
+  -- require 'custom.plugins.gruvbox-material',
+  -- require 'custom.plugins.solarized',
+  -- require 'custom.plugins.selenized',
+  -- require 'custom.plugins.catppuccin',
+  -- require 'custom.plugins.nightfox',
+  -- require 'custom.plugins.nord',
+  -- require 'custom.plugins.onedark',
   require 'custom.plugins.kanagawa',
-  require 'custom.plugins.rose-pine',
-  require 'custom.plugins.flexoki',
+  -- require 'custom.plugins.rose-pine',
+  -- require 'custom.plugins.flexoki',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!

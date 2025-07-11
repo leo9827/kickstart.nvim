@@ -6,12 +6,12 @@ return {
   },
   lazy = false, -- 是否延迟加载
   config = function()
-    require('refactoring').setup({
+    require('refactoring').setup {
       prompt_func_return_type = {
-        go = true, -- 在提取函数时提示返回类型
+        -- go = true, -- 在提取函数时提示返回类型
       },
       prompt_func_param_type = {
-        go = true, -- 在提取函数时提示参数类型
+        -- go = true, -- 在提取函数时提示参数类型
       },
       printf_statements = {
         go = {
@@ -25,6 +25,6 @@ return {
           'fmt.Println(%s)',
         },
       },
-    })
+    }
   end,
 }

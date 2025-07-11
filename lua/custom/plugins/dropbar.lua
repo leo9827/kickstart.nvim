@@ -7,9 +7,9 @@ return {
   },
   config = function()
     -- 配置 dropbar
-    require('dropbar').setup({
+    require('dropbar').setup {
       -- 常规设置
-      general = {
+      bar = {
         enable = true, -- 是否启用插件
         attach_events = { 'BufReadPost', 'BufNewFile' }, -- 在哪些事件时启用
       },
@@ -42,7 +42,7 @@ return {
         max_width = 80, -- 最大宽度
         max_height = 20, -- 最大高度
       },
-    })
+    }
 
     -- 获取 API
     local dropbar_api = require 'dropbar.api'
