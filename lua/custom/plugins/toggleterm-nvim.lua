@@ -11,12 +11,12 @@ return {
       -- 浮动窗口的配置
       float_opts = {
         -- 你可以自定义边框样式
-        border = 'shadow', -- 'single', 'double', 'rounded', 'solid', 'shadow'
+        border = 'single', -- 'single', 'double', 'rounded', 'solid', 'shadow'
         winblend = 3,
       },
       -- 非浮动窗口（水平或垂直分割）的大小
       -- 可以是数字（行数/列数），也可以是0到1之间的小数（占屏幕的百分比）
-      size = 20,
+      size = 10,
       -- 当终端失去焦点时，使其背景变暗（推荐）
       shade_terminals = true,
       -- 打开终端时立即进入插入模式
@@ -44,7 +44,7 @@ return {
 
       -- <leader>tn -> 打开/切换一个水平分割的终端 (Normal)
       -- 我们给它一个固定的ID 1
-      vim.keymap.set('n', '<leader>tn', '<cmd>1ToggleTerm<CR>', opts)
+      vim.keymap.set('n', '<leader>tt', '<cmd>1ToggleTerm<CR>', opts)
 
       -- <leader>tf -> 打开/切换一个浮动终端 (Float)
       -- 我们给它一个固定的ID 2
