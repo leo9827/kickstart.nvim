@@ -159,7 +159,10 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 8
+
+-- Ctrl-D 和 Ctrl-U 每次滚动 5 行
+-- vim.o.scroll = 5
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -171,7 +174,7 @@ vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 -- config for avante.nvim
 -- views can only be fully collapsed with the global statusline
-vim.opt.laststatus = 3
+vim.o.laststatus = 3
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -691,7 +694,6 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
-        gopls = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -740,6 +742,12 @@ require('lazy').setup({
             require('lspconfig')[server_name].setup(server)
           end,
         },
+      }
+
+      require('lspconfig').ast_grep.setup {
+        cmd = { 'ast-grep', 'lsp' },
+        filetypes = { 'c', 'cpp', 'rust', 'go', 'java', 'python', 'javascript', 'typescript', 'html', 'css', 'kotlin', 'dart', 'lua' },
+        root_dir = require('lspconfig.util').root_pattern('sgconfig.yaml', 'sgconfig.yml'),
       }
     end,
   },
@@ -899,8 +907,10 @@ require('lazy').setup({
         },
       }
 
-      -- Set the background to dark / light mode
+      -- Set the background to dark / light
       vim.opt.background = 'dark'
+      -- vim.opt.background = 'light'
+
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
@@ -908,18 +918,19 @@ require('lazy').setup({
       -- vim.cmd.colorscheme 'tokyonight'
       -- vim.cmd.colorscheme 'catppuccin'
       -- vim.cmd.colorscheme 'nightfox'
+      -- vim.cmd.colorscheme 'kanagawa'
+      -- both support light and dark
       -- vim.cmd.colorscheme 'solarized'
+      -- vim.cmd.colorscheme 'selenized'
       -- vim.cmd.colorscheme 'gruvbox'
-      vim.cmd.colorscheme 'kanagawa-dragon'
-      -- vim.cmd.colorscheme 'nord'
-      -- vim.cmd.colorscheme 'gruvbox-material'
-      --
-      -- light backgroud and light themes
-      -- vim.opt.background = 'light' -- Set the background to light mode
-      -- vim.cmd.colorscheme 'tokyonight-day'
       -- vim.cmd.colorscheme 'rose-pine'
+      --
+      -- light backgroud and themes
+      -- vim.cmd.colorscheme 'tokyonight-day'
       -- vim.cmd.colorscheme 'dawnfox'
       -- vim.cmd.colorscheme 'gruvbox-material'
+      -- vim.cmd.colorscheme 'minispring'
+      vim.cmd.colorscheme 'onedark'
     end,
   },
 
@@ -969,7 +980,7 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'go', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1014,40 +1025,41 @@ require('lazy').setup({
   -- manually import plugins
   -- require 'custom.plugins.dashborad-nvim',
   require 'custom.plugins.alpha-nvim',
-  -- require 'custom.plugins.noice',
-  -- require 'custom.plugins.trouble',
+  require 'custom.plugins.noice',
+  require 'custom.plugins.trouble',
   -- require 'custom.plugins.dap', -- 虚拟提示文字
   -- require 'custom.plugins.dap-ui',
-  -- require 'custom.plugins.nvim-ufo',
-  -- require 'custom.plugins.lualine',
-  -- require 'custom.plugins.bufferline',
+  require 'custom.plugins.nvim-ufo',
+  require 'custom.plugins.lualine',
+  require 'custom.plugins.bufferline',
   require 'custom.plugins.aerial-nvim', -- 显示大纲
 
   -- require 'custom.plugins.copilot',
-  -- require 'custom.plugins.avante-nvim',
-  -- require 'custom.plugins.dropbar',
+  require 'custom.plugins.avante-nvim',
+  require 'custom.plugins.dropbar',
   require 'custom.plugins.toggleterm-nvim',
-  -- require 'custom.plugins.oil-nvim',
-  -- require 'custom.plugins.flash-nvim',
+  require 'custom.plugins.oil-nvim',
+  require 'custom.plugins.flash-nvim',
   require 'custom.plugins.nvim-navic',
   require 'custom.plugins.nvim-surround',
-  -- require 'custom.plugins.refactoring',
+  require 'custom.plugins.refactoring',
+  require 'custom.plugins.neoscroll',
+  require 'custom.plugins.hardtime',
 
   -- language support
   -- require 'custom.plugins.go-nvim',
 
   -- themes import
-  -- require 'custom.plugins.gruvbox',
-  -- require 'custom.plugins.gruvbox-material',
-  -- require 'custom.plugins.solarized',
-  -- require 'custom.plugins.selenized',
-  -- require 'custom.plugins.catppuccin',
-  -- require 'custom.plugins.nightfox',
-  -- require 'custom.plugins.nord',
-  -- require 'custom.plugins.onedark',
+  require 'custom.plugins.gruvbox',
+  require 'custom.plugins.gruvbox-material',
+  require 'custom.plugins.solarized',
+  require 'custom.plugins.selenized',
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.nightfox',
+  require 'custom.plugins.nord',
+  require 'custom.plugins.onedark',
   require 'custom.plugins.kanagawa',
-  -- require 'custom.plugins.rose-pine',
-  -- require 'custom.plugins.flexoki',
+  require 'custom.plugins.rose-pine',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!

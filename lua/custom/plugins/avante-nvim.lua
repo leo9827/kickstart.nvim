@@ -1,41 +1,64 @@
 return {
   'yetone/avante.nvim',
   event = 'VeryLazy',
-  -- lazy = false,
-  lazy = true,
-  version = false, -- set this if you want to always pull the latest change
+  version = false, -- Never set it to '*', Never!
+  build = 'make', -- build from source
+  ---@module 'avante'
+  ---@type avante.Config
   opts = {
-    -- add any opts here
-    auto_suggestions_provider = 'copilot',
-    cursor_applying_provider = 'copilot',
     provider = 'copilot',
+    -- 可以通过增加 `suggestion.debounce` 来减少请求频率
+    auto_suggestions_provider = 'copilot',
+    suggestion = {
+      debounce = 600,
+      throttle = 600,
+    },
     providers = {
       copilot = {
-        -- model = 'claude-4-sonnet',
+        endpoint = 'https://api.githubcopilot.com',
         model = 'claude-3.5-sonnet',
-        -- model = 'claude-3.7-sonnet',
-        -- model = 'claude-3.7-sonnet-thought',
+        proxy = nil, -- [protocol://]host[:port] Use this proxy
+        allow_insecure = false, -- Allow insecure server connections
+        timeout = 30000, -- Timeout in milliseconds
+        context_window = 64000, -- Number of tokens to send to the model for context
         extra_request_body = {
-          temperature = 0.2, -- 越大越发散越随机
-          -- max_tokens = 20000,
+          -- temperature = 0.2, -- 越大越发散越随机
+          temperature = 0.75,
+          max_tokens = 20480,
         },
       },
-      behaviour = {
-        enable_cursor_planning_mode = true,
-      },
-      -- provider = 'deepseek',
-      -- vendors = {
-      --   deepseek = {
-      --     __inherited_from = 'openai',
-      --     api_key_name = 'DEEPSEEK_API_KEY',
-      --     endpoint = 'https://api.deepseek.com',
-      --     model = 'deepseek-coder',
-      --   },
-      -- },
+      ---Specify the behaviour of avante.nvim
+      ---1. auto_focus_sidebar              : Whether to automatically focus the sidebar when opening avante.nvim. Default to true.
+      ---2. auto_suggestions = false, -- Whether to enable auto suggestions. Default to false.
+      ---3. auto_apply_diff_after_generation: Whether to automatically apply diff after LLM response.
+      ---                                     This would simulate similar behaviour to cursor. Default to false.
+      ---4. auto_set_keymaps                : Whether to automatically set the keymap for the current line. Default to true.
+      ---                                     Note that avante will safely set these keymap. See https://github.com/yetone/avante.nvim/wiki#keymaps-and-api-i-guess for more details.
+      ---5. auto_set_highlight_group        : Whether to automatically set the highlight group for the current line. Default to true.
+      ---6. jump_result_buffer_on_finish = false, -- Whether to automatically jump to the result buffer after generation
+      ---7. support_paste_from_clipboard    : Whether to support pasting image from clipboard. This will be determined automatically based whether img-clip is available or not.
+      ---8. minimize_diff                   : Whether to remove unchanged lines when applying a code block
+      ---9. enable_token_counting           : Whether to enable token counting. Default to true.
+    },
+    behaviour = {
+      auto_focus_sidebar = true,
+      auto_suggestions = false, -- Experimental stage
+      auto_suggestions_respect_ignore = false,
+      auto_set_highlight_group = true,
+      auto_set_keymaps = true,
+      auto_apply_diff_after_generation = false,
+      jump_result_buffer_on_finish = false,
+      support_paste_from_clipboard = false,
+      minimize_diff = true,
+      enable_token_counting = true,
+      use_cwd_as_project_root = false,
+      auto_focus_on_diff_view = false,
+      ---@type boolean | string[] -- true: auto-approve all tools, false: normal prompts, string[]: auto-approve specific tools by name
+      auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
+      auto_check_diagnostics = true,
+      enable_fastapply = false,
     },
   },
-  -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-  build = 'make',
   -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
   dependencies = {
     'stevearc/dressing.nvim',
