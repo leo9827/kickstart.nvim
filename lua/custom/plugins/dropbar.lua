@@ -1,6 +1,6 @@
 return {
+  -- 一个功能丰富的面包屑导航栏插件，可以帮助你在代码中快速导航和跳转
   'Bekaboo/dropbar.nvim',
-  -- 依赖项：用于支持模糊查找功能
   dependencies = {
     'nvim-telescope/telescope-fzf-native.nvim',
     build = 'make',

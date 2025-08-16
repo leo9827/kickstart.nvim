@@ -1,5 +1,5 @@
-return {
-  'morhetz/gruvbox',
-  name = 'gruvbox',
-  config = function() end,
-}
+-- return {
+--   'morhetz/gruvbox',
+--   name = 'gruvbox',
+--   config = function() end,
+-- }

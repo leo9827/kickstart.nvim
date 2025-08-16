@@ -1,4 +1,20 @@
 return {
+  -- noice.nvim - 优雅的通知和命令行UI管理插件
+  -- 主要功能：
+  --   1. 优化命令行界面外观和交互
+  --   2. 美化通知提示样式
+  --   3. 改进 LSP 消息显示
+  --
+  -- 常用命令:
+  --   :Noice - 查看通知历史
+  --   :NoiceDisable - 临时禁用
+  --   :NoiceEnable - 重新启用
+  --
+  -- 常用快捷键:
+  --   <C-f> - 在较长消息中向前滚动
+  --   <C-b> - 在较长消息中向后滚动
+  --   <Enter> - 确认当前选择
+  --   <Esc> - 关闭弹出窗口
   'folke/noice.nvim',
   event = 'VeryLazy',
   opts = {

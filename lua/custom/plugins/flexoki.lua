@@ -1,6 +1,6 @@
-return {
-  'cpplain/flexoki.nvim',
-  lazy = false,
-  priority = 1000,
-  opts = {},
-}
+-- return {
+--   'cpplain/flexoki.nvim',
+--   lazy = false,
+--   priority = 1000,
+--   opts = {},
+-- }

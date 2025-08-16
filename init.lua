@@ -93,6 +93,9 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Prepend mise shims to PATH
+vim.env.PATH = vim.env.HOME .. '/.local/share/mise/shims:' .. vim.env.PATH
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -1023,43 +1026,26 @@ require('lazy').setup({
   -- { import = 'custom.plugins' },
   --
   -- manually import plugins
-  -- require 'custom.plugins.dashborad-nvim',
-  require 'custom.plugins.alpha-nvim',
-  require 'custom.plugins.noice',
-  require 'custom.plugins.trouble',
-  -- require 'custom.plugins.dap', -- 虚拟提示文字
-  -- require 'custom.plugins.dap-ui',
-  require 'custom.plugins.nvim-ufo',
-  require 'custom.plugins.lualine',
-  require 'custom.plugins.bufferline',
+  require 'custom.plugins.alpha-nvim', -- 启动页面美化
+  require 'custom.plugins.noice', -- 命令行和通知美化
+  require 'custom.plugins.trouble', -- 诊断信息列表显示
+  require 'custom.plugins.nvim-ufo', -- 代码折叠
   require 'custom.plugins.aerial-nvim', -- 显示大纲
+  require 'custom.plugins.avante-nvim', -- 标签页美化
+  require 'custom.plugins.toggleterm-nvim', -- 内置终端
+  require 'custom.plugins.oil-nvim', -- 文件管理器
+  require 'custom.plugins.flash-nvim', -- 快速跳转
+  require 'custom.plugins.nvim-navic', -- 面包屑导航
+  require 'custom.plugins.nvim-surround', -- 快速修改包围字符
+  require 'custom.plugins.refactoring', -- 代码重构
+  require 'custom.plugins.neoscroll', -- 平滑滚动
+  require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
+  require 'custom.plugins.lualine', -- 底部状态栏显示
 
-  -- require 'custom.plugins.copilot',
-  require 'custom.plugins.avante-nvim',
-  require 'custom.plugins.dropbar',
-  require 'custom.plugins.toggleterm-nvim',
-  require 'custom.plugins.oil-nvim',
-  require 'custom.plugins.flash-nvim',
-  require 'custom.plugins.nvim-navic',
-  require 'custom.plugins.nvim-surround',
-  require 'custom.plugins.refactoring',
-  require 'custom.plugins.neoscroll',
-  require 'custom.plugins.hardtime',
+  -- language plugins
 
-  -- language support
-  -- require 'custom.plugins.go-nvim',
-
-  -- themes import
-  require 'custom.plugins.gruvbox',
-  require 'custom.plugins.gruvbox-material',
-  require 'custom.plugins.solarized',
-  require 'custom.plugins.selenized',
-  require 'custom.plugins.catppuccin',
-  require 'custom.plugins.nightfox',
-  require 'custom.plugins.nord',
+  -- themes plugins
   require 'custom.plugins.onedark',
-  require 'custom.plugins.kanagawa',
-  require 'custom.plugins.rose-pine',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!

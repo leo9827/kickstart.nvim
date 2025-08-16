@@ -1,4 +1,28 @@
+-- nvim-ufo 代码折叠插件
+-- 该插件提供更好的代码折叠体验，支持 treesitter 和缩进两种折叠方式
+--
+-- 使用场景：
+-- 1. 查看大文件时，可以折叠不关注的代码块
+-- 2. 在代码review时，可以按照层级折叠代码，更好地理解代码结构
+-- 3. 编写代码时，可以折叠其他函数，专注于当前编辑的部分
+--
+-- 常用快捷键：
+-- zR - 展开所有折叠
+-- zM - 折叠所有代码
+-- zr - 展开指定类型的折叠
+-- zm - 折叠指定类型的代码
+-- zo - 打开当前折叠
+-- zc - 关闭当前折叠
+-- za - 切换当前折叠状态
+--
+-- 折叠预览快捷键：
+-- <C-u> - 预览窗口向上滚动
+-- <C-d> - 预览窗口向下滚动
+-- [ - 跳转到预览窗口顶部
+-- ] - 跳转到预览窗口底部
+
 return {
+  -- 折叠代码插件
   'kevinhwang91/nvim-ufo',
   dependencies = {
     'kevinhwang91/promise-async', -- 异步支持
@@ -11,7 +35,7 @@ return {
     vim.o.foldenable = true -- 启用折叠
 
     -- 配置 ufo
-    require('ufo').setup({
+    require('ufo').setup {
       -- 折叠提供者
       provider_selector = function(bufnr, filetype, buftype)
         return { 'treesitter', 'indent' } -- 优先使用 treesitter，其次使用缩进
@@ -47,7 +71,7 @@ return {
           else
             chunkText = truncate(chunkText, targetWidth - curWidth)
             local hlGroup = chunk[2]
-            table.insert(newVirtText, {chunkText, hlGroup})
+            table.insert(newVirtText, { chunkText, hlGroup })
             chunkWidth = vim.fn.strdisplaywidth(chunkText)
             if curWidth + chunkWidth < targetWidth then
               suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
@@ -55,10 +79,10 @@ return {
             break
           end
         end
-        table.insert(newVirtText, {suffix, 'MoreMsg'})
+        table.insert(newVirtText, { suffix, 'MoreMsg' })
         return newVirtText
       end,
-    })
+    }
 
     -- Keybindings
     vim.keymap.set('n', 'zR', require('ufo').openAllFolds, { desc = 'Open all folds' })
