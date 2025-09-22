@@ -62,7 +62,7 @@ return {
         preserve_equality = false,
       },
       nerd_font = 'auto',
-      -- 是否显示导航箭头
+      -- 控制是否显示符号层级之间的连接线
       show_guides = true,
       -- Customize the characters used when show_guides = true
       guides = {
@@ -76,23 +76,25 @@ return {
         whitespace = '  ',
       },
 
-      -- 是否显示图标
+      -- 在符号名称前显示代表其类型的图标
       show_icons = true,
-      -- 是否自动打开大纲
+      -- 不自动打开大纲窗口
       auto_open = false,
+      -- 当光标在代码中移动时，自动高亮大纲中对应的符号
+      highlight_on_hover = true,
       -- 是否显示行号
       show_numbers = true,
-      -- 是否显示当前光标所在位置的标记
-      highlight_on_hover = true,
       -- 是否显示折叠标记
       show_fold_markers = true,
       -- 是否显示当前文件的完整路径
       show_full_path = false,
-      -- 是否在关闭大纲时保持窗口
-      keep_last = true,
+      -- 控制关闭最后一个文件后，是否保留空的 Aerial 窗口
+      keep_last = false,
+      -- 打开大纲时，光标停留在原窗口
+      focus_on_open = false,
     }
     -- 快捷键设置
-    vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle<CR>', { desc = 'Toggle outline viewer (powered by Aerial)' })
+    -- vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle<CR>', { desc = 'Toggle outline viewer (powered by Aerial)' })
     vim.keymap.set('n', '<leader>so', '<cmd>Telescope aerial<CR>', { desc = 'Search outline (powered by Aerial)' })
   end,
 }

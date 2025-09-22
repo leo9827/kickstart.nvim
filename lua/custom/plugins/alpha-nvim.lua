@@ -23,5 +23,6 @@ return {
     require('alpha').setup(require('alpha.themes.theta').config)
     -- require'alpha'.setup(require'alpha.themes.dashboard'.config)
     -- require'alpha'.setup(require'alpha.themes.startify'.config)
+    vim.api.nvim_create_user_command('Dashboard', 'Alpha', { desc = '打开 Alpha 启动页面(Dashborad).' })
   end,
 }

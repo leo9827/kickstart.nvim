@@ -103,6 +103,7 @@ vim.env.PATH = vim.env.HOME .. '/.local/share/mise/shims:' .. vim.env.PATH
 
 -- Make line numbers default
 vim.o.number = true
+vim.o.relativenumber = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.o.relativenumber = true
@@ -135,10 +136,12 @@ vim.o.smartcase = true
 vim.o.signcolumn = 'yes'
 
 -- Decrease update time
-vim.o.updatetime = 250
+vim.o.updatetime = 500
 
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
+vim.o.ttimeoutlen = 10
+-- timeoutlen 用于映射命令的等待，而 ttimeoutlen 专门用于终端发送的键码序列。我们只想缩短后者的等待时间。
 
 -- Configure how new splits should be opened
 vim.o.splitright = true
@@ -746,12 +749,6 @@ require('lazy').setup({
           end,
         },
       }
-
-      require('lspconfig').ast_grep.setup {
-        cmd = { 'ast-grep', 'lsp' },
-        filetypes = { 'c', 'cpp', 'rust', 'go', 'java', 'python', 'javascript', 'typescript', 'html', 'css', 'kotlin', 'dart', 'lua' },
-        root_dir = require('lspconfig.util').root_pattern('sgconfig.yaml', 'sgconfig.yml'),
-      }
     end,
   },
 
@@ -900,41 +897,41 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
+    -- 'folke/tokyonight.nvim',
+    -- priority = 1000, -- Make sure to load this before all the other start plugins.
+    -- config = function()
+    ---@diagnostic disable-next-line: missing-fields
+    -- require('tokyonight').setup {
+    --   styles = {
+    --     comments = { italic = false }, -- Disable italics in comments
+    --   },
+    -- }
 
-      -- Set the background to dark / light
-      vim.opt.background = 'dark'
-      -- vim.opt.background = 'light'
+    -- Set the background to dark / light
+    -- vim.opt.background = 'dark'
+    -- vim.opt.background = 'light'
 
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      -- vim.cmd.colorscheme 'default'
-      -- vim.cmd.colorscheme 'tokyonight'
-      -- vim.cmd.colorscheme 'catppuccin'
-      -- vim.cmd.colorscheme 'nightfox'
-      -- vim.cmd.colorscheme 'kanagawa'
-      -- both support light and dark
-      -- vim.cmd.colorscheme 'solarized'
-      -- vim.cmd.colorscheme 'selenized'
-      -- vim.cmd.colorscheme 'gruvbox'
-      -- vim.cmd.colorscheme 'rose-pine'
-      --
-      -- light backgroud and themes
-      -- vim.cmd.colorscheme 'tokyonight-day'
-      -- vim.cmd.colorscheme 'dawnfox'
-      -- vim.cmd.colorscheme 'gruvbox-material'
-      -- vim.cmd.colorscheme 'minispring'
-      vim.cmd.colorscheme 'onedark'
-    end,
+    -- Load the colorscheme here.
+    -- Like many other themes, this one has different styles, and you could load
+    -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
+    -- vim.cmd.colorscheme 'default'
+    -- vim.cmd.colorscheme 'tokyonight'
+    -- vim.cmd.colorscheme 'catppuccin'
+    -- vim.cmd.colorscheme 'nightfox'
+    -- vim.cmd.colorscheme 'kanagawa'
+    -- both support light and dark
+    -- vim.cmd.colorscheme 'solarized'
+    -- vim.cmd.colorscheme 'selenized'
+    -- vim.cmd.colorscheme 'gruvbox'
+    -- vim.cmd.colorscheme 'rose-pine'
+    --
+    -- light backgroud and themes
+    -- vim.cmd.colorscheme 'tokyonight-day'
+    -- vim.cmd.colorscheme 'dawnfox'
+    -- vim.cmd.colorscheme 'gruvbox-material'
+    -- vim.cmd.colorscheme 'minispring'
+    -- vim.cmd.colorscheme 'onedark'
+    -- end,
   },
 
   -- Highlight todo, notes, etc in comments
