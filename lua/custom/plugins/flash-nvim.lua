@@ -10,6 +10,10 @@
 --   r: 在操作符待决模式下远程跳转
 --   R: 在可视和操作符待决模式下搜索语法树节点
 --   <c-s>: 在命令行模式下切换 Flash 搜索
+--
+--   n：Normal（普通）模式
+--   x：Visual（可视）模式
+--   o：Operator-pending（操作符等待）模式
 
 return {
   'folke/flash.nvim',
@@ -17,11 +21,10 @@ return {
   opts = {},
   -- stylua: ignore
   keys = {
-    { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
-    { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    { "s", mode = { "n", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
+    { "S", mode = { "n","o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
     { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
     { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
     { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
   },
 }
-

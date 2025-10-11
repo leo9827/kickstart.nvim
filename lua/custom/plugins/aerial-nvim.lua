@@ -95,6 +95,7 @@ return {
     }
     -- 快捷键设置
     -- vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle<CR>', { desc = 'Toggle outline viewer (powered by Aerial)' })
+    vim.keymap.set('n', '<leader>o', '<cmd>Telescope aerial<CR>', { desc = 'Search outline (powered by Aerial)' })
     vim.keymap.set('n', '<leader>so', '<cmd>Telescope aerial<CR>', { desc = 'Search outline (powered by Aerial)' })
   end,
 }

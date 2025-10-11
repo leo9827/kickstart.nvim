@@ -935,27 +935,9 @@ require('lazy').setup({
 
     -- Set the background to dark / light
     -- vim.opt.background = 'dark'
-    -- vim.opt.background = 'light'
 
     -- Load the colorscheme here.
-    -- Like many other themes, this one has different styles, and you could load
-    -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-    -- vim.cmd.colorscheme 'default'
-    -- vim.cmd.colorscheme 'tokyonight'
-    -- vim.cmd.colorscheme 'catppuccin'
-    -- vim.cmd.colorscheme 'nightfox'
-    -- vim.cmd.colorscheme 'kanagawa'
-    -- both support light and dark
-    -- vim.cmd.colorscheme 'solarized'
     -- vim.cmd.colorscheme 'selenized'
-    -- vim.cmd.colorscheme 'gruvbox'
-    -- vim.cmd.colorscheme 'rose-pine'
-    --
-    -- light backgroud and themes
-    -- vim.cmd.colorscheme 'tokyonight-day'
-    -- vim.cmd.colorscheme 'dawnfox'
-    -- vim.cmd.colorscheme 'gruvbox-material'
-    -- vim.cmd.colorscheme 'minispring'
     -- vim.cmd.colorscheme 'onedark'
     -- end,
   },
@@ -1069,6 +1051,7 @@ require('lazy').setup({
 
   -- themes plugins
   require 'custom.plugins.onedark',
+  require 'custom.plugins.selenized',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1098,3 +1081,9 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Set the background to dark / light
+vim.opt.background = 'light'
+-- Load the colorscheme here.
+-- vim.cmd.colorscheme 'selenized'
+vim.cmd.colorscheme 'onedark'
