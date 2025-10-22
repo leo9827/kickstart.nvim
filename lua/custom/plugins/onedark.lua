@@ -5,7 +5,7 @@ return {
   config = function()
     require('onedark').setup {
       -- 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-      style = 'light',
+      -- style = 'light',
     }
     -- vim.o.background = 'light'
     -- Enable theme

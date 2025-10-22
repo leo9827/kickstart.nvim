@@ -1052,6 +1052,7 @@ require('lazy').setup({
   -- themes plugins
   require 'custom.plugins.onedark',
   require 'custom.plugins.selenized',
+  require 'custom.plugins.flexoki',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1082,8 +1083,19 @@ require('lazy').setup({
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
 
--- Set the background to dark / light
-vim.opt.background = 'light'
--- Load the colorscheme here.
+-- Set the background and colorscheme in here.
+-- Light collocation
+-- vim.opt.background = 'light'
 -- vim.cmd.colorscheme 'selenized'
-vim.cmd.colorscheme 'onedark'
+vim.cmd.colorscheme 'flexoki'
+-- Dark collocation
+vim.opt.background = 'dark'
+-- vim.cmd.colorscheme 'onedark'
+-- vim.cmd.colorscheme 'selenized'
+-- set backgroud to transperent
+vim.cmd [[
+  highlight Normal guibg=none
+  highlight NonText guibg=none
+  highlight Normal ctermbg=none
+  highlight NonText ctermbg=none
+]]
