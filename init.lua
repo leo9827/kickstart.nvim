@@ -672,9 +672,17 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
-        float = { border = 'rounded', source = 'if_many' },
-        underline = { severity = vim.diagnostic.severity.ERROR },
+
+        float = {
+          border = 'rounded',
+          source = 'if_many',
+          severity = vim.diagnostic.severity.WARN,
+        },
+
+        underline = { severity = vim.diagnostic.severity.WARN },
+
         signs = vim.g.have_nerd_font and {
+          severity = vim.diagnostic.severity.WARN,
           text = {
             [vim.diagnostic.severity.ERROR] = '󰅚 ',
             [vim.diagnostic.severity.WARN] = '󰀪 ',
@@ -682,9 +690,11 @@ require('lazy').setup({
             [vim.diagnostic.severity.HINT] = '󰌶 ',
           },
         } or {},
+
         virtual_text = {
           source = 'if_many',
           spacing = 2,
+          -- severity = vim.diagnostic.severity.WARN,
           format = function(diagnostic)
             local diagnostic_message = {
               [vim.diagnostic.severity.ERROR] = diagnostic.message,
@@ -1046,6 +1056,7 @@ require('lazy').setup({
   require 'custom.plugins.neoscroll', -- 平滑滚动
   require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.lualine', -- 底部状态栏显示
+  require 'custom.plugins.auto-dark-mode', -- automatically changes
 
   -- language plugins
 
@@ -1053,6 +1064,7 @@ require('lazy').setup({
   require 'custom.plugins.onedark',
   require 'custom.plugins.selenized',
   require 'custom.plugins.flexoki',
+  require 'custom.plugins.alabaster',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1084,18 +1096,21 @@ require('lazy').setup({
 -- vim: ts=2 sts=2 sw=2 et
 
 -- Set the background and colorscheme in here.
--- Light collocation
 -- vim.opt.background = 'light'
+
+-- Light collocation
+vim.cmd.colorscheme 'alabaster'
 -- vim.cmd.colorscheme 'selenized'
-vim.cmd.colorscheme 'flexoki'
+-- vim.cmd.colorscheme 'flexoki'
 -- Dark collocation
-vim.opt.background = 'dark'
+-- vim.cmd.colorscheme 'alabaster'
 -- vim.cmd.colorscheme 'onedark'
 -- vim.cmd.colorscheme 'selenized'
--- set backgroud to transperent
+
+-- Set backgroud to transperent
 vim.cmd [[
-  highlight Normal guibg=none
+  highlight Normal  guibg=none
   highlight NonText guibg=none
-  highlight Normal ctermbg=none
+  highlight Normal  ctermbg=none
   highlight NonText ctermbg=none
 ]]
