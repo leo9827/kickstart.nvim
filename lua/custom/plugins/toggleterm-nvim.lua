@@ -1,4 +1,4 @@
--- toggleterm 是一个管理 neovim 终端的插件。
+-- toggleterm 是一个管理 neovim 终端的插件。toogg
 -- 它提供了便捷的终端管理功能，可以在编码时快速打开/关闭终端进行命令操作。
 --
 -- 主要功能：
@@ -37,7 +37,7 @@ return {
       float_opts = {
         -- 你可以自定义边框样式
         border = 'single', -- 'single', 'double', 'rounded', 'solid', 'shadow'
-        winblend = 3,
+        winblend = 0, -- 确保没有透明度
       },
       -- 非浮动窗口（水平或垂直分割）的大小
       -- 可以是数字（行数/列数），也可以是0到1之间的小数（占屏幕的百分比）
@@ -51,7 +51,7 @@ return {
     }
 
     local Terminal = require('toggleterm.terminal').Terminal
-    local lazygit = Terminal:new { cmd = 'lazygit', direction = 'float', hidden = true }
+    local lazygit = Terminal:new { cmd = 'lazygit', direction = 'float', hidden = false, close_on_exit = true }
     local function _toggleterm_lazygit()
       lazygit:toggle()
     end
