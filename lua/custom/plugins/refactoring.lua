@@ -27,6 +27,7 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim', -- 用于异步操作
     'nvim-treesitter/nvim-treesitter', -- 用于代码语法解析
+    -- 'nvim-telescope/telescope.nvim',
   },
   lazy = false, -- 是否延迟加载
   config = function()
@@ -50,5 +51,12 @@ return {
         },
       },
     }
+
+    -- --- 快捷键映射 ---
+
+    -- 在可视化模式下选择代码块后，按下 <leader>r 触发重构菜单
+    vim.keymap.set('v', '<leader>r', function()
+      require('telescope').extensions.refactoring.refactors()
+    end, { desc = 'Refactor: 打开重构菜单' })
   end,
 }
