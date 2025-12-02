@@ -1046,9 +1046,7 @@ require('lazy').setup({
   require 'custom.plugins.trouble', -- 诊断信息列表显示
   require 'custom.plugins.nvim-ufo', -- 代码折叠
   require 'custom.plugins.aerial-nvim', -- 显示大纲
-  require 'custom.plugins.avante-nvim', -- 标签页美化
-  require 'custom.plugins.toggleterm-nvim', -- 内置终端
-  require 'custom.plugins.oil-nvim', -- 文件管理器
+  require 'custom.plugins.avante-nvim',
   require 'custom.plugins.flash-nvim', -- 快速跳转
   require 'custom.plugins.nvim-navic', -- 面包屑导航
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
@@ -1056,15 +1054,21 @@ require('lazy').setup({
   require 'custom.plugins.neoscroll', -- 平滑滚动
   require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.lualine', -- 底部状态栏显示
+  require 'custom.plugins.zenmode',
+  require 'custom.plugins.go-nvim',
   require 'custom.plugins.auto-dark-mode', -- automatically changes
+  -- require 'custom.plugins.toggleterm-nvim', -- 内置终端
+  -- require 'custom.plugins.oil-nvim', -- 文件管理器
 
   -- language plugins
 
   -- themes plugins
+  require 'custom.plugins.alabaster',
+  require 'custom.plugins.flexoki',
   require 'custom.plugins.onedark',
   require 'custom.plugins.selenized',
-  require 'custom.plugins.flexoki',
-  require 'custom.plugins.alabaster',
+  require 'custom.plugins.solarized',
+  require 'custom.plugins.solarized-osaka',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1099,18 +1103,16 @@ require('lazy').setup({
 -- vim.opt.background = 'light'
 
 -- Light collocation
-vim.cmd.colorscheme 'alabaster'
--- vim.cmd.colorscheme 'selenized'
--- vim.cmd.colorscheme 'flexoki'
--- Dark collocation
 -- vim.cmd.colorscheme 'alabaster'
--- vim.cmd.colorscheme 'onedark'
+-- vim.cmd.colorscheme 'flexoki'
+vim.cmd.colorscheme 'solarized'
 -- vim.cmd.colorscheme 'selenized'
+-- vim.cmd.colorscheme 'onedark'
 
 -- Set backgroud to transperent
--- vim.cmd [[
---   highlight Normal  guibg=none
---   highlight NonText guibg=none
---   highlight Normal  ctermbg=none
---   highlight NonText ctermbg=none
--- ]]
+vim.cmd [[
+  highlight Normal  guibg=none
+  highlight NonText guibg=none
+  highlight Normal  ctermbg=none
+  highlight NonText ctermbg=none
+]]

@@ -29,7 +29,6 @@
 return {
   'stevearc/oil.nvim',
   ---@module 'oil'
-  ---@type oil.SetupOpts
   opts = {
     -- 默认视图类型: 'tree'(树形) 或 'list'(列表)
     view_options = {

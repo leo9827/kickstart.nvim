@@ -17,7 +17,8 @@ return {
       copilot = {
         endpoint = 'https://api.githubcopilot.com',
         -- model = 'claude-sonnet-4',
-        model = 'gemini-2.5-pro',
+        -- model = 'gemini-2.5-pro',
+        model = 'GPT-5.1 mini',
         proxy = nil, -- [protocol://]host[:port] Use this proxy
         allow_insecure = false, -- Allow insecure server connections
         timeout = 30000, -- Timeout in milliseconds
