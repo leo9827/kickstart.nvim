@@ -20,6 +20,22 @@ return {
         lualine_c = {
           { 'filename', file_status = true, path = 1 }, -- 显示文件名和路径
           { 'diagnostics', sources = { 'nvim_diagnostic' } }, -- 显示诊断信息
+          {
+            -- 定义一个函数获取和展示录制状态
+            function()
+              local reg = vim.fn.reg_recording()
+              if reg == '' then
+                return ''
+              end -- 如果没在录制，返回空
+              return '  @' .. reg -- 显示图标和寄存器名
+            end,
+            color = { fg = '#ff9e64' }, -- 可选：设置颜色提醒
+          },
+          -- { -- 如果启用了 Noice，确保在 lualine 中配置了 Noice 提供的组件
+          --   require('noice').api.status.mode.get,
+          --   cond = require('noice').api.status.mode.has,
+          --   color = { fg = '#ff9e64' },
+          -- },
         },
         lualine_x = {
           { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } }, -- 显示文件类型图标

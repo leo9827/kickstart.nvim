@@ -1,5 +1,5 @@
--- return {
---   'EdenEast/nightfox.nvim',
---   name = 'nightfox',
---   config = function() end,
--- }
+return {
+  'EdenEast/nightfox.nvim',
+  name = 'nightfox',
+  config = function() end,
+}

@@ -1069,6 +1069,11 @@ require('lazy').setup({
   require 'custom.plugins.selenized',
   require 'custom.plugins.solarized',
   require 'custom.plugins.solarized-osaka',
+  require 'custom.plugins.kanagawa',
+  require 'custom.plugins.catppuccin',
+  require 'custom.plugins.rose-pine',
+  require 'custom.plugins.nightfox',
+  require 'custom.plugins.tokyonight',
 
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1105,8 +1110,9 @@ require('lazy').setup({
 -- Light collocation
 -- vim.cmd.colorscheme 'alabaster'
 -- vim.cmd.colorscheme 'flexoki'
-vim.cmd.colorscheme 'solarized'
--- vim.cmd.colorscheme 'selenized'
+-- vim.cmd.colorscheme 'solarized'
+-- vim.cmd.colorscheme 'solarized-osaka'
+vim.cmd.colorscheme 'selenized'
 -- vim.cmd.colorscheme 'onedark'
 
 -- Set backgroud to transperent
