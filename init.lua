@@ -1047,6 +1047,7 @@ require('lazy').setup({
   require 'custom.plugins.nvim-ufo', -- 代码折叠
   require 'custom.plugins.aerial-nvim', -- 显示大纲
   require 'custom.plugins.avante-nvim',
+  require 'custom.plugins.diffview',
   require 'custom.plugins.flash-nvim', -- 快速跳转
   require 'custom.plugins.nvim-navic', -- 面包屑导航
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
