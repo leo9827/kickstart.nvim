@@ -37,7 +37,7 @@ return {
       views = {
         cmdline_popup = {
           position = {
-            row = '50%', -- 绝对居中通常比 40% 更舒服，或者 40% 也可以
+            row = '45%', -- 绝对居中通常比 40% 更舒服，或者 40% 也可以
             col = '50%',
           },
           size = {
@@ -47,7 +47,7 @@ return {
           border = {
             -- double | none | rounded | shadow | single | solid
             style = 'solid',
-            padding = { 1, 1 },
+            padding = { 0, 1 },
           },
         },
         popupmenu = {
@@ -62,7 +62,7 @@ return {
           },
           border = {
             style = 'solid',
-            padding = { 1, 1 },
+            padding = { 0, 1 },
           },
           win_options = {
             winhighlight = 'Normal:Normal,FloatBorder:DiagnosticInfo',
