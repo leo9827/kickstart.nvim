@@ -58,11 +58,11 @@ return {
     dashboard.section.header.opts.hl = 'AlphaHeader'
 
     dashboard.section.buttons.val = {
-      dashboard.button('n', '  New File', ':ene <BAR> startinsert<CR>'),
       dashboard.button('SPC f r', '  Recent Files', ':Telescope oldfiles<CR>'),
       dashboard.button('SPC s f', '  Find Files', '<leader>sf'),
       dashboard.button('SPC f g', '  Fuzzy Grep', '<leader>sg'),
-      dashboard.button('SPC f g', '  Update Plugins', ':Lazy update<CR>'),
+      dashboard.button('n', '  New File', ':ene <BAR> startinsert<CR>'),
+      dashboard.button('u', '  Update Plugins', ':Lazy update<CR>'),
       dashboard.button('q', '  Quit', '<cmd>q!<cr>'),
     }
 
