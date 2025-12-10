@@ -376,6 +376,7 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
+    -- tag = 'v0.2.0', -- recommend using tag
     event = 'VimEnter',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -428,6 +429,42 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
+        -- 使用 flex 策略实现响应式布局,并调整了排序方式
+        defaults = {
+          -- 1. 改变排序策略：让结果从上往下排列，输入框固定在顶部
+          -- 这样你的视线不需要在屏幕上下反复横跳
+          sorting_strategy = 'ascending', -- descending or ascending
+          layout_strategy = 'flex', -- 使用 flex 策略，自动切换横/纵向布局
+
+          layout_config = {
+            -- 2. 调整 prompt (输入框) 的位置 top / bottom
+            prompt_position = 'top',
+
+            -- 3. 整体窗口大小设置 (百分比)
+            width = 0.90, -- 占用屏幕宽度的 90%
+            height = 0.75, -- 占用屏幕高度的 75%
+
+            -- 4. 横向布局配置 (宽屏时)
+            horizontal = {
+              preview_width = 0.60, -- 预览窗口占 60%，列表占 40% (内容优先)
+            },
+
+            -- 5. 纵向布局配置 (窄屏时)
+            vertical = {
+              mirror = false, -- 如果为 true，预览窗口会在列表上方
+              preview_height = 0.5, -- 预览窗口占高度的 50%
+            },
+          },
+
+          -- 6. 路径显示优化
+          -- 智能截断路径，防止文件名太长导致看不见
+          path_display = { 'truncate' },
+
+          -- 移除选中时的箭头图标，节省左侧空间（可选）
+          selection_caret = '  ',
+          -- 或者用更显眼的图标:
+          -- selection_caret = "> ",
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
