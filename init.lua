@@ -1094,7 +1094,7 @@ require('lazy').setup({
   require 'custom.plugins.lualine', -- 底部状态栏显示
   require 'custom.plugins.zenmode',
   require 'custom.plugins.go-nvim',
-  require 'custom.plugins.auto-dark-mode', -- automatically changes
+  -- require 'custom.plugins.auto-dark-mode', -- automatically changes
   -- require 'custom.plugins.toggleterm-nvim', -- 内置终端
   -- require 'custom.plugins.oil-nvim', -- 文件管理器
 
@@ -1148,15 +1148,15 @@ require('lazy').setup({
 -- Light collocation
 -- vim.cmd.colorscheme 'alabaster'
 -- vim.cmd.colorscheme 'flexoki'
+vim.cmd.colorscheme 'onedark'
 -- vim.cmd.colorscheme 'solarized'
 -- vim.cmd.colorscheme 'solarized-osaka'
-vim.cmd.colorscheme 'selenized'
--- vim.cmd.colorscheme 'onedark'
+-- vim.cmd.colorscheme 'selenized'
 
 -- Set backgroud to transperent
-vim.cmd [[
-  highlight Normal  guibg=none
-  highlight NonText guibg=none
-  highlight Normal  ctermbg=none
-  highlight NonText ctermbg=none
-]]
+-- vim.cmd [[
+--   highlight Normal  guibg=none
+--   highlight NonText guibg=none
+--   highlight Normal  ctermbg=none
+--   highlight NonText ctermbg=none
+-- ]]

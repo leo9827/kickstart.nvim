@@ -46,7 +46,8 @@ return {
           },
           border = {
             -- double | none | rounded | shadow | single | solid
-            style = 'solid',
+            -- style = 'solid',
+            style = 'rounded',
             padding = { 0, 1 },
           },
         },
