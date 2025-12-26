@@ -61,7 +61,7 @@ return {
       -- dashboard.button('SPC f r', '  Recent Files', ':Telescope oldfiles<CR>'),
       -- dashboard.button('SPC s f', '  Find Files', '<leader>sf'),
       -- dashboard.button('SPC f g', '  Fuzzy Grep', '<leader>sg'),
-      dashboard.button('r', '  Recent Files', ':Telescope oldfiles<CR>'),
+      dashboard.button('r', '  Recent Files', ':Telescope oldfiles only_cwd=true<CR>'),
       dashboard.button('f', '  Find Files', ':Telescope find_files<CR>'),
       dashboard.button('g', '  Fuzzy Grep', ':Telescope live_grep<CR>'),
       dashboard.button('n', '  New File', ':ene <BAR> startinsert<CR>'),
@@ -79,11 +79,11 @@ return {
     dashboard.section.footer.opts.hl = 'AlphaFooter'
 
     dashboard.config.layout = {
-      { type = 'padding', val = 1 },
+      { type = 'padding', val = 2 },
       dashboard.section.header,
       { type = 'padding', val = 2 },
       dashboard.section.buttons,
-      { type = 'padding', val = 1 },
+      { type = 'padding', val = 2 },
       dashboard.section.footer,
     }
 

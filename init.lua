@@ -1090,11 +1090,12 @@ require('lazy').setup({
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
   require 'custom.plugins.refactoring', -- 代码重构
   require 'custom.plugins.neoscroll', -- 平滑滚动
-  require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
+  -- require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.lualine', -- 底部状态栏显示
   require 'custom.plugins.zenmode',
   require 'custom.plugins.go-nvim',
   require 'custom.plugins.toggleterm-nvim', -- 内置终端
+  require 'custom.plugins.harpoon',
   -- require 'custom.plugins.auto-dark-mode', -- automatically changes
   -- require 'custom.plugins.oil-nvim', -- 文件管理器
 
@@ -1147,8 +1148,8 @@ require('lazy').setup({
 
 -- Light collocation
 -- vim.cmd.colorscheme 'alabaster'
--- vim.cmd.colorscheme 'flexoki'
-vim.cmd.colorscheme 'onedark'
+vim.cmd.colorscheme 'flexoki'
+-- vim.cmd.colorscheme 'onedark'
 -- vim.cmd.colorscheme 'solarized'
 -- vim.cmd.colorscheme 'solarized-osaka'
 -- vim.cmd.colorscheme 'selenized'

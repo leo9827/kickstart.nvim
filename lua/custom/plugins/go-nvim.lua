@@ -24,6 +24,19 @@ return {
       lsp_on_attach = false, -- if a on_attach function provided: attach on_attach function to gopls
       lsp_cfg = false, -- true: use non-default gopls setup specified in go/lsp.lua
       -- dap_debug = true, -- set to true to enable dap
+
+      test_runner = 'go', -- one of {`go`,  `dlv`, `ginkgo`, `gotestsum`}
+      verbose_tests = true, -- set to add verbose flag to tests deprecated, see '-v' option
+      run_in_floaterm = true, -- set to true to run in a float window. :GoTermClose closes the floatterm
+      -- float term recommend if you use gotestsum ginkgo with terminal color
+      floaterm = { -- position
+        posititon = 'auto', -- one of {`top`, `bottom`, `left`, `right`, `center`, `auto`}
+        width = 0.45, -- width of float window if not auto
+        height = 0.90, -- height of float window if not auto
+        title_colors = 'nord', -- default to nord, one of {'nord', 'tokyo', 'dracula', 'rainbow', 'solarized ', 'monokai'}
+        -- can also set to a list of colors to define colors to choose from
+        -- e.g {'#D8DEE9', '#5E81AC', '#88C0D0', '#EBCB8B', '#A3BE8C', '#B48EAD'}
+      },
     }
 
     -- Format on save
