@@ -1,0 +1,40 @@
+return {
+  'numToStr/FTerm.nvim',
+  keys = {
+    -- 1. 使用 Control + t 切换浮动终端 (n: 普通模式, t: 终端模式)
+    {
+      '<C-t>',
+      function()
+        require('FTerm').toggle()
+      end,
+      mode = { 'n', 't' },
+      desc = 'Terminal (FTerm)',
+    },
+
+    -- 2. 使用 Leader + ft 切换浮动终端 (符合 LazyVim 习惯)
+    {
+      '<leader>tf',
+      function()
+        require('FTerm').toggle()
+      end,
+      mode = { 'n', 't' },
+      desc = 'Floating Terminal',
+    },
+
+    -- 3. 使用 Leader + lg 在 FTerm 中快速打开 Lazygit
+    {
+      '<leader>lg',
+      function()
+        require('FTerm').run { 'lazygit' }
+      end,
+      desc = 'Lazygit (FTerm)',
+    },
+  },
+  opts = {
+    border = 'rounded',
+    dimensions = {
+      height = 0.85,
+      width = 0.85,
+    },
+  },
+}

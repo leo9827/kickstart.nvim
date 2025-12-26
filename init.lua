@@ -1094,7 +1094,8 @@ require('lazy').setup({
   require 'custom.plugins.lualine', -- 底部状态栏显示
   require 'custom.plugins.zenmode',
   require 'custom.plugins.go-nvim',
-  require 'custom.plugins.toggleterm-nvim', -- 内置终端
+  -- require 'custom.plugins.toggleterm', -- 内置终端
+  require 'custom.plugins.fterm', -- Floating Terminal
   require 'custom.plugins.harpoon',
   -- require 'custom.plugins.auto-dark-mode', -- automatically changes
   -- require 'custom.plugins.oil-nvim', -- 文件管理器
