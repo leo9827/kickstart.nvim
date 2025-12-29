@@ -1,6 +1,5 @@
 return {
   'craftzdog/solarized-osaka.nvim',
-  lazy = false,
-  priority = 1000,
+  lazy = true, -- Lazy load since not currently active
   opts = {},
 }

@@ -2,7 +2,6 @@ return {
   'maxmx03/solarized.nvim',
   -- 'shaunsingh/solarized.nvim' -- another solarized colorschema
   name = 'solarized.vim',
-  lazy = false,
-  priority = 1000,
+  lazy = true, -- Lazy load since not currently active
   config = function() end,
 }

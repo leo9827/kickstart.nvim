@@ -1,5 +1,6 @@
 return {
   'nvim-lualine/lualine.nvim',
+  event = 'VeryLazy', -- Lazy load to improve startup time
   dependencies = { 'nvim-tree/nvim-web-devicons' }, -- 用于显示文件图标
   opts = function()
     return {

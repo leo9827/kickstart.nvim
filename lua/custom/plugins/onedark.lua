@@ -1,7 +1,7 @@
 return {
   -- 'joshdick/onedark.vim', -- for vim / neovim<0.5
   'navarasu/onedark.nvim',
-  priority = 1000,
+  lazy = true, -- Lazy load since not currently active
   config = function()
     -- require('onedark').setup {
     -- 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'

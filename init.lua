@@ -177,6 +177,19 @@ vim.o.confirm = true
 -- set tabstop and shiftwidth to 2 spaces
 vim.o.tabstop = 2
 vim.o.shiftwidth = 2
+vim.o.expandtab = true
+vim.o.smartindent = true
+
+-- Disable swap files, enable undo file
+vim.o.swapfile = false
+vim.o.backup = false
+
+-- Better colors
+vim.o.termguicolors = true
+
+-- Show color column at 120 characters
+vim.o.colorcolumn = '120'
+
 -- config for avante.nvim
 -- views can only be fully collapsed with the global statusline
 vim.o.laststatus = 3
@@ -1201,12 +1214,17 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'custom.plugins.go-nvim',
   -- require 'custom.plugins.toggleterm', -- 内置终端
   require 'custom.plugins.fterm', -- Floating Terminal
-  require 'custom.plugins.harpoon', -- require 'custom.plugins.auto-dark-mode', -- automatically changes
+  require 'custom.plugins.harpoon',
+  -- require 'custom.plugins.auto-dark-mode', -- automatically changes
   -- require 'custom.plugins.oil-nvim', -- 文件管理器
-  -- language plugins
-  -- themes plugins
+
+  -- Session management
+  require 'custom.plugins.auto-session',
+
+  -- Language plugins
+  -- Themes - only active theme loads immediately, others are lazy
+  require 'custom.plugins.flexoki', -- Current active theme
   require 'custom.plugins.alabaster',
-  require 'custom.plugins.flexoki',
   require 'custom.plugins.onedark',
   require 'custom.plugins.selenized',
   require 'custom.plugins.solarized',
@@ -1243,6 +1261,9 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Load custom keymaps (non-plugin keybinds)
+require 'custom.keymaps'
 
 -- Set the background and colorscheme in here.
 -- vim.opt.background = 'light'
