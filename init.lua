@@ -1222,18 +1222,8 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'custom.plugins.auto-session',
 
   -- Language plugins
-  -- Themes - only active theme loads immediately, others are lazy
-  require 'custom.plugins.flexoki', -- Current active theme
-  require 'custom.plugins.alabaster',
-  require 'custom.plugins.onedark',
-  require 'custom.plugins.selenized',
-  require 'custom.plugins.solarized',
-  require 'custom.plugins.solarized-osaka',
-  require 'custom.plugins.kanagawa',
-  require 'custom.plugins.catppuccin',
-  require 'custom.plugins.rose-pine',
-  require 'custom.plugins.nightfox',
-  require 'custom.plugins.tokyonight', -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
+  -- Base46 主题系统（替代原有主题插件）
+  require 'custom.base46', -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
@@ -1265,18 +1255,10 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
 -- Load custom keymaps (non-plugin keybinds)
 require 'custom.keymaps'
 
--- Set the background and colorscheme in here.
+-- Set background (light or dark)
 -- vim.opt.background = 'light'
 
--- Light collocation
--- vim.cmd.colorscheme 'alabaster'
-vim.cmd.colorscheme 'flexoki'
--- vim.cmd.colorscheme 'onedark'
--- vim.cmd.colorscheme 'solarized'
--- vim.cmd.colorscheme 'solarized-osaka'
--- vim.cmd.colorscheme 'selenized'
-
--- Set backgroud to transperent
+-- Set background to transparent
 vim.cmd [[
   highlight Normal  guibg=none
   highlight NonText guibg=none
