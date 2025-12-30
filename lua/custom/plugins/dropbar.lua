@@ -29,12 +29,8 @@ return {
       },
       -- 菜单设置
       menu = {
-        keymaps = {
-          ['<CR>'] = '<cmd>lua require("dropbar.api").select()<CR>', -- 回车选择
-          ['<Esc>'] = '<cmd>lua require("dropbar.api").close()<CR>', -- ESC 关闭
-          ['<C-k>'] = '<cmd>lua require("dropbar.api").hover()<CR>', -- 悬停预览
-          ['q'] = '<cmd>lua require("dropbar.api").close()<CR>', -- q 关闭
-        },
+        -- 使用默认快捷键配置
+        quick_navigation = true,
       },
       -- 预览设置
       preview = {
@@ -48,8 +44,14 @@ return {
     local dropbar_api = require 'dropbar.api'
 
     -- 快捷键设置
-    vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' }) -- 在导航栏中选择符号
-    vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Go to start of current context' }) -- 跳转到当前上下文开始
-    vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' }) -- 选择下一个上下文
+    vim.keymap.set('n', '<Leader>;', dropbar_api.pick, {
+      desc = 'Pick symbols in winbar',
+    }) -- 在导航栏中选择符号
+    vim.keymap.set('n', '[;', dropbar_api.goto_context_start, {
+      desc = 'Go to start of current context',
+    }) -- 跳转到当前上下文开始
+    vim.keymap.set('n', '];', dropbar_api.select_next_context, {
+      desc = 'Select next context',
+    }) -- 选择下一个上下文
   end,
 }

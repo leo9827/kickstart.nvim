@@ -37,26 +37,10 @@ return {
     },
   },
 
-  keys = { -- Search and select sessions
-    {
-      '<leader>ws',
-      '<cmd>SessionSearch<CR>',
-      desc = '[W]orkspace [S]ession search',
-    }, -- Restore session for current directory
-    {
-      '<leader>wr',
-      '<cmd>SessionRestore<CR>',
-      desc = '[W]orkspace Session [R]estore',
-    }, -- Save current session
-    {
-      '<leader>ww',
-      '<cmd>SessionSave<CR>',
-      desc = '[W]orkspace Session [W]rite (save)',
-    }, -- Delete current session
-    {
-      '<leader>wd',
-      '<cmd>SessionDelete<CR>',
-      desc = '[W]orkspace Session [D]elete',
-    },
+  keys = {
+    { '<leader>ws', '<cmd>AutoSession search<CR>', desc = '[W]orkspace [S]ession search' }, -- Search and select sessions
+    { '<leader>wr', '<cmd>AutoSession restore<CR>', desc = '[W]orkspace Session [R]estore' }, -- Restore session for current directory
+    { '<leader>ww', '<cmd>AutoSession save<CR>', desc = '[W]orkspace Session [W]rite (save)' }, -- Save current session
+    { '<leader>wd', '<cmd>AutoSession delete<CR>', desc = '[W]orkspace Session [D]elete' }, -- Delete current session
   },
 }

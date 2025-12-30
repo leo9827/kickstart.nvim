@@ -155,11 +155,7 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = {
-  tab = '  ',
-  trail = '·',
-  nbsp = '␣',
-}
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -206,9 +202,7 @@ vim.o.laststatus = 3
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, {
-  desc = 'Open diagnostic [Q]uickfix list',
-})
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -216,9 +210,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, {
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', {
-  desc = 'Exit terminal mode',
-})
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -249,7 +241,9 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', {
+    clear = true,
+  }),
   callback = function()
     vim.hl.on_yank()
   end,
@@ -500,19 +494,33 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown { winblend = 10, previewer = false })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+          winblend = 10,
+          previewer = false,
+        })
+      end, {
+        desc = '[/] Fuzzily search in current buffer',
+      })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep { grep_open_files = true, prompt_title = 'Live Grep in Open Files' }
-      end, { desc = '[S]earch [/] in Open Files' })
+        builtin.live_grep {
+          grep_open_files = true,
+          prompt_title = 'Live Grep in Open Files',
+        }
+      end, {
+        desc = '[S]earch [/] in Open Files',
+      })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+        builtin.find_files {
+          cwd = vim.fn.stdpath 'config',
+        }
+      end, {
+        desc = '[S]earch [N]eovim files',
+      })
     end,
   }, -- LSP Plugins
   {
@@ -535,10 +543,16 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
     dependencies = { -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
-      { 'mason-org/mason.nvim', opts = {} },
+      {
+        'mason-org/mason.nvim',
+        opts = {},
+      },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim', -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} }, -- Allows extra capabilities provided by blink.cmp
+      {
+        'j-hui/fidget.nvim',
+        opts = {},
+      }, -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
     },
     config = function()
@@ -672,7 +686,9 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', {
+              clear = false,
+            })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
               group = highlight_augroup,
@@ -686,10 +702,15 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
             })
 
             vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', {
+                clear = true,
+              }),
               callback = function(event2)
                 vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                vim.api.nvim_clear_autocmds {
+                  group = 'kickstart-lsp-highlight',
+                  buffer = event2.buf,
+                }
               end,
             })
           end
@@ -700,7 +721,9 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
             map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled {
+                bufnr = event.buf,
+              })
             end, '[T]oggle Inlay [H]ints')
           end
         end,
@@ -864,6 +887,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        go = { 'gofmt' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -1056,6 +1080,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = {
@@ -1084,6 +1109,39 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       indent = {
         enable = true,
         disable = { 'ruby' },
+      },
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+          keymaps = {
+            -- You can use the capture groups defined in textobjects.scm
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- whether to set jumps in the jumplist
+          goto_next_start = {
+            [']m'] = '@function.outer',
+            [']]'] = '@class.outer',
+          },
+          goto_next_end = {
+            [']M'] = '@function.outer',
+            [']['] = '@class.outer',
+          },
+          goto_previous_start = {
+            ['[m'] = '@function.outer',
+            ['[['] = '@class.outer',
+          },
+          goto_previous_end = {
+            ['[M'] = '@function.outer',
+            ['[]'] = '@class.outer',
+          },
+        },
       },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
@@ -1120,18 +1178,18 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'custom.plugins.trouble', -- 诊断信息列表显示
   require 'custom.plugins.nvim-ufo', -- 代码折叠
   require 'custom.plugins.aerial-nvim', -- 显示大纲
+  -- require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.avante-nvim',
   require 'custom.plugins.diffview',
   require 'custom.plugins.flash-nvim', -- 快速跳转
-  require 'custom.plugins.nvim-navic', -- 面包屑导航
+  require 'custom.plugins.dropbar', -- 面包屑导航
+  -- require 'custom.plugins.nvim-navic', -- Simple 面包屑导航
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
   require 'custom.plugins.refactoring', -- 代码重构
   -- require 'custom.plugins.neoscroll', -- 平滑滚动
-  -- require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.lualine', -- 底部状态栏显示
   -- require 'custom.plugins.zenmode',
-  require 'custom.plugins.go-nvim',
-  -- require 'custom.plugins.toggleterm', -- 内置终端
+  require 'custom.plugins.go-nvim', -- require 'custom.plugins.toggleterm', -- 内置终端
   require 'custom.plugins.fterm', -- Floating Terminal
   require 'custom.plugins.harpoon',
   require 'custom.plugins.auto-session', -- Session management
