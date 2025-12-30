@@ -133,24 +133,16 @@ return {
     dashboard.section.footer.opts.hl = 'AlphaFooter'
 
     dashboard.config.layout = {
-      {
-        type = 'padding',
-        val = 2,
-      },
+      { type = 'padding', val = 2 },
       dashboard.section.header,
-      {
-        type = 'padding',
-        val = 2,
-      },
+      { type = 'padding', val = 2 },
       dashboard.section.buttons,
-      {
-        type = 'padding',
-        val = 2,
-      },
+      { type = 'padding', val = 2 },
       dashboard.section.footer,
     }
 
     alpha.setup(dashboard.config)
     vim.cmd [[autocmd FileType alpha setlocal nofoldenable]]
+    vim.api.nvim_create_user_command('Dashboard', 'Alpha', { desc = 'Open Dashborad.' })
   end,
 }
