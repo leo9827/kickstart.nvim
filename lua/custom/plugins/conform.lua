@@ -14,13 +14,8 @@ return {
         go = { 'gofmt' },
         javascript = { 'prettier' },
         typescript = { 'prettier' },
-        elixir = { 'mix' },
       },
-      formatters = {
-        ['clang-format'] = {
-          prepend_args = { '-style=file', '-fallback-style=LLVM' },
-        },
-      },
+      formatters = {},
     }
 
     vim.keymap.set('n', '<leader>f', function()
