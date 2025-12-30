@@ -1121,13 +1121,12 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'custom.plugins.nvim-ufo', -- 代码折叠
   require 'custom.plugins.aerial-nvim', -- 显示大纲
   require 'custom.plugins.avante-nvim',
-  require 'custom.plugins.dressing',
   require 'custom.plugins.diffview',
   require 'custom.plugins.flash-nvim', -- 快速跳转
   require 'custom.plugins.nvim-navic', -- 面包屑导航
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
   require 'custom.plugins.refactoring', -- 代码重构
-  require 'custom.plugins.neoscroll', -- 平滑滚动
+  -- require 'custom.plugins.neoscroll', -- 平滑滚动
   -- require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
   require 'custom.plugins.lualine', -- 底部状态栏显示
   -- require 'custom.plugins.zenmode',
