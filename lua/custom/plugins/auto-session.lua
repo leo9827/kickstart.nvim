@@ -6,13 +6,7 @@ return {
   ---@type AutoSession.Config
   opts = {
     -- Suppress session management for certain directories
-    suppressed_dirs = {
-      '~/',
-      '~/Downloads',
-      '~/Documents',
-      '~/Desktop',
-      '/tmp',
-    },
+    suppressed_dirs = { '~/', '~/Downloads', '~/Documents', '~/Desktop', '/tmp' },
 
     -- Don't auto-restore the last session on startup
     auto_restore = false,
@@ -43,33 +37,26 @@ return {
     },
   },
 
-  keys = {
-    -- Search and select sessions
+  keys = { -- Search and select sessions
     {
-      '<leader>qs',
+      '<leader>ws',
       '<cmd>SessionSearch<CR>',
-      desc = '[Q]uick [S]ession search',
-    },
-
-    -- Restore session for current directory
+      desc = '[W]orkspace [S]ession search',
+    }, -- Restore session for current directory
     {
-      '<leader>qr',
+      '<leader>wr',
       '<cmd>SessionRestore<CR>',
-      desc = '[Q]uick Session [R]estore',
-    },
-
-    -- Save current session
+      desc = '[W]orkspace Session [R]estore',
+    }, -- Save current session
     {
-      '<leader>qw',
+      '<leader>ww',
       '<cmd>SessionSave<CR>',
-      desc = '[Q]uick Session [W]rite (save)',
-    },
-
-    -- Delete current session
+      desc = '[W]orkspace Session [W]rite (save)',
+    }, -- Delete current session
     {
-      '<leader>qd',
+      '<leader>wd',
       '<cmd>SessionDelete<CR>',
-      desc = '[Q]uick Session [D]elete',
+      desc = '[W]orkspace Session [D]elete',
     },
   },
 }
