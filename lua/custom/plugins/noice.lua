@@ -117,7 +117,7 @@ return {
           opts = {}, -- merged with defaults from documentation
         },
         signature = {
-          enabled = true,
+          enabled = false, -- 关闭 Noice 的签名窗口，避免弹窗抢占输入焦点
           auto_open = {
             enabled = true,
             trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
