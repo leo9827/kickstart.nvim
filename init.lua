@@ -94,6 +94,7 @@ vim.g.have_nerd_font = true
 
 -- Prepend mise shims to PATH
 vim.env.PATH = vim.env.HOME .. '/.local/share/mise/shims:' .. vim.env.PATH
+vim.env.PATH = vim.fn.stdpath 'data' .. '/mason/bin:' .. vim.env.PATH
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -831,6 +832,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'sqlfluff',
       })
       require('mason-tool-installer').setup {
         ensure_installed = ensure_installed,
@@ -888,6 +890,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'gofmt' },
+        sql = { 'sqlfluff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
