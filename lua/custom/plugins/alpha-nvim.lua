@@ -47,15 +47,21 @@ return {
     -- 3. 动态问候语
     local function get_greeting()
       local hour = tonumber(os.date '%H')
+      local date = os.date '%Y-%m-%d'
+      local day = os.date '%A'
+      local greeting = ''
+
       if hour >= 5 and hour < 12 then
-        return 'Good Morning, Developer!'
+        greeting = '🌅 Good Morning, Developer!'
       elseif hour >= 12 and hour < 18 then
-        return 'Good Afternoon, Developer!'
+        greeting = '☀️ Good Afternoon, Developer!'
       elseif hour >= 18 and hour < 22 then
-        return 'Good Evening, Developer!'
+        greeting = '🌆 Good Evening, Developer!'
       else
-        return 'Late Night Coding?'
+        greeting = '🌙 Late Night Coding?'
       end
+
+      return greeting .. ' (' .. date .. ', ' .. day .. ')'
     end
 
     -- 4. Cowsay (带增强 Fallback)
@@ -125,7 +131,7 @@ return {
         ' ',
         get_greeting(),
         ' ',
-        '⚡ Neovim v' .. v .. '  loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms',
+        '⚡ Neovim v' .. v .. ', loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms.',
       }
     end
 
