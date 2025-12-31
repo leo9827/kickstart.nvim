@@ -1,5 +1,25 @@
 -- Custom keymaps extracted from remap.lua
 -- Only keep non-conflicting, useful keymaps
+local function smooth_half_page(direction)
+  local lines = math.max(math.floor(vim.api.nvim_win_get_height(0) / 2), 1)
+  local duration = 120
+  local ok, neoscroll = pcall(require, 'neoscroll')
+
+  if ok then
+    neoscroll.scroll(direction * lines, { move_cursor = true, duration = duration, easing = 'sine' })
+    vim.defer_fn(function()
+      pcall(vim.cmd, 'normal! zz')
+    end, duration)
+  else
+    if direction > 0 then
+      vim.cmd 'normal! <C-d>'
+    else
+      vim.cmd 'normal! <C-u>'
+    end
+    vim.cmd 'normal! zz'
+  end
+end
+
 -- Visual mode: move lines up/down
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
@@ -8,12 +28,12 @@ vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
 vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'Join lines (cursor centered)' })
 
 -- Keep cursor centered when scrolling
-vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down (centered)' })
-vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up (centered)' })
-
--- Keep search centered
-vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search (centered)' })
-vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous search (centered)' })
+vim.keymap.set('n', '<C-d>', function()
+  smooth_half_page(1)
+end, { desc = 'Scroll down (centered)' })
+vim.keymap.set('n', '<C-u>', function()
+  smooth_half_page(-1)
+end, { desc = 'Scroll up (centered)' })
 
 -- Format paragraph and return to position
 vim.keymap.set('n', '=ap', "ma=ap'a", { desc = 'Format paragraph' })

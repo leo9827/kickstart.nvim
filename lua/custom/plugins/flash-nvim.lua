@@ -18,7 +18,15 @@
 return {
   'folke/flash.nvim',
   event = 'VeryLazy',
-  opts = {},
+  opts = {
+    modes = {
+      -- 用 Flash 接管内置 /? 搜索的跳转，提供可视化标签，避免 n/N 跳转生硬
+      search = {
+        enabled = true,
+        jump = { history = true, register = false, nohlsearch = true },
+      },
+    },
+  },
   -- stylua: ignore
   keys = {
     { "s", mode = { "n", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
@@ -26,5 +34,27 @@ return {
     { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
     { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
     { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    {
+      "n",
+      mode = { "n", "x", "o" },
+      function()
+        require("flash").jump({
+          search = { mode = "search", forward = true, wrap = true, multi_window = false },
+          label = { reuse = "all", after = false },
+        })
+      end,
+      desc = "Flash next search match",
+    },
+    {
+      "N",
+      mode = { "n", "x", "o" },
+      function()
+        require("flash").jump({
+          search = { mode = "search", forward = false, wrap = true, multi_window = false },
+          label = { reuse = "all", after = false },
+        })
+      end,
+      desc = "Flash previous search match",
+    },
   },
 }

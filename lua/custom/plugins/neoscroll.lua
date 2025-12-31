@@ -32,7 +32,7 @@ return {
       },
       hide_cursor = true, -- 滚动时隐藏光标
       stop_eof = true, -- 在文件开头/结尾处停止滚动
-      respect_scrolloff = false, -- 如果为 true，它会尝试滚动到 scrolloff 的位置
+      respect_scrolloff = true, -- 如果为 true，它会尝试滚动到 scrolloff 的位置
       cursor_scrolls_alone = true, -- 如果光标在屏幕内移动，则不滚动窗口
       -- easing_function = 'quadratic', -- 动画效果，可选 "linear", "quadratic", "cubic", "pow4", "sine", "circular", "bounce", "gauss" 等
       easing_function = 'sine', -- 动画效果，可选 "linear", "quadratic", "cubic", "pow4", "sine", "circular", "bounce", "gauss" 等

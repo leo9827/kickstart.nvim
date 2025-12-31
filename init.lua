@@ -1183,10 +1183,11 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'custom.plugins.diffview',
   require 'custom.plugins.flash-nvim', -- 快速跳转
   require 'custom.plugins.dropbar', -- 面包屑导航
+  require 'custom.plugins.treesitter-context', -- 显示当前位置上下文
   -- require 'custom.plugins.nvim-navic', -- Simple 面包屑导航
   require 'custom.plugins.nvim-surround', -- 快速修改包围字符
   require 'custom.plugins.refactoring', -- 代码重构
-  -- require 'custom.plugins.neoscroll', -- 平滑滚动
+  require 'custom.plugins.neoscroll', -- 平滑滚动
   require 'custom.plugins.lualine', -- 底部状态栏显示
   -- require 'custom.plugins.zenmode',
   require 'custom.plugins.go-nvim', -- require 'custom.plugins.toggleterm', -- 内置终端
