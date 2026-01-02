@@ -1168,41 +1168,19 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
-  --
-  -- manually import plugins
-  require 'custom.plugins.alpha-nvim', -- 启动页面美化
-  require 'custom.plugins.noice', -- 命令行和通知美化
-  require 'custom.plugins.dressing',
-  require 'custom.plugins.trouble', -- 诊断信息列表显示
-  require 'custom.plugins.nvim-ufo', -- 代码折叠
-  require 'custom.plugins.aerial-nvim', -- 显示大纲
-  -- require 'custom.plugins.hardtime', -- 帮助改掉使用重复键的习惯
-  require 'custom.plugins.avante-nvim',
-  require 'custom.plugins.diffview',
-  require 'custom.plugins.flash-nvim', -- 快速跳转
-  require 'custom.plugins.dropbar', -- 面包屑导航
-  require 'custom.plugins.treesitter-context', -- 显示当前位置上下文
-  -- require 'custom.plugins.nvim-navic', -- Simple 面包屑导航
-  require 'custom.plugins.nvim-surround', -- 快速修改包围字符
-  require 'custom.plugins.refactoring', -- 代码重构
-  require 'custom.plugins.neoscroll', -- 平滑滚动
-  require 'custom.plugins.lualine', -- 底部状态栏显示
-  -- require 'custom.plugins.zenmode',
-  require 'custom.plugins.go-nvim', -- require 'custom.plugins.toggleterm', -- 内置终端
-  require 'custom.plugins.fterm', -- Floating Terminal
-  require 'custom.plugins.harpoon',
-  require 'custom.plugins.auto-session', -- Session management
-  -- Base46 主题系统（替代原有主题插件）
-  require 'custom.base46', -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-  -- require 'custom.plugins.auto-dark-mode', -- automatically changes
-  -- Or use telescope!
-  -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-  -- you can continue same window with `<space>sr` which resumes last telescope search
+  -- NOTE: Custom plugins are organized into categories and auto-imported from lua/custom/plugins/
+  -- Each category has its own directory for better organization and maintainability.
+  { import = 'custom.plugins.git' },
+  { import = 'custom.plugins.ui-enhancement' },
+  { import = 'custom.plugins.navigation' },
+  { import = 'custom.plugins.editing' },
+  { import = 'custom.plugins.ai-tools' },
+  { import = 'custom.plugins.terminal' },
+  { import = 'custom.plugins.debugging' },
+  { import = 'custom.plugins.language-specific' },
+  { import = 'custom.plugins.utils' },
+  { import = 'custom.plugins.session' },
+  require 'custom.base46', -- Base46 theme system
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
