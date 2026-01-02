@@ -5,9 +5,26 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
+
+      -- 为常用文件类型声明 linter，这里按需添加即可（不会强制安装依赖）
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
+        sql = { 'sqlfluff' }, -- Mason 已安装 sqlfluff，SQL 文件可直接使用
       }
+
+      -- 只在对应的可执行文件存在时才触发，以免出现「命令不存在」的噪音
+      local function get_available_linters()
+        local linters = lint.linters_by_ft[vim.bo.filetype]
+        if not linters then
+          return nil
+        end
+
+        return vim.tbl_filter(function(linter)
+          local linter_cfg = lint.linters[linter]
+          local cmd = linter_cfg and linter_cfg.cmd or linter
+          return cmd and vim.fn.executable(cmd) == 1
+        end, linters)
+      end
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
@@ -51,7 +68,10 @@ return {
           -- avoid superfluous noise, notably within the handy LSP pop-ups that
           -- describe the hovered symbol using Markdown.
           if vim.bo.modifiable then
-            lint.try_lint()
+            local active_linters = get_available_linters()
+            if active_linters and #active_linters > 0 then
+              lint.try_lint(active_linters)
+            end
           end
         end,
       })

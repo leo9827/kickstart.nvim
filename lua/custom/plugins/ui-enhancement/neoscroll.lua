@@ -29,8 +29,6 @@ return {
         'zt',
         'zz',
         'zb',
-        'n',
-        'N',
       },
       hide_cursor = true, -- 滚动时隐藏光标
       stop_eof = true, -- 在文件开头/结尾处停止滚动
