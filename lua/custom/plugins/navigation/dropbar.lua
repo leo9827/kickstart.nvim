@@ -44,14 +44,8 @@ return {
     local dropbar_api = require 'dropbar.api'
 
     -- 快捷键设置
-    vim.keymap.set('n', '<Leader>;', dropbar_api.pick, {
-      desc = 'Pick symbols in winbar',
-    }) -- 在导航栏中选择符号
-    vim.keymap.set('n', '[;', dropbar_api.goto_context_start, {
-      desc = 'Go to start of current context',
-    }) -- 跳转到当前上下文开始
-    vim.keymap.set('n', '];', dropbar_api.select_next_context, {
-      desc = 'Select next context',
-    }) -- 选择下一个上下文
+    vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' }) -- 在导航栏中选择符号
+    vim.keymap.set('n', '[;', dropbar_api.goto_context_start, { desc = 'Go to start of current context' }) -- 跳转到当前上下文开始
+    vim.keymap.set('n', '];', dropbar_api.select_next_context, { desc = 'Select next context' }) -- 选择下一个上下文
   end,
 }

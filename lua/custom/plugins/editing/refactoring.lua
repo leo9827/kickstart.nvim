@@ -54,7 +54,7 @@ return {
 
     -- --- 快捷键映射 ---
 
-    -- 在可视化模式下选择代码块后，按下 <leader>r 触发重构菜单
+    -- 在*可视化模式*下选择代码块后，按下 <leader>r 触发重构菜单
     vim.keymap.set('v', '<leader>r', function()
       require('telescope').extensions.refactoring.refactors()
     end, { desc = 'Refactor: 打开重构菜单' })

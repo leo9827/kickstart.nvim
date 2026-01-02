@@ -29,9 +29,7 @@ return {
       load_on_setup = true,
 
       -- Telescope theme
-      theme_conf = {
-        border = true,
-      },
+      theme_conf = { border = true },
 
       previewer = 'summary',
     },

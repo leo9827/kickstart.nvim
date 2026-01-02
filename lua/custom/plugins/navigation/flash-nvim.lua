@@ -15,7 +15,6 @@
 --   n：Normal（普通）模式
 --   x：Visual（可视）模式
 --   o：Operator-pending（操作符等待）模式
-
 return {
   'folke/flash.nvim',
   event = 'VeryLazy',
@@ -33,7 +32,9 @@ return {
           return motion:find 'f' or motion:find 'F'
         end,
       },
-      search = { enabled = true }, -- 增强/?*#等str搜索
+      search = {
+        enabled = true,
+      }, -- 增强/?*#等str搜索
     },
     labels = 'asdfghjklqwertyuiopzxcvbnm',
     label = {
@@ -51,17 +52,17 @@ return {
       },
     },
   },
-  -- stylua: ignore
-  keys = {
-    { "f", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
-    { "F", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+    -- stylua: ignore
+    keys = {
+    { "f", mode = {"n", "x", "o"}, function() require("flash").jump() end, desc = "Flash Jump" },
+    { "F", mode = {"n", "x", "o"}, function() require("flash").treesitter() end, desc = "Flash Treesitter" }
     -- flash default short cuts:
     -- { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
     -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
     -- { "r", mode = { "o" }, function() require("flash").remote() end, desc = "Remote Flash" },-- 映射在 'o' 模式下，输入 yr, dr, cr 即可触发远程动作，完全不影响正常的 r 键
     -- { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
     -- { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search in cmd mode" },
-  },
+    },
   -- 增强版的搜索跳转 (n 键逻辑改进)
   -- -- 配合 hlslens 和居中
   -- vim.keymap.set({ 'n', 'x', 'o' }, 'n', function()
@@ -71,13 +72,4 @@ return {
   --
   -- 保持高亮
   vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#ffffff', bg = '#ff007c', bold = true }),
-  opts = {},
-  -- stylua: ignore
-  keys = {
-    { "s", mode = { "n", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
-    { "S", mode = { "n","o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-    { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-    { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-    { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-  },
 }
