@@ -1,5 +1,6 @@
 -- LazyGit: 在 Neovim 中集成完整的 Git UI
 -- 功能: 提供类似独立应用的 Git 界面，支持暂存、提交、推送、分支管理等所有 Git 操作
+-- 小贴士: 在 LazyGit 的输入框（如提交信息）里 ESC 无效，想取消/退出请按 <C-c>（Control + C）
 return {
   'kdheepak/lazygit.nvim',
   lazy = true,
