@@ -20,21 +20,12 @@ return {
       mode = { 'n', 't' },
       desc = 'Floating Terminal',
     },
-
-    -- 3. 使用 Leader + lg 在 FTerm 中快速打开 Lazygit
-    {
-      '<leader>lg',
-      function()
-        require('FTerm').run { 'lazygit' }
-      end,
-      desc = 'Lazygit (FTerm)',
-    },
   },
   opts = {
     border = 'rounded',
     dimensions = {
-      height = 0.85,
-      width = 0.85,
+      height = 0.9,
+      width = 0.9,
     },
   },
 }
