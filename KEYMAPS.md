@@ -221,8 +221,8 @@
 ### Flash 快速跳转 / Flash Quick Jump
 | 快捷键  | 模式            | 功能                                  | 使用场景                   |
 | ------- | --------------- | ------------------------------------- | -------------------------- |
-| `s`     | Normal/Operator | 跳转到字符 / Flash jump               | 快速跳转到屏幕上的任意位置 |
-| `S`     | Normal/Operator | 语法树跳转 / Flash treesitter         | 跳转到语法节点             |
+| `f`     | Normal/Operator | 跳转到字符 / Flash jump               | 快速跳转到屏幕上的任意位置 |
+| `F`     | Normal/Operator | 语法树跳转 / Flash treesitter         | 跳转到语法节点             |
 | `r`     | Operator        | 远程跳转 / Remote flash               | 在操作符模式下远程操作     |
 | `R`     | Operator/Visual | 语法树搜索 / Treesitter search        | 搜索语法树节点             |
 | `<c-s>` | Command         | 切换 Flash 搜索 / Toggle flash search | 在命令行中启用 Flash       |
