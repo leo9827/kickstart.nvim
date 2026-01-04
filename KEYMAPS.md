@@ -248,12 +248,13 @@
 ## 代码编辑与重构 / Code Editing & Refactoring
 
 ### LSP 代码操作 / LSP Code Actions
-| 快捷键       | 模式          | 功能                               | 使用场景             |
-| ------------ | ------------- | ---------------------------------- | -------------------- |
-| `<leader>rn` | Normal        | 重命名 / Rename                    | 重命名变量/函数      |
-| `<leader>ca` | Normal/Visual | 代码动作 / Code action             | 执行代码修复建议     |
-| `<leader>e`  | Normal        | 显示行诊断 / Show line diagnostics | 查看当前行的错误详情 |
-| `<leader>f`  | Normal        | 格式化代码 / Format code           | 格式化当前文件       |
+| 快捷键       | 模式          | 功能                                  | 使用场景              |
+| ------------ | ------------- | ------------------------------------- | --------------------- |
+| `<leader>rn` | Normal        | 重命名 / Rename                       | 重命名变量/函数       |
+| `<leader>ca` | Normal/Visual | 代码动作 / Code action                | 执行代码修复建议      |
+| `<leader>e`  | Normal        | 显示行诊断 / Show line diagnostics    | 查看当前行的错误详情  |
+| `<leader>ti` | Normal        | 切换 Inlay Hints / Toggle inlay hints | 查看/隐藏内联类型提示 |
+| `<leader>f`  | Normal        | 格式化代码 / Format code              | 格式化当前文件        |
 
 ### Refactoring 重构工具 / Refactoring Tools
 | 快捷键      | 模式   | 功能                              | 使用场景                        |
@@ -392,4 +393,4 @@
 
 ---
 
-**最后更新 / Last Updated:** 2026-01-02
+**最后更新 / Last Updated:** 2026-01-04
