@@ -143,12 +143,10 @@
 ## Git 操作 / Git Operations
 
 ### LazyGit 集成 / LazyGit Integration
-| 快捷键       | 模式   | 功能                                          | 使用场景                     |
-| ------------ | ------ | --------------------------------------------- | ---------------------------- |
-| `<leader>gg` | Normal | 打开 LazyGit / Open LazyGit                   | 管理所有 Git 操作            |
-| `<leader>gf` | Normal | 当前文件历史 / Current file history           | 查看文件的提交历史           |
-| `<leader>tl` | Normal | LazyGit (toggleterm) / LazyGit via toggleterm | 在 toggleterm 中打开 LazyGit |
-| `<leader>lg` | Normal | LazyGit (FTerm) / LazyGit via FTerm           | 在 FTerm 中打开 LazyGit      |
+| 快捷键       | 模式   | 功能                                | 使用场景           |
+| ------------ | ------ | ----------------------------------- | ------------------ |
+| `<leader>gg` | Normal | 打开 LazyGit / Open LazyGit         | 管理所有 Git 操作  |
+| `<leader>gf` | Normal | 当前文件历史 / Current file history | 查看文件的提交历史 |
 
 ### Diffview 差异查看 / Diffview
 | 快捷键               | 模式   | 功能                               | 使用场景             |
