@@ -40,7 +40,7 @@ return {
       post_hook = nil, -- 滚动后执行的函数
       performance_options = {
         -- 帧率，数值越高动画越快、越平滑，但可能消耗更多 CPU
-        framerate = 10,
+        framerate = 24,
         -- 每次滚动的持续时间（毫秒）
         duration = 20,
       },

@@ -5,7 +5,7 @@ local M = {}
 -- Base46 theme configuration
 M.base46 = {
   theme = 'flexoki-light', -- Choose your theme
-  transparency = false, -- Set to true for transparent background
+  transparency = true, -- Set to true for transparent background
 
   hl_override = {
     -- You can override highlight groups here

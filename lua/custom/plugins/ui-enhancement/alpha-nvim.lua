@@ -139,11 +139,11 @@ return {
     dashboard.section.footer.opts.hl = 'AlphaFooter'
 
     dashboard.config.layout = {
-      { type = 'padding', val = 2 },
+      { type = 'padding', val = 1 },
       dashboard.section.header,
-      { type = 'padding', val = 2 },
+      { type = 'padding', val = 1 },
       dashboard.section.buttons,
-      { type = 'padding', val = 2 },
+      { type = 'padding', val = 1 },
       dashboard.section.footer,
     }
 
