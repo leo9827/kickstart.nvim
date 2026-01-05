@@ -50,12 +50,14 @@
 | `<Esc>` | Normal | 清除搜索高亮 / Clear search highlight              | 搜索后清除高亮           |
 
 ### 剪贴板操作 / Clipboard Operations
-| 快捷键      | 模式          | 功能                                                 | 使用场景           |
-| ----------- | ------------- | ---------------------------------------------------- | ------------------ |
-| `<leader>p` | Visual        | 粘贴不覆盖寄存器 / Paste without yanking             | 多次粘贴同一内容   |
-| `<leader>y` | Normal/Visual | 复制到系统剪贴板 / Yank to system clipboard          | 与其他应用共享内容 |
-| `<leader>Y` | Normal        | 复制整行到系统剪贴板 / Yank line to system clipboard | 快速复制整行       |
-| `<leader>d` | Normal/Visual | 删除到黑洞寄存器 / Delete to black hole              | 删除但不影响剪贴板 |
+| 快捷键       | 模式          | 功能                                                 | 使用场景           |
+| ------------ | ------------- | ---------------------------------------------------- | ------------------ |
+| `<leader>p`  | Visual        | 粘贴不覆盖寄存器 / Paste without yanking             | 多次粘贴同一内容   |
+| `y`          | Normal/Visual | 复制到系统剪贴板 / Yank to system clipboard          | 与其他应用共享内容 |
+| `<leader>y`  | Normal/Visual | 复制到系统剪贴板 / Yank to system clipboard          | 与其他应用共享内容 |
+| `<leader>Y`  | Normal        | 复制整行到系统剪贴板 / Yank line to system clipboard | 快速复制整行       |
+| `<leader>d`  | Normal/Visual | 删除到黑洞寄存器 / Delete to black hole              | 删除但不影响剪贴板 |
+| `<leader>cc` | Normal/Visual | 修改到黑洞寄存器 / Change to black hole              | 修改但不影响剪贴板 |
 
 ### 快速替换 / Quick Substitution
 | 快捷键      | 模式   | 功能                                            | 使用场景       |
