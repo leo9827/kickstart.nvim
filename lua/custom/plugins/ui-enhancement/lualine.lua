@@ -1,11 +1,14 @@
 return {
   'nvim-lualine/lualine.nvim',
   event = 'VeryLazy', -- Lazy load to improve startup time
-  dependencies = { 'nvim-tree/nvim-web-devicons' }, -- 用于显示文件图标
+  dependencies = {
+    -- 用于显示文件图标
+    -- 'nvim-tree/nvim-web-devicons'
+  },
   opts = function()
     return {
       options = {
-        theme = 'auto', -- 主题，'auto' 表示自动跟随 Neovim 主题
+        theme = 'solarized_light', -- 主题，'auto' 表示自动跟随 Neovim 主题
         globalstatus = true, -- 是否在所有窗口显示状态栏
         disabled_filetypes = { statusline = { 'dashboard', 'alpha' } }, -- 在哪些文件类型中禁用状态栏
       },

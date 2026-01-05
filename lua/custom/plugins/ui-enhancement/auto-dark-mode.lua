@@ -66,12 +66,33 @@ local function reload_base46(theme)
   pcall(base46.load_all_highlights)
 end
 
+local function refresh_lualine(mode)
+  local ok_lualine, lualine = pcall(require, 'lualine')
+  if not ok_lualine then
+    return
+  end
+
+  local config = lualine.get_config and lualine.get_config()
+  if config then
+    config.options = config.options or {}
+    if mode == 'dark' then
+      config.options.theme = 'iceberg_dark'
+    else
+      config.options.theme = 'solarized_light'
+    end
+    lualine.setup(config)
+  elseif lualine.refresh then
+    lualine.refresh()
+  end
+end
+
 local function apply_mode(mode)
   local pair = detect_theme_pair()
   local theme = mode == 'dark' and (pair.dark or pair.light or current_theme()) or (pair.light or pair.dark or current_theme())
 
   vim.o.background = mode == 'dark' and 'dark' or 'light'
   reload_base46(theme)
+  refresh_lualine(mode)
 end
 
 return {

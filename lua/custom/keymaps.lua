@@ -47,6 +47,8 @@ vim.keymap.set('n', '<leader>Y', [["+Y]], { desc = 'Yank line to system clipboar
 
 -- Delete to black hole register
 vim.keymap.set({ 'n', 'v' }, '<leader>d', '"_d', { desc = 'Delete to black hole' })
+-- Change to black hole register
+vim.keymap.set({ 'n', 'v' }, '<leader>c', '"_c', { desc = 'Change to black hole' })
 
 -- Disable Q (ex mode)
 vim.keymap.set('n', 'Q', '<nop>')

@@ -5,7 +5,7 @@ local M = {}
 -- Base46 theme configuration
 M.base46 = {
   theme = 'flexoki-light', -- Choose your theme
-  transparency = true, -- Set to true for transparent background
+  transparency = false, -- Set to true for transparent background
 
   hl_override = {
     -- You can override highlight groups here
@@ -28,12 +28,11 @@ M.base46 = {
 
 -- UI component settings (for NvChad/ui plugin)
 M.ui = {
-  statusline = {
-    enabled = false, -- Using lualine instead
-  },
-
   tabufline = {
     enabled = false, -- Using bufferline instead
+  },
+  statusline = {
+    enabled = false, -- Using lualine instead
   },
 }
 
