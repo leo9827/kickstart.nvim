@@ -834,7 +834,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'sqlfluff',
+        -- 'sqlfluff',
       })
       require('mason-tool-installer').setup {
         ensure_installed = ensure_installed,
@@ -892,12 +892,20 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'gofmt' },
-        sql = { 'sqlfluff' },
+        -- sql = { 'sqlfluff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        -- sqlfluff = {
+        --   -- 不强求必须找到配置文件(.sqlfluff)或根目录才运行
+        --   require_cwd = false,
+        --   -- 默认按 mysql 来 format, 如果需要指定其他参数，可以在这里加
+        --   args = { 'fix', '--dialect', 'mysql', '-' },
+        -- },
       },
     },
   },
