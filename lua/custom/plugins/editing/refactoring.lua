@@ -29,9 +29,14 @@ return {
     'nvim-treesitter/nvim-treesitter', -- 用于代码语法解析
     -- 'nvim-telescope/telescope.nvim',
   },
-  lazy = false, -- 是否延迟加载
+  lazy = true, -- Delay load until first use
+  event = { 'BufReadPost', 'BufNewFile' }, -- Load when opening files
   config = function()
-    require('refactoring').setup {
+    local ok, refactoring = pcall(require, 'refactoring')
+    if not ok then
+      return
+    end
+    refactoring.setup {
       prompt_func_return_type = {
         -- go = true, -- 在提取函数时提示返回类型
       },
@@ -56,7 +61,12 @@ return {
 
     -- 在*可视化模式*下选择代码块后，按下 <leader>r 触发重构菜单
     vim.keymap.set('v', '<leader>r', function()
-      require('telescope').extensions.refactoring.refactors()
+      local ok_telescope, telescope = pcall(require, 'telescope')
+      if ok_telescope and telescope.extensions and telescope.extensions.refactoring then
+        telescope.extensions.refactoring.refactors()
+      else
+        vim.notify('Telescope refactoring extension not available', vim.log.levels.WARN)
+      end
     end, { desc = 'Refactor: 打开重构菜单' })
   end,
 }

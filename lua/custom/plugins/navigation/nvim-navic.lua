@@ -26,11 +26,16 @@
 --
 return {
   'SmiteshP/nvim-navic',
+  lazy = true, -- Delay load until LSP attaches
+  event = 'LspAttach', -- Load when LSP attaches to a buffer
   dependencies = {
     'neovim/nvim-lspconfig', -- 依赖 LSP 配置
   },
   config = function()
-    local navic = require 'nvim-navic'
+    local ok, navic = pcall(require, 'nvim-navic')
+    if not ok then
+      return
+    end
 
     -- 基本配置
     navic.setup {
@@ -55,7 +60,7 @@ return {
         local buffer = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         -- 确认 LSP 服务器支持文档符号功能
-        if client.supports_method 'textDocument/documentSymbol' then
+        if client and client.supports_method and client.supports_method('textDocument/documentSymbol') then
           navic.attach(client, buffer)
         end
       end,

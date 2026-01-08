@@ -60,6 +60,7 @@ return {
   -- 也可以使用 nvim-web-devicons 作为图标提供者
   -- dependencies = { "nvim-tree/nvim-web-devicons" },
 
-  -- 不建议延迟加载，因为可能会导致某些情况下功能不正常
-  lazy = false,
+  -- Delay load until :Oil command is used
+  lazy = true,
+  cmd = { 'Oil', 'OilOpen', 'OilToggle' },
 }

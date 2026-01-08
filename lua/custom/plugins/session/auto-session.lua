@@ -1,7 +1,8 @@
 -- Auto Session - Automatic session management
 return {
   'rmagatti/auto-session',
-  lazy = false,
+  lazy = true, -- Delay load until first use
+  event = { 'VimEnter', 'BufReadPost' }, -- Load on startup or when opening files
   ---@module "auto-session"
   ---@type AutoSession.Config
   opts = {

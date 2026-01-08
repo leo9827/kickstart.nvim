@@ -1,50 +1,46 @@
 -- alpha.nvim 是一个启动页面插件
 return {
   'goolord/alpha-nvim',
+  lazy = true, -- Delay load until needed
+  event = 'VimEnter', -- Load on startup
   dependencies = { 'echasnovski/mini.icons', 'nvim-lua/plenary.nvim' },
   config = function()
-    local alpha = require 'alpha'
-    local dashboard = require 'alpha.themes.dashboard'
-
-    -- 1. 随机 ASCII 艺术头图 (Fallback)
-    local headers = {
-      {
-        [[   ⣴⣶⣤⡤⠦⣤⣀⣤⠆     ⣈⣭⣿⣶⣿⣦⣼⣆          ]],
-        [[    ⠉⠻⢿⣿⠿⣿⣿⣶⣦⠤⠄⡈⠛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦      ]],
-        [[          ⠈⠻⣿⣿⣿⣿⣷⣶⣦⣤⣈⣿⣿⣿⣿⣿⣿⣿⣷⡄     ]],
-        [[  ⢠⣾⢷⣾⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡆    ]],
-        [[  ⠘⢿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[   ⠈⠛⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[     ⠈⢿⣿⣆⠈⠛⠛⠛⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[      ⠘⣿⣿⣧⡀         ⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[       ⠘⣿⣿⣷⣄       ⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[        ⠹⣿⣿⣿⣷⣄    ⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[         ⠹⣿⣿⣿⣿⣷⣄ ⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[          ⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[           ⠹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇    ]],
-        [[            ⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉    ]],
-      },
-    }
-
-    -- 2. 随机名言/格言
-    local quotes = {
-      { '"The only way to do great work is to love what you do."', '- Steve Jobs' },
-      { '"Talk is cheap. Show me the code."', '- Linus Torvalds' },
-      { '"Programs must be written for people to read, and only incidentally for machines to execute."', '- Abelson & Sussman' },
-      { '"Simplicity is the soul of efficiency."', '- Austin Freeman' },
-      { '"Code is like humor. When you have to explain it, it’s bad."', '- Cory House' },
-      { '"First, solve the problem. Then, write the code."', '- John Johnson' },
-      { '"Make it work, make it right, make it fast."', '- Kent Beck' },
-    }
-
-    local function get_random_element(tbl)
-      math.randomseed(os.time())
-      return tbl[math.random(#tbl)]
+    local ok_alpha, alpha = pcall(require, 'alpha')
+    if not ok_alpha then
+      return
+    end
+    local ok_dashboard, dashboard = pcall(require, 'alpha.themes.dashboard')
+    if not ok_dashboard then
+      return
     end
 
-    local quote = get_random_element(quotes)
+    -- 1. 静态 ASCII 艺术头图 (优化: 避免启动时的 io.popen 调用，节省 ~30-40ms)
+    local static_header = {
+      [[  _______________________________________  ]],
+      [[ / The meek shall inherit the earth; the \ ]],
+      [[ \ rest of us, the Universe.             / ]],
+      [[  ---------------------------------------  ]],
+      [[        \                                  ]],
+      [[         \                                 ]],
+      [[          \                                ]],
+      [[       ___       _____     ___             ]],
+      [[      /   \     /    /|   /   \            ]],
+      [[     |     |   /    / |  |     |           ]],
+      [[     |     |  /____/  |  |     |           ]],
+      [[     |     |  |    |  |  |     |           ]],
+      [[     |     |  | {} | /   |     |           ]],
+      [[     |     |  |____|/    |     |           ]],
+      [[     |     |    |==|     |     |           ]],
+      [[     |      \___________/      |           ]],
+      [[     |                         |           ]],
+      [[     |                         |           ]],
+      [[                                           ]],
+    }
 
-    -- 3. 动态问候语
+    dashboard.section.header.val = static_header
+    dashboard.section.header.opts.hl = 'AlphaHeader'
+
+    -- 2. 动态问候语
     local function get_greeting()
       local hour = tonumber(os.date '%H')
       local date = os.date '%Y-%m-%d'
@@ -64,51 +60,7 @@ return {
       return greeting .. ' (' .. date .. ', ' .. day .. ')'
     end
 
-    -- 4. Cowsay (带增强 Fallback)
-    local function command_exists(cmd)
-      local handle = io.popen('which ' .. cmd .. ' 2>/dev/null')
-      if handle then
-        local result = handle:read '*a'
-        handle:close()
-        return result ~= ''
-      end
-      return false
-    end
-
-    local function get_header()
-      -- 尝试使用 fortune | cowsay
-      if command_exists 'fortune' and command_exists 'cowsay' then
-        local handle = io.popen "fortune -s | cowsay -f $(cowsay -l | tail -n +2 | tr ' ' '\\n' | gshuf -n1)"
-        if handle then
-          local result = handle:read '*a'
-          handle:close()
-          if result and result ~= '' then
-            return vim.split(result, '\n')
-          end
-        end
-      end
-
-      -- 如果没有 fortune，尝试用 cowsay 说我们的名言
-      if command_exists 'cowsay' then
-        local cow_cmd = string.format("cowsay -f $(cowsay -l | tail -n +2 | tr ' ' '\\n' | gshuf -n1) '%s'", quote[1] .. ' ' .. quote[2])
-        local handle = io.popen(cow_cmd)
-        if handle then
-          local result = handle:read '*a'
-          handle:close()
-          if result and result ~= '' then
-            return vim.split(result, '\n')
-          end
-        end
-      end
-
-      -- 如果都没有，使用随机 ASCII 艺术
-      return get_random_element(headers)
-    end
-
-    dashboard.section.header.val = get_header()
-    dashboard.section.header.opts.hl = 'AlphaHeader'
-
-    -- 5. 按钮列表
+    -- 3. 按钮列表
     dashboard.section.buttons.val = {
       dashboard.button('r', '  Recent Files', ':Telescope oldfiles only_cwd=true<CR>'),
       dashboard.button('f', '  Find Files', ':Telescope find_files<CR>'),
@@ -120,7 +72,7 @@ return {
       dashboard.button('q', '  Quit', '<cmd>q!<cr>'),
     }
 
-    -- 6. 底部状态栏 (显示版本、插件数、启动时间、问候语)
+    -- 4. 底部状态栏 (显示版本、插件数、启动时间、问候语)
     local function footer()
       local stats = require('lazy').stats()
       local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)

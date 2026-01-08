@@ -1,7 +1,13 @@
 return {
   'laytan/cloak.nvim', -- 敏感信息隐藏插件
+  lazy = true, -- Delay load until needed
+  event = { 'BufReadPost', 'BufNewFile' }, -- Load when opening files
   config = function()
-    require('cloak').setup {
+    local ok, cloak = pcall(require, 'cloak')
+    if not ok then
+      return
+    end
+    cloak.setup {
       enabled = true, -- 启用插件
       cloak_character = '*', -- 用于隐藏敏感信息的字符，默认为星号
       -- 应用于隐藏内容的高亮组（颜色），参见 `:h highlight`。

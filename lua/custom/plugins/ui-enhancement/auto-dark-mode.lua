@@ -98,7 +98,8 @@ end
 return {
   'f-person/auto-dark-mode.nvim',
   dependencies = { 'NvChad/base46' },
-  lazy = false,
+  lazy = true, -- Delay load, but still early enough for theme switching
+  event = 'VimEnter', -- Load after UI is ready
   opts = {
     update_interval = 30000, -- check every 30s
   },

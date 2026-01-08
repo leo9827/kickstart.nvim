@@ -22,14 +22,23 @@
 
 return {
   'stevearc/aerial.nvim',
-  opts = {},
+  lazy = true, -- Delay load until first use
+  cmd = { 'AerialToggle', 'AerialOpen', 'AerialClose', 'AerialNav', 'AerialGo' },
+  keys = {
+    { '<leader>o', '<cmd>AerialToggle<CR>', desc = 'Toggle outline viewer' },
+    { '<leader>so', '<cmd>Telescope aerial<CR>', desc = 'Search outline' },
+  },
   -- 可选依赖
   dependencies = {
     'nvim-treesitter/nvim-treesitter',
     'nvim-tree/nvim-web-devicons',
   },
   config = function()
-    require('aerial').setup {
+    local ok, aerial = pcall(require, 'aerial')
+    if not ok then
+      return
+    end
+    aerial.setup {
       -- 大纲窗口位置
       placement = 'right',
       layout = {
@@ -93,9 +102,6 @@ return {
       -- 打开大纲时，光标停留在原窗口
       focus_on_open = false,
     }
-    -- 快捷键设置
-    vim.keymap.set('n', '<leader>o', '<cmd>AerialToggle<CR>', { desc = 'Toggle outline viewer (powered by Aerial)' })
-    -- vim.keymap.set('n', '<leader>o', '<cmd>Telescope aerial<CR>', { desc = 'Search outline (powered by Aerial)' })
-    vim.keymap.set('n', '<leader>so', '<cmd>Telescope aerial<CR>', { desc = 'Search outline (powered by Aerial)' })
+    -- Note: Keymaps are defined in the keys table above for better lazy loading
   end,
 }
