@@ -92,6 +92,16 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- Reduce overhead from very long lines when using regex-based syntax
+vim.o.synmaxcol = 300
+
+-- Disable the built-in matchparen plugin (Treesitter/LSP are usually enough)
+vim.g.loaded_matchparen = 1
+
+-- Disable Python 3 provider to avoid slow provider detection on opening .py files
+-- Re-enable later by removing this line or set python3_host_prog with pynvim installed
+vim.g.loaded_python3_provider = 1
+
 -- Prepend mise shims to PATH
 vim.env.PATH = vim.env.HOME .. '/.local/share/mise/shims:' .. vim.env.PATH
 vim.env.PATH = vim.fn.stdpath 'data' .. '/mason/bin:' .. vim.env.PATH
@@ -205,6 +215,35 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+
+-- Python: avoid heavy regex syntax/indent on open (use Treesitter instead)
+do
+  local grp = vim.api.nvim_create_augroup('python_perf_tweaks', { clear = true })
+  -- Buffer-local settings before content is read
+  vim.api.nvim_create_autocmd('BufReadPre', {
+    group = grp,
+    pattern = '*.py',
+    callback = function(ev)
+      -- Disable regex syntax for this buffer; Treesitter will handle highlights
+      pcall(function()
+        vim.bo[ev.buf].syntax = 'OFF'
+      end)
+      -- Keep indentation simple for Python
+      vim.bo[ev.buf].indentexpr = ''
+      vim.bo[ev.buf].indentkeys = ''
+      vim.bo[ev.buf].smartindent = false
+    end,
+  })
+  -- Window-local folding preferences once window is ready
+  vim.api.nvim_create_autocmd('BufWinEnter', {
+    group = grp,
+    pattern = '*.py',
+    callback = function()
+      vim.opt_local.foldmethod = 'manual'
+      vim.opt_local.foldenable = false
+    end,
+  })
+end
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -805,13 +844,14 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         },
 
         -- Go Language Server (uncomment if you use Go)
-        -- gopls = {
-        --   settings = {
-        --     gopls = {
-        --       gofumpt = true, -- Use gofumpt for formatting
-        --     },
-        --   },
-        -- },
+        gopls = {
+          settings = {
+            gopls = {
+              goimports = true, -- Use goimports for imports
+              gofumpt = true, -- Use gofumpt for formatting
+            },
+          },
+        },
 
         -- Python Language Server (uncomment if you use Python)
         -- pyright = {
@@ -1154,12 +1194,13 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         'luadoc',
         'markdown',
         'markdown_inline',
+        'python',
         'query',
         'vim',
         'vimdoc',
       },
       -- Autoinstall languages that are not installed
-      auto_install = true,
+      auto_install = false,
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.

@@ -38,6 +38,9 @@ return {
     require('ufo').setup {
       -- 折叠提供者
       provider_selector = function(bufnr, filetype, buftype)
+        if filetype == 'python' then
+          return { 'indent' }
+        end
         return { 'treesitter', 'indent' } -- 优先使用 treesitter，其次使用缩进
       end,
       -- 折叠预览窗口
