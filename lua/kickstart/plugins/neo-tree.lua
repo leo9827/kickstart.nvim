@@ -18,12 +18,25 @@ return {
       opts = {
         filter_rules = {
           include_current_win = false,
-          -- autoselect_one = true,
+          autoselect_one = true, -- 只有一个可选窗口时自动选择
           bo = {
             filetype = { 'neo-tree', 'neo-tree-popup', 'notify' },
             buftype = { 'terminal', 'quickfix' },
           },
         },
+        picking_signal = function(bufnr, win_config, picking_window_info)
+          -- 在窗口中间显示大字母
+          return vim.api.nvim_buf_call(bufnr, function()
+            vim.fn.clearmatches()
+            vim.fn.matchaddpos("WindowPicker", {{1, 1, 999}}, 100)
+            vim.api.nvim_win_set_config(win_config.win_id, {
+              border = 'rounded',
+              zindex = 100,
+            })
+          end)
+        end,
+        show_prompt = true,
+        prompt = 'Pick window: ',
       },
     },
   },
@@ -68,7 +81,10 @@ return {
         mappings = {
           ['\\'] = 'close_window',
           ['<space>'] = 'toggle_node',
-          ['<cr>'] = 'open_with_window_picker',
+          ['<cr>'] = 'open', -- 直接在当前窗口打开
+          ['<s-cr>'] = 'open_with_window_picker', -- Shift+回车 用选择器
+          ['s'] = 'open_split', -- 水平分屏
+          ['v'] = 'open_vsplit', -- 垂直分屏
         },
       },
     },
