@@ -15,6 +15,55 @@
 --   n：Normal（普通）模式
 --   x：Visual（可视）模式
 --   o：Operator-pending（操作符等待）模式
+local function flash_palette()
+  if vim.o.background == 'light' then
+    return {
+      FlashLabel = { fg = '#ffffff', bg = '#d81b60', bold = true },
+      FlashCurrent = { fg = '#ffffff', bg = '#1565c0', bold = true },
+      FlashMatch = { fg = '#202124', bg = '#ffd54f', bold = true },
+    }
+  end
+
+  return {
+    FlashLabel = { fg = '#ffffff', bg = '#ff007c', bold = true },
+    FlashCurrent = { fg = '#111111', bg = '#ffd400', bold = true },
+    FlashMatch = { fg = '#ffffff', bg = '#2f7eb5', bold = true },
+  }
+end
+
+local function apply_flash_highlights()
+  for group, spec in pairs(flash_palette()) do
+    vim.api.nvim_set_hl(0, group, spec)
+  end
+end
+
+local function setup_flash_highlight_autocmd()
+  local group = vim.api.nvim_create_augroup('FlashAdaptiveHighlight', { clear = true })
+
+  vim.api.nvim_create_autocmd('User', {
+    group = group,
+    pattern = 'NvThemeReload',
+    callback = function()
+      vim.schedule(apply_flash_highlights)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd('OptionSet', {
+    group = group,
+    pattern = 'background',
+    callback = function()
+      vim.schedule(apply_flash_highlights)
+    end,
+  })
+
+  vim.api.nvim_create_autocmd({ 'ColorScheme', 'VimEnter' }, {
+    group = group,
+    callback = function()
+      vim.schedule(apply_flash_highlights)
+    end,
+  })
+end
+
 return {
   'folke/flash.nvim',
   event = 'VeryLazy',
@@ -70,6 +119,14 @@ return {
   --   flash.jump { continue = true }
   -- end, { desc = 'Flash Next' }),
   --
-  -- 保持高亮
-  vim.api.nvim_set_hl(0, 'FlashLabel', { fg = '#ffffff', bg = '#ff007c', bold = true }),
+  config = function(_, opts)
+    local ok, flash = pcall(require, 'flash')
+    if not ok then
+      return
+    end
+
+    flash.setup(opts)
+    apply_flash_highlights()
+    setup_flash_highlight_autocmd()
+  end,
 }

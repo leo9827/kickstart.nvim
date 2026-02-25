@@ -200,7 +200,7 @@ vim.o.backup = false
 vim.o.termguicolors = true
 
 -- Show color column at 120 characters
-vim.o.colorcolumn = '120'
+-- vim.o.colorcolumn = '120'
 
 -- config for avante.nvim
 -- views can only be fully collapsed with the global statusline
