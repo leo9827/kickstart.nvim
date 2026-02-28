@@ -157,6 +157,44 @@ vim.o.ttimeoutlen = 10
 vim.o.splitright = true
 vim.o.splitbelow = true
 
+-- focus pane
+local function rgb(c)
+  return math.floor(c / 0x10000) % 0x100, math.floor(c / 0x100) % 0x100, c % 0x100
+end
+
+local function blend(c1, c2, t)
+  local r1, g1, b1 = rgb(c1)
+  local r2, g2, b2 = rgb(c2)
+  local r = math.floor(r1 + (r2 - r1) * t + 0.5)
+  local g = math.floor(g1 + (g2 - g1) * t + 0.5)
+  local b = math.floor(b1 + (b2 - b1) * t + 0.5)
+  return r * 0x10000 + g * 0x100 + b
+end
+
+local function focus_style()
+  local n = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
+  local bg = n.bg or 0x1e1e2e
+  local fg = n.fg or 0xcdd6f4
+
+  vim.api.nvim_set_hl(0, 'NormalNC', {
+    bg = bg, -- 背景不改，避免“反过来”
+    fg = blend(fg, bg, 0.45), -- 非焦点文字降对比
+  })
+
+  vim.api.nvim_set_hl(0, 'WinSeparator', {
+    fg = blend(fg, bg, 0.15),
+    bg = bg,
+    bold = true,
+  })
+end
+
+vim.api.nvim_create_autocmd('ColorScheme', { callback = focus_style })
+focus_style()
+
+vim.o.winhighlight = 'Normal:Normal,NormalNC:NormalNC,WinSeparator:WinSeparator'
+vim.o.cursorline = true
+vim.o.cursorlineopt = 'line,number'
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -979,7 +1017,8 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        go = { 'goimports', 'gofumpt' },
+        -- go = { 'goimports', 'gofumpt' },
+        go = { 'goimports' },
         -- sql = { 'sqlfluff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -1028,6 +1067,14 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         opts = {},
       },
       'folke/lazydev.nvim',
+      {
+        'saghen/blink.compat',
+        version = '2.*', -- use v2.* for blink.cmp v1.*
+        lazy = true,
+        opts = {
+          impersonate_nvim_cmp = true,
+        },
+      },
     },
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
@@ -1077,10 +1124,47 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
 
       sources = {
         default = { 'lsp', 'path', 'snippets', 'lazydev' },
+        per_filetype = {
+          AvanteInput = {
+            inherit_defaults = false,
+            'avante_commands',
+            'avante_mentions',
+            'avante_shortcuts',
+            -- 'avante_files', -- Not available in current avante commit.
+          },
+          AvantePromptInput = {
+            inherit_defaults = false,
+            'avante_prompt_mentions',
+          },
+        },
         providers = {
           lazydev = {
             module = 'lazydev.integrations.blink',
             score_offset = 100,
+          },
+          avante_commands = {
+            name = 'avante_commands',
+            module = 'blink.compat.source',
+            score_offset = 90,
+            opts = {},
+          },
+          avante_mentions = {
+            name = 'avante_mentions',
+            module = 'blink.compat.source',
+            score_offset = 1000,
+            opts = {},
+          },
+          avante_prompt_mentions = {
+            name = 'avante_prompt_mentions',
+            module = 'blink.compat.source',
+            score_offset = 1000,
+            opts = {},
+          },
+          avante_shortcuts = {
+            name = 'avante_shortcuts',
+            module = 'blink.compat.source',
+            score_offset = 1000,
+            opts = {},
           },
         },
       },

@@ -20,8 +20,34 @@
 --
 return {
   -- 改掉坏习惯，掌握Vim操作
-  -- 'm4xshen/hardtime.nvim',
-  -- lazy = false,
-  -- dependencies = { 'MunifTanjim/nui.nvim' },
-  -- opts = {},
+  'm4xshen/hardtime.nvim',
+  lazy = false,
+  dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
+  opts = {
+    max_time = 1000, -- 重置计数的毫秒数
+    max_count = 4, -- 在 max_time 内连续按同一个键的最大次数（建议设为 3 或 4）
+    disable_mouse = false, -- 是否禁用鼠标
+    hint = true, -- 开启提示
+
+    -- 【关键配置】在这里添加不需要限制的文件类型
+    disabled_filetypes = {
+      'qf', -- Quickfix 列表
+      'netrw', -- 原生文件浏览
+      'NvimTree', -- 文件树
+      'lazy', -- 插件管理器
+      'mason', -- 包管理器
+      'oil', -- Oil 文件编辑
+      'TelescopePrompt', -- 模糊查找
+      'toggleterm', -- 终端
+    },
+
+    -- 可以在这里自定义哪些键被限制
+    restricted_keys = {
+      ['h'] = { 'n', 'x' },
+      ['j'] = { 'n', 'x' },
+      ['k'] = { 'n', 'x' },
+      ['l'] = { 'n', 'x' },
+      -- 很多用户觉得限制 "-" 和 "+" 很烦，可以在这里去除
+    },
+  },
 }

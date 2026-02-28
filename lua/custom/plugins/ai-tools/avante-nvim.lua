@@ -31,20 +31,26 @@ return {
       auto_set_highlight_group = true,
       auto_set_keymaps = true,
       auto_apply_diff_after_generation = false,
-      jump_result_buffer_on_finish = true,
+      jump_result_buffer_on_finish = false,
       support_paste_from_clipboard = false,
       minimize_diff = true,
       enable_token_counting = true,
       use_cwd_as_project_root = true,
+      -- diff-first: 保持焦点在代码 diff 侧，确认框不抢焦点
       auto_focus_on_diff_view = true,
       ---@type boolean | string[] -- true: auto-approve all tools, false: normal prompts, string[]: auto-approve specific tools by name
       auto_approve_tool_permissions = false, -- Default: show permission prompts for all tools
       auto_check_diagnostics = true,
       enable_fastapply = false,
+      confirmation_ui_style = 'inline_buttons',
     },
     windows = {
       --- "right" | "left" | "top" | "bottom" | "smart"
       position = 'left',
+      ask = {
+        start_insert = true,
+        focus_on_apply = 'ours',
+      },
     },
     diff = {
       autojump = true,

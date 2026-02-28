@@ -76,3 +76,175 @@ vim.keymap.set('n', ']l', '<cmd>lnext<CR>zz', { desc = 'Next location' })
 
 -- NvChad Theme Switcher
 vim.keymap.set('n', '<leader>th', ':Telescope themes<CR>', { desc = 'NvChad [Th]eme Switcher' })
+
+-- AI tools quick toggles (sidekick / avante)
+do
+  local ai_toggle = require 'custom.ai_tools_toggle'
+  ai_toggle.setup()
+
+  vim.keymap.set('n', '<leader>ta', function()
+    ai_toggle.toggle 'all'
+  end, { desc = '[T]oggle [A]I tools (all)' })
+
+  vim.keymap.set('n', '<leader>ts', function()
+    ai_toggle.toggle 'sidekick'
+  end, { desc = '[T]oggle [S]idekick' })
+
+  vim.keymap.set('n', '<leader>tv', function()
+    ai_toggle.toggle 'avante'
+  end, { desc = '[T]oggle A[v]ante' })
+end
+
+-- Subtle beacon for large jumps (e.g. 22j / 33k / G), so landing line is easy to confirm.
+do
+  local api = vim.api
+  local uv = vim.uv or vim.loop
+  local ns = api.nvim_create_namespace 'JumpCursorBeacon'
+  local augroup = api.nvim_create_augroup('JumpCursorBeacon', { clear = true })
+
+  local min_jump = vim.g.jump_cursor_beacon_min_distance or 8
+  local strong_ms = vim.g.jump_cursor_beacon_strong_ms or 60
+  local soft_ms = vim.g.jump_cursor_beacon_soft_ms or 90
+  local cooldown_ms = vim.g.jump_cursor_beacon_cooldown_ms or 120
+
+  local state = {
+    last_line_by_win = {},
+    last_pulse_at_by_win = {},
+    pulse_id_by_win = {},
+  }
+
+  local function beacon_palette()
+    if vim.o.background == 'light' then
+      return {
+        JumpCursorBeaconStrong = { bg = '#cfe8ff' },
+        JumpCursorBeaconSoft = { bg = '#eaf4ff' },
+      }
+    end
+
+    return {
+      JumpCursorBeaconStrong = { bg = '#2a3a52' },
+      JumpCursorBeaconSoft = { bg = '#223047' },
+    }
+  end
+
+  local function apply_beacon_highlights()
+    for group, spec in pairs(beacon_palette()) do
+      api.nvim_set_hl(0, group, spec)
+    end
+  end
+
+  local function same_position(winid, bufnr, lnum)
+    return api.nvim_win_is_valid(winid)
+      and api.nvim_win_get_buf(winid) == bufnr
+      and api.nvim_win_get_cursor(winid)[1] == lnum
+  end
+
+  local function set_line_beacon(bufnr, lnum, hl_group)
+    api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+    api.nvim_buf_set_extmark(bufnr, ns, lnum - 1, 0, {
+      line_hl_group = hl_group,
+      priority = 220,
+    })
+  end
+
+  local function clear_line_beacon(bufnr)
+    if api.nvim_buf_is_valid(bufnr) then
+      api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+    end
+  end
+
+  local function pulse_jump_line(winid, bufnr, lnum)
+    local pulse_id = (state.pulse_id_by_win[winid] or 0) + 1
+    state.pulse_id_by_win[winid] = pulse_id
+
+    set_line_beacon(bufnr, lnum, 'JumpCursorBeaconStrong')
+
+    vim.defer_fn(function()
+      if state.pulse_id_by_win[winid] ~= pulse_id then
+        return
+      end
+
+      if not same_position(winid, bufnr, lnum) then
+        clear_line_beacon(bufnr)
+        return
+      end
+
+      set_line_beacon(bufnr, lnum, 'JumpCursorBeaconSoft')
+
+      vim.defer_fn(function()
+        if state.pulse_id_by_win[winid] ~= pulse_id then
+          return
+        end
+        clear_line_beacon(bufnr)
+      end, soft_ms)
+    end, strong_ms)
+  end
+
+  api.nvim_create_autocmd('CursorMoved', {
+    group = augroup,
+    callback = function()
+      local mode = vim.fn.mode(1)
+      if mode:sub(1, 1) ~= 'n' then
+        return
+      end
+
+      local winid = api.nvim_get_current_win()
+      local bufnr = api.nvim_win_get_buf(winid)
+      local lnum = api.nvim_win_get_cursor(winid)[1]
+
+      if vim.bo[bufnr].buftype ~= '' then
+        state.last_line_by_win[winid] = lnum
+        return
+      end
+
+      local prev = state.last_line_by_win[winid]
+      state.last_line_by_win[winid] = lnum
+
+      if not prev or math.abs(lnum - prev) < min_jump then
+        return
+      end
+
+      local now_ms = (uv and uv.now and uv.now()) or 0
+      local last_ms = state.last_pulse_at_by_win[winid] or 0
+      if now_ms - last_ms < cooldown_ms then
+        return
+      end
+
+      state.last_pulse_at_by_win[winid] = now_ms
+      pulse_jump_line(winid, bufnr, lnum)
+    end,
+  })
+
+  api.nvim_create_autocmd({ 'BufEnter', 'WinEnter' }, {
+    group = augroup,
+    callback = function()
+      local winid = api.nvim_get_current_win()
+      state.last_line_by_win[winid] = api.nvim_win_get_cursor(winid)[1]
+    end,
+  })
+
+  api.nvim_create_autocmd('User', {
+    group = augroup,
+    pattern = 'NvThemeReload',
+    callback = function()
+      vim.schedule(apply_beacon_highlights)
+    end,
+  })
+
+  api.nvim_create_autocmd('OptionSet', {
+    group = augroup,
+    pattern = 'background',
+    callback = function()
+      vim.schedule(apply_beacon_highlights)
+    end,
+  })
+
+  api.nvim_create_autocmd({ 'ColorScheme', 'VimEnter' }, {
+    group = augroup,
+    callback = function()
+      vim.schedule(apply_beacon_highlights)
+    end,
+  })
+
+  apply_beacon_highlights()
+end
