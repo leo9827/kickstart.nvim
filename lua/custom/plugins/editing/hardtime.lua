@@ -24,8 +24,8 @@ return {
   lazy = false,
   dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim' },
   opts = {
-    max_time = 1000, -- 重置计数的毫秒数
-    max_count = 4, -- 在 max_time 内连续按同一个键的最大次数（建议设为 3 或 4）
+    max_time = 1500, -- 重置计数的毫秒数（更宽松，减少误触发）
+    max_count = 10, -- 在 max_time 内连续按同一个键的最大次数（舒适模式）
     disable_mouse = false, -- 是否禁用鼠标
     hint = true, -- 开启提示
 
@@ -39,13 +39,16 @@ return {
       'oil', -- Oil 文件编辑
       'TelescopePrompt', -- 模糊查找
       'toggleterm', -- 终端
+      'help', -- 帮助文档
+      'man', -- man 页面
+      'markdown', -- Markdown 阅读
+      'text', -- 纯文本阅读
+      'log', -- 日志查看
     },
 
     -- 可以在这里自定义哪些键被限制
     restricted_keys = {
       ['h'] = { 'n', 'x' },
-      ['j'] = { 'n', 'x' },
-      ['k'] = { 'n', 'x' },
       ['l'] = { 'n', 'x' },
       -- 很多用户觉得限制 "-" 和 "+" 很烦，可以在这里去除
     },
