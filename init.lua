@@ -158,6 +158,7 @@ vim.o.splitright = true
 vim.o.splitbelow = true
 
 -- focus pane
+
 local function rgb(c)
   return math.floor(c / 0x10000) % 0x100, math.floor(c / 0x100) % 0x100, c % 0x100
 end
@@ -170,30 +171,6 @@ local function blend(c1, c2, t)
   local b = math.floor(b1 + (b2 - b1) * t + 0.5)
   return r * 0x10000 + g * 0x100 + b
 end
-
-local function focus_style()
-  local n = vim.api.nvim_get_hl(0, { name = 'Normal', link = false })
-  local bg = n.bg or 0x1e1e2e
-  local fg = n.fg or 0xcdd6f4
-
-  vim.api.nvim_set_hl(0, 'NormalNC', {
-    bg = bg, -- 背景不改，避免“反过来”
-    fg = blend(fg, bg, 0.45), -- 非焦点文字降对比
-  })
-
-  vim.api.nvim_set_hl(0, 'WinSeparator', {
-    fg = blend(fg, bg, 0.15),
-    bg = bg,
-    bold = true,
-  })
-end
-
-vim.api.nvim_create_autocmd('ColorScheme', { callback = focus_style })
-focus_style()
-
-vim.o.winhighlight = 'Normal:Normal,NormalNC:NormalNC,WinSeparator:WinSeparator'
-vim.o.cursorline = true
-vim.o.cursorlineopt = 'line,number'
 
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
@@ -886,7 +863,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
           settings = {
             gopls = {
               goimports = true, -- Use goimports for imports
-              gofumpt = true, -- Use gofumpt for formatting
+              -- gofumpt = true, -- Use gofumpt for formatting
             },
           },
         },
@@ -1009,31 +986,26 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
+          local timeout_ms = 500
+          if vim.bo[bufnr].filetype == 'go' then
+            timeout_ms = 2000
+          end
           return {
-            timeout_ms = 500,
+            timeout_ms = timeout_ms,
             lsp_format = 'fallback',
           }
         end
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- go = { 'goimports', 'gofumpt' },
         go = { 'goimports' },
-        -- sql = { 'sqlfluff' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
       },
-      formatters = {
-        -- sqlfluff = {
-        --   -- 不强求必须找到配置文件(.sqlfluff)或根目录才运行
-        --   require_cwd = false,
-        --   -- 默认按 mysql 来 format, 如果需要指定其他参数，可以在这里加
-        --   args = { 'fix', '--dialect', 'mysql', '-' },
-        -- },
-      },
+      formatters = {},
     },
   },
   { -- Autocompletion
