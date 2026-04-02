@@ -1302,6 +1302,86 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         },
       },
     },
+    config = function(_, opts)
+      require('nvim-treesitter.configs').setup(opts)
+
+      if vim.fn.has 'nvim-0.12' == 0 then
+        return
+      end
+
+      -- Nvim 0.12 passes capture lists for some directives; older pinned
+      -- nvim-treesitter versions still assume a single TSNode here.
+      local query = require 'vim.treesitter.query'
+      local info_string_aliases = {
+        ex = 'elixir',
+        pl = 'perl',
+        sh = 'bash',
+        ts = 'typescript',
+        uxn = 'uxntal',
+      }
+      local script_type_languages = {
+        ['application/ecmascript'] = 'javascript',
+        importmap = 'json',
+        module = 'javascript',
+        ['text/ecmascript'] = 'javascript',
+      }
+
+      local function get_capture_node(match, capture_id)
+        local node = match[capture_id]
+        if type(node) == 'table' then
+          return node[#node]
+        end
+        return node
+      end
+
+      local function get_capture_text(match, capture_id, bufnr, metadata)
+        local node = get_capture_node(match, capture_id)
+        if not node then
+          return
+        end
+        local capture_metadata = metadata and metadata[capture_id] or nil
+        return vim.treesitter.get_node_text(node, bufnr, { metadata = capture_metadata })
+      end
+
+      query.add_directive('set-lang-from-mimetype!', function(match, _, bufnr, pred, metadata)
+        local type_attr_value = get_capture_text(match, pred[2], bufnr, metadata)
+        if not type_attr_value or type_attr_value == '' then
+          return
+        end
+
+        local configured = script_type_languages[type_attr_value]
+        if configured then
+          metadata['injection.language'] = configured
+          return
+        end
+
+        local parts = vim.split(type_attr_value, '/', {})
+        metadata['injection.language'] = parts[#parts]
+      end, { force = true, all = false })
+
+      query.add_directive('set-lang-from-info-string!', function(match, _, bufnr, pred, metadata)
+        local injection_alias = get_capture_text(match, pred[2], bufnr, metadata)
+        if not injection_alias or injection_alias == '' then
+          return
+        end
+
+        injection_alias = injection_alias:lower()
+        metadata['injection.language'] = vim.filetype.match { filename = 'a.' .. injection_alias }
+          or info_string_aliases[injection_alias]
+          or injection_alias
+      end, { force = true, all = false })
+
+      query.add_directive('downcase!', function(match, _, bufnr, pred, metadata)
+        local capture_id = pred[2]
+        local text = get_capture_text(match, capture_id, bufnr, metadata)
+        if text == nil then
+          return
+        end
+
+        metadata[capture_id] = metadata[capture_id] or {}
+        metadata[capture_id].text = text:lower()
+      end, { force = true, all = false })
+    end,
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
