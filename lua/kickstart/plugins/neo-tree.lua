@@ -44,7 +44,7 @@ return {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
-    close_if_last_window = true, -- Neo-tree 成为最后一个窗口时自动关闭
+    close_if_last_window = false, -- 避免 :q 时因未保存 buffer 被 Neo-tree 强行拆窗重开
     popup_border_style = 'rounded',
     sources = { 'filesystem', 'buffers', 'git_status' },
     default_component_configs = {

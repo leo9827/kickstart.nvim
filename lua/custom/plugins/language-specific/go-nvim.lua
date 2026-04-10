@@ -6,6 +6,8 @@ return {
     'nvim-treesitter/nvim-treesitter',
   },
   config = function()
+    require('custom.compat.lsp-codelens').patch()
+
     require('go').setup {
       -- Add some useful defaults
       go = 'go', -- go command, can be go[default] or go1.18beta1
