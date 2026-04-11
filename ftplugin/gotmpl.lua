@@ -1,0 +1,1 @@
+-- Marks Go template buffers as a known filetype for Neovim health checks.
