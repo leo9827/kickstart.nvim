@@ -98,9 +98,21 @@ vim.o.synmaxcol = 300
 -- Disable the built-in matchparen plugin (Treesitter/LSP are usually enough)
 vim.g.loaded_matchparen = 1
 
--- Disable Python 3 provider to avoid slow provider detection on opening .py files
--- Re-enable later by removing this line or set python3_host_prog with pynvim installed
-vim.g.loaded_python3_provider = 1
+-- Disable unused remote providers to avoid slow provider detection and checkhealth noise.
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- Keep Go-related filetypes explicit for LSP health checks and .gotmpl files.
+vim.filetype.add {
+  extension = {
+    gotmpl = 'gotmpl',
+  },
+  filename = {
+    ['go.work'] = 'gowork',
+  },
+}
 
 -- Prepend mise shims to PATH
 vim.env.PATH = vim.env.HOME .. '/.local/share/mise/shims:' .. vim.env.PATH
@@ -1417,6 +1429,9 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   { import = 'custom.plugins.session' },
   require 'custom.base46', -- Base46 theme system
 }, {
+  rocks = {
+    enabled = false,
+  },
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
