@@ -1,16 +1,12 @@
--- 快速跳转插件
--- 作用：提供高效的光标快速移动功能，可以在可视范围内快速跳转到任意位置
--- 常用场景：
---   1. 需要快速跳转到屏幕上某个字符/单词时
---   2. 在代码中快速定位并跳转到特定的语法结构
---   3. 替代传统的 f/F/t/T 移动命令
--- 常用快捷键(flash default shortcuts)：
--- 常用快捷键：
---   s: 启动跳转模式，输入要跳转的字符
---   S: 基于语法树的智能跳转
---   r: 在操作符待决模式下远程跳转
---   R: 在可视和操作符待决模式下搜索语法树节点
---   <c-s>: 在命令行模式下切换 Flash 搜索
+-- Flash 跳转规则
+-- 心智模型：
+--   1. `f/F/t/T/;/,` 只负责字符跳转，尽量保持 Vim 原生手感
+--   2. 这里开启了 `multi_line = true`，所以 `fc` 后可以用 `;` 跨行继续跳
+--   3. `s` 是独立的 Flash Jump，用来做屏幕内全文 label 跳转
+--   4. `S` 是 Flash Treesitter，用来按语法节点跳转
+--   5. `/` 保持原生搜索；buffer 内模糊查找继续走 `<leader>/` 的 Telescope
+-- 目标：
+--   把高频的 `f` 留给低心智负担的字符运动，把全文跳转和语法跳转分离到 `s/S`
 --
 --   n：Normal（普通）模式
 --   x：Visual（可视）模式
@@ -64,6 +60,21 @@ local function setup_flash_highlight_autocmd()
   })
 end
 
+local function jump_with_beacon()
+  require('flash').jump {
+    action = function(match, state)
+      local jump = require 'flash.jump'
+      jump.jump(match, state)
+      jump.on_jump(state)
+
+      vim.api.nvim_exec_autocmds('User', {
+        pattern = 'JumpCursorBeaconPulse',
+        modeline = false,
+      })
+    end,
+  }
+end
+
 return {
   'folke/flash.nvim',
   event = 'VeryLazy',
@@ -82,8 +93,8 @@ return {
         end,
       },
       search = {
-        enabled = true,
-      }, -- 增强/?*#等str搜索
+        enabled = false, -- 保持原生 /? 搜索，避免输入过程中被 label 提前截断
+      },
     },
     labels = 'asdfghjklqwertyuiopzxcvbnm',
     label = {
@@ -101,10 +112,17 @@ return {
       },
     },
   },
-    -- stylua: ignore
-    keys = {
-    { "f", mode = {"n", "x", "o"}, function() require("flash").jump() end, desc = "Flash Jump" },
-    { "F", mode = {"n", "x", "o"}, function() require("flash").treesitter() end, desc = "Flash Treesitter" }
+  -- stylua: ignore
+  keys = {
+    {
+      "s",
+      mode = { "n", "x", "o" },
+      function()
+        jump_with_beacon()
+      end,
+      desc = "Flash Jump",
+    },
+    { "S", mode = {"n", "x", "o"}, function() require("flash").treesitter() end, desc = "Flash Treesitter" }
     -- flash default short cuts:
     -- { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash Jump" },
     -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },

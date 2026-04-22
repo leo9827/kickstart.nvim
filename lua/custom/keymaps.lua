@@ -102,9 +102,10 @@ do
   local ns = api.nvim_create_namespace 'JumpCursorBeacon'
   local augroup = api.nvim_create_augroup('JumpCursorBeacon', { clear = true })
 
+  local beacon_enabled = vim.g.jump_cursor_beacon_enabled ~= false
   local min_jump = vim.g.jump_cursor_beacon_min_distance or 8
-  local strong_ms = vim.g.jump_cursor_beacon_strong_ms or 60
-  local soft_ms = vim.g.jump_cursor_beacon_soft_ms or 90
+  local strong_ms = vim.g.jump_cursor_beacon_strong_ms or 120
+  local soft_ms = vim.g.jump_cursor_beacon_soft_ms or 220
   local cooldown_ms = vim.g.jump_cursor_beacon_cooldown_ms or 120
 
   local state = {
@@ -114,16 +115,9 @@ do
   }
 
   local function beacon_palette()
-    if vim.o.background == 'light' then
-      return {
-        JumpCursorBeaconStrong = { bg = '#cfe8ff' },
-        JumpCursorBeaconSoft = { bg = '#eaf4ff' },
-      }
-    end
-
     return {
-      JumpCursorBeaconStrong = { bg = '#2a3a52' },
-      JumpCursorBeaconSoft = { bg = '#223047' },
+      JumpCursorBeaconStrong = { bg = '#ffcc00' },
+      JumpCursorBeaconSoft = { bg = '#b26a00' },
     }
   end
 
@@ -134,9 +128,7 @@ do
   end
 
   local function same_position(winid, bufnr, lnum)
-    return api.nvim_win_is_valid(winid)
-      and api.nvim_win_get_buf(winid) == bufnr
-      and api.nvim_win_get_cursor(winid)[1] == lnum
+    return api.nvim_win_is_valid(winid) and api.nvim_win_get_buf(winid) == bufnr and api.nvim_win_get_cursor(winid)[1] == lnum
   end
 
   local function set_line_beacon(bufnr, lnum, hl_group)
@@ -180,11 +172,57 @@ do
     end, strong_ms)
   end
 
+  local function pulse_current_line(opts)
+    opts = opts or {}
+
+    if not opts.force and not beacon_enabled then
+      return false
+    end
+
+    local winid = api.nvim_get_current_win()
+    local bufnr = api.nvim_win_get_buf(winid)
+
+    if vim.bo[bufnr].buftype ~= '' then
+      return false
+    end
+
+    local lnum = api.nvim_win_get_cursor(winid)[1]
+    state.last_line_by_win[winid] = lnum
+    pulse_jump_line(winid, bufnr, lnum)
+    return true
+  end
+
+  local function repeat_search(motion)
+    local winid = api.nvim_get_current_win()
+    local before = api.nvim_win_get_cursor(winid)
+    vim.cmd.normal {
+      bang = true,
+      args = { tostring(vim.v.count1) .. motion },
+    }
+
+    local after = api.nvim_win_get_cursor(winid)
+    if after[1] ~= before[1] or after[2] ~= before[2] then
+      pulse_current_line()
+    end
+  end
+
+  vim.keymap.set('n', 'n', function()
+    repeat_search 'n'
+  end, { desc = 'Next search result' })
+
+  vim.keymap.set('n', 'N', function()
+    repeat_search 'N'
+  end, { desc = 'Previous search result' })
+
+  vim.keymap.set('n', '<leader>tc', function()
+    pulse_current_line { force = true }
+  end, { desc = '[T]rack [C]ursor' })
+
   api.nvim_create_autocmd('CursorMoved', {
     group = augroup,
     callback = function()
       local mode = vim.fn.mode(1)
-      if mode:sub(1, 1) ~= 'n' then
+      if not beacon_enabled or mode:sub(1, 1) ~= 'n' then
         return
       end
 
@@ -220,6 +258,14 @@ do
     callback = function()
       local winid = api.nvim_get_current_win()
       state.last_line_by_win[winid] = api.nvim_win_get_cursor(winid)[1]
+    end,
+  })
+
+  api.nvim_create_autocmd('User', {
+    group = augroup,
+    pattern = 'JumpCursorBeaconPulse',
+    callback = function()
+      pulse_current_line()
     end,
   })
 

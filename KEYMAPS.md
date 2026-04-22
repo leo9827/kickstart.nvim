@@ -219,13 +219,16 @@
 | `];`        | Normal | 选择下一个上下文 / Select next context  | 跳转到下一个同级结构  |
 
 ### Flash 快速跳转 / Flash Quick Jump
-| 快捷键  | 模式            | 功能                                  | 使用场景                   |
-| ------- | --------------- | ------------------------------------- | -------------------------- |
-| `f`     | Normal/Operator | 跳转到字符 / Flash jump               | 快速跳转到屏幕上的任意位置 |
-| `F`     | Normal/Operator | 语法树跳转 / Flash treesitter         | 跳转到语法节点             |
-| `r`     | Operator        | 远程跳转 / Remote flash               | 在操作符模式下远程操作     |
-| `R`     | Operator/Visual | 语法树搜索 / Treesitter search        | 搜索语法树节点             |
-| `<c-s>` | Command         | 切换 Flash 搜索 / Toggle flash search | 在命令行中启用 Flash       |
+| 快捷键  | 模式            | 功能                                           | 使用场景                       |
+| ------- | --------------- | ---------------------------------------------- | ------------------------------ |
+| `f`     | Normal/Operator | 向右字符跳转 / Flash char motion               | 查找后续字符，可跨行继续跳转   |
+| `F`     | Normal/Operator | 向左字符跳转 / Flash reverse char motion       | 反向查找前面的字符             |
+| `t`     | Normal/Operator | 跳到目标前 / Flash till motion                 | 精确停在目标字符前一位         |
+| `T`     | Normal/Operator | 反向跳到目标后 / Flash reverse till motion     | 反向精确停位                   |
+| `;`     | Normal/Operator | 继续上次 `f/F/t/T` 跳转 / Repeat char motion   | 连续跳到下一个匹配             |
+| `,`     | Normal/Operator | 反向重复上次 `f/F/t/T` / Reverse repeat motion | 返回上一个匹配                 |
+| `s`     | Normal/Operator | 独立跳转 / Flash jump                          | 屏幕内快速跳到任意可见位置     |
+| `S`     | Normal/Operator | 语法树跳转 / Flash treesitter                  | 跳转到语法节点                 |
 
 ### Trouble 诊断列表 / Trouble Diagnostics
 | 快捷键       | 模式   | 功能                              | 使用场景           |
