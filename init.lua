@@ -567,6 +567,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
           winblend = 10,
+          lnum_highlight_group = 'LineNr',
           previewer = false,
         })
       end, {
