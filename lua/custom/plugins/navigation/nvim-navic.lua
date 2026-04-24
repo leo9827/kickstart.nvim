@@ -60,7 +60,7 @@ return {
         local buffer = args.buf
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         -- 确认 LSP 服务器支持文档符号功能
-        if client and client.supports_method and client.supports_method('textDocument/documentSymbol') then
+        if client and client:supports_method('textDocument/documentSymbol', buffer) then
           navic.attach(client, buffer)
         end
       end,

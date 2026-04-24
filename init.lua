@@ -150,6 +150,9 @@ vim.o.breakindent = true
 -- Save undo history
 vim.o.undofile = true
 
+-- Reload files changed outside Nvim when the current buffer is unchanged.
+vim.o.autoread = true
+
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.o.ignorecase = true
 vim.o.smartcase = true
@@ -314,6 +317,24 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   }),
   callback = function()
     vim.hl.on_yank()
+  end,
+})
+
+vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
+  desc = 'Check for files changed outside Nvim',
+  group = vim.api.nvim_create_augroup('external-file-change-check', { clear = true }),
+  callback = function()
+    if vim.fn.mode() == 'c' then
+      return
+    end
+
+    vim.schedule(function()
+      if vim.fn.mode() == 'c' then
+        return
+      end
+
+      vim.cmd 'checktime'
+    end)
   end,
 })
 
