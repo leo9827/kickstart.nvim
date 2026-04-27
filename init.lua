@@ -341,11 +341,19 @@ vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHo
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+local uv = vim.uv or vim.loop
+local lazy_module = lazypath .. '/lua/lazy/init.lua'
+if not uv.fs_stat(lazy_module) then
+  if uv.fs_stat(lazypath) then
+    local broken_path = lazypath .. '.broken'
+    vim.fn.delete(broken_path, 'rf')
+    vim.fn.rename(lazypath, broken_path)
+  end
+
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
   local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
   if vim.v.shell_error ~= 0 then
-    error('Error cloning lazy.nvim:\n' .. out)
+    error('Error cloning lazy.nvim:\n' .. out .. '\nA broken lazy.nvim checkout was moved to: ' .. lazypath .. '.broken')
   end
 end
 
@@ -1269,9 +1277,12 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    branch = 'master',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    dependencies = { 'nvim-treesitter/nvim-treesitter-textobjects' },
+    dependencies = {
+      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'master' },
+    },
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
       ensure_installed = {
