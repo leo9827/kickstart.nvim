@@ -196,7 +196,8 @@ end
 --   See `:help lua-options`
 --   and `:help lua-options-guide`
 vim.o.list = true
-vim.opt.listchars = { tab = '→ ', space = '·', trail = '•', nbsp = '␣' }
+-- vim.opt.listchars = { tab = '→ ', space = '·', trail = '•', nbsp = '␣' }
+vim.opt.listchars = { tab = '→ ', space = ' ', trail = '•', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -1411,9 +1412,7 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         end
 
         injection_alias = injection_alias:lower()
-        metadata['injection.language'] = vim.filetype.match { filename = 'a.' .. injection_alias }
-          or info_string_aliases[injection_alias]
-          or injection_alias
+        metadata['injection.language'] = vim.filetype.match { filename = 'a.' .. injection_alias } or info_string_aliases[injection_alias] or injection_alias
       end, { force = true, all = false })
 
       query.add_directive('downcase!', function(match, _, bufnr, pred, metadata)

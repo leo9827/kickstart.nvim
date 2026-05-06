@@ -6,23 +6,23 @@ return {
   ---@module 'avante'
   ---@type avante.Config
   opts = {
-    provider = 'copilot',
+    -- provider = 'copilot',
     -- auto_suggestions_provider = 'copilot',
     providers = {
-      copilot = {
-        endpoint = 'https://api.githubcopilot.com',
-        -- 0x    GPT-5 mini
-        -- 0.33x GPT-5.1-Codex-Mini | Claude Haiku 4.5 | Gemini-3 Flash
-        model = 'claude-haiku-4.5',
-        proxy = nil, -- [protocol://]host[:port] Use this proxy
-        allow_insecure = false, -- Allow insecure server connections
-        timeout = 30000, -- Timeout in milliseconds
-        context_window = 64000, -- Number of tokens to send to the model for context
-        extra_request_body = {
-          temperature = 0.8, -- 越大越发散越随机
-          max_tokens = 20480,
-        },
-      },
+      -- copilot = {
+      --   endpoint = 'https://api.githubcopilot.com',
+      --   -- 0x    GPT-5 mini
+      --   -- 0.33x GPT-5.1-Codex-Mini | Claude Haiku 4.5 | Gemini-3 Flash
+      --   model = 'claude-haiku-4.5',
+      --   proxy = nil, -- [protocol://]host[:port] Use this proxy
+      --   allow_insecure = false, -- Allow insecure server connections
+      --   timeout = 30000, -- Timeout in milliseconds
+      --   context_window = 64000, -- Number of tokens to send to the model for context
+      --   extra_request_body = {
+      --     temperature = 0.8, -- 越大越发散越随机
+      --     max_tokens = 20480,
+      --   },
+      -- },
     },
     behaviour = {
       auto_focus_sidebar = true,
@@ -64,7 +64,7 @@ return {
     --- The below dependencies are optional,
     -- 'hrsh7th/nvim-cmp', -- autocompletion for avante commands and mentions
     -- 'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-    'zbirenbaum/copilot.lua', -- for providers='copilot'
+    -- 'zbirenbaum/copilot.lua', -- for providers='copilot'
     -- {
     --   -- Make sure to set this up properly if you have lazy=true
     --   'MeanderingProgrammer/render-markdown.nvim',
