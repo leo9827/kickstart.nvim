@@ -64,6 +64,7 @@ return {
     dashboard.section.buttons.val = {
       dashboard.button('r', '  Recent Files', ':Telescope oldfiles only_cwd=true<CR>'),
       dashboard.button('f', '  Find Files', ':Telescope find_files<CR>'),
+      dashboard.button('d', '  Git Changes', ':Telescope git_status<CR>'),
       dashboard.button('g', '  Fuzzy Grep', ':Telescope live_grep<CR>'),
       dashboard.button('s', '  Restore Session', ':SessionRestore<CR>'),
       dashboard.button('n', '  New File', ':ene <BAR> startinsert<CR>'),
