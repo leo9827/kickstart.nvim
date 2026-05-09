@@ -901,12 +901,10 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
           },
         },
 
-        -- Go Language Server (uncomment if you use Go)
         gopls = {
           settings = {
             gopls = {
-              goimports = true, -- Use goimports for imports
-              -- gofumpt = true, -- Use gofumpt for formatting
+              buildFlags = { '-tags=integration,integration_unittest,legacy_integration' },
             },
           },
         },
@@ -986,19 +984,14 @@ require('lazy').setup({ -- NOTE: Plugins can be added with a link (or for a gith
         ensure_installed = ensure_installed,
       }
 
+      for server_name, server in pairs(servers or {}) do
+        server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+        vim.lsp.config(server_name, server)
+      end
+
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
-        automatic_installation = false,
-        handlers = {
-          function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
+        automatic_enable = vim.tbl_keys(servers or {}),
       }
     end,
   },
