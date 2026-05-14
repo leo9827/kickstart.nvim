@@ -73,6 +73,22 @@ return {
 
       -- 3. 路由规则：过滤噪音 (让体验变顺畅的关键)
       routes = {
+        -- Neovim 0.12 在部分终端/复用器下收不到 DSR 响应，会发出启动告警。
+        -- 这条消息本身不影响编辑，但被 notify 动画接管后会让 dashboard 看起来卡几秒。
+        {
+          filter = {
+            event = 'msg_show',
+            find = 'defaults.lua: Did not detect DSR response from terminal',
+          },
+          opts = { skip = true },
+        },
+        {
+          filter = {
+            event = 'notify',
+            find = 'defaults.lua: Did not detect DSR response from terminal',
+          },
+          opts = { skip = true },
+        },
         -- 将 "写入文件" 等消息重定向到 mini view (底部小横条)，不弹窗
         {
           filter = {

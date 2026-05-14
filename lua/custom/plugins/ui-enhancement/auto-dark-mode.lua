@@ -87,6 +87,5 @@ return {
     end
 
     auto_dark_mode.setup(opts)
-    auto_dark_mode.init()
   end,
 }
