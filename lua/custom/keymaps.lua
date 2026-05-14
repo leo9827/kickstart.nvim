@@ -74,6 +74,9 @@ vim.keymap.set('n', '[l', '<cmd>lprev<CR>zz', { desc = 'Previous location' })
 
 vim.keymap.set('n', ']l', '<cmd>lnext<CR>zz', { desc = 'Next location' })
 
+-- Git
+vim.keymap.set('n', '<leader>gs', '<cmd>Telescope git_status<CR>', { desc = '[G]it [S]tatus (changed files)' })
+
 -- NvChad Theme Switcher
 vim.keymap.set('n', '<leader>th', ':Telescope themes<CR>', { desc = 'NvChad [Th]eme Switcher' })
 

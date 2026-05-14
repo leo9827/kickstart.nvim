@@ -27,7 +27,6 @@
 8. [调试 / Debugging](#调试--debugging)
 9. [工作区会话 / Workspace Sessions](#工作区会话--workspace-sessions)
 10. [主题与界面 / Theme & UI](#主题与界面--theme--ui)
-11. [其他工具 / Other Tools](#其他工具--other-tools)
 
 ---
 
@@ -53,7 +52,6 @@
 | 快捷键       | 模式          | 功能                                                 | 使用场景           |
 | ------------ | ------------- | ---------------------------------------------------- | ------------------ |
 | `<leader>p`  | Visual        | 粘贴不覆盖寄存器 / Paste without yanking             | 多次粘贴同一内容   |
-| `y`          | Normal/Visual | 复制到系统剪贴板 / Yank to system clipboard          | 与其他应用共享内容 |
 | `<leader>y`  | Normal/Visual | 复制到系统剪贴板 / Yank to system clipboard          | 与其他应用共享内容 |
 | `<leader>Y`  | Normal        | 复制整行到系统剪贴板 / Yank line to system clipboard | 快速复制整行       |
 | `<leader>d`  | Normal/Visual | 删除到黑洞寄存器 / Delete to black hole              | 删除但不影响剪贴板 |
@@ -106,10 +104,9 @@
 | `<C-p>`      | Normal | 上一个 Harpoon 文件 / Prev Harpoon file  | 反向循环切换标记文件     |
 
 ### Neo-tree 文件树 / Neo-tree File Explorer
-| 快捷键      | 模式   | 功能                               | 使用场景         |
-| ----------- | ------ | ---------------------------------- | ---------------- |
-| `<C-n>`     | Normal | 打开/关闭文件树 / Toggle file tree | 浏览项目结构     |
-| `<leader>e` | Normal | 聚焦文件树 / Focus file tree       | 将光标移到文件树 |
+| 快捷键 | 模式   | 功能                               | 使用场景     |
+| ------ | ------ | ---------------------------------- | ------------ |
+| `\`    | Normal | 打开/关闭文件树 / Toggle file tree | 浏览项目结构 |
 
 ---
 
@@ -123,23 +120,6 @@
 | `<C-j>` | Normal | 聚焦下方窗口 / Focus lower window | 在分屏间快速移动 |
 | `<C-k>` | Normal | 聚焦上方窗口 / Focus upper window | 在分屏间快速移动 |
 
-### 终端窗口移动 / Terminal Window Movement
-| 快捷键      | 模式     | 功能                                      | 使用场景             |
-| ----------- | -------- | ----------------------------------------- | -------------------- |
-| `<C-h>` (t) | Terminal | 从终端移动到左窗口 / Move to left window  | 在终端和编辑器间切换 |
-| `<C-j>` (t) | Terminal | 从终端移动到下窗口 / Move to lower window | 在终端和编辑器间切换 |
-| `<C-k>` (t) | Terminal | 从终端移动到上窗口 / Move to upper window | 在终端和编辑器间切换 |
-| `<C-l>` (t) | Terminal | 从终端移动到右窗口 / Move to right window | 在终端和编辑器间切换 |
-
-### 专注模式 / Focus Modes
-| 快捷键       | 模式   | 功能                                   | 使用场景             |
-| ------------ | ------ | -------------------------------------- | -------------------- |
-| `<leader>zn` | Normal | 聚焦到当前区域/函数 / Narrow to region | 专注于特定代码块     |
-| `<leader>zn` | Visual | 聚焦到选中文本 / Narrow to selection   | 专注于选中的代码     |
-| `<leader>zf` | Normal | 最大化当前窗口 / Focus window          | 临时全屏当前窗口     |
-| `<leader>zm` | Normal | 极简模式 / Minimalist mode             | 隐藏界面元素专注编码 |
-| `<leader>za` | Normal | 禅模式 / Zen mode (Ataraxis)           | 完整的专注模式体验   |
-
 ---
 
 ## Git 操作 / Git Operations
@@ -147,23 +127,35 @@
 ### LazyGit 集成 / LazyGit Integration
 | 快捷键       | 模式   | 功能                                | 使用场景           |
 | ------------ | ------ | ----------------------------------- | ------------------ |
-| `<leader>gg` | Normal | 打开 LazyGit / Open LazyGit         | 管理所有 Git 操作  |
-| `<leader>gf` | Normal | 当前文件历史 / Current file history | 查看文件的提交历史 |
+| `<leader>gg` | Normal | 打开 LazyGit / Open LazyGit          | 管理所有 Git 操作  |
+| `<leader>gF` | Normal | 当前文件 LazyGit / LazyGit this file  | 查看文件的提交历史 |
+
+### Telescope Git / Telescope Git
+| 快捷键       | 模式   | 功能                                       | 使用场景                       |
+| ------------ | ------ | ------------------------------------------ | ------------------------------ |
+| `<leader>gs` | Normal | Git 改动文件列表 / Git changed files       | 快速打开有改动的文件（模糊搜索）|
 
 ### Diffview 差异查看 / Diffview
-| 快捷键               | 模式   | 功能                               | 使用场景             |
-| -------------------- | ------ | ---------------------------------- | -------------------- |
-| `<leader>gd`         | Normal | 打开 Diff 视图 / Open diff view    | 查看工作区的所有改动 |
-| `<leader>gh`         | Normal | 当前文件历史 / File history        | 浏览文件的提交历史   |
-| `<leader>gH`         | Normal | 分支历史 / Branch history          | 浏览整个分支的改动   |
-| `<leader>gq`         | Normal | 关闭 Diff 视图 / Close diff view   | 返回正常编辑模式     |
-| `q` (Diffview)       | Normal | 关闭 Diffview / Close Diffview     | 在 diff 视图中关闭   |
-| `<Tab>` (Diffview)   | Normal | 下一个改动文件 / Next changed file | 在改动文件间切换     |
-| `<S-Tab>` (Diffview) | Normal | 上一个改动文件 / Prev changed file | 在改动文件间切换     |
+| 快捷键               | 模式   | 功能                                    | 使用场景                 |
+| -------------------- | ------ | --------------------------------------- | ------------------------ |
+| `<leader>gd`         | Normal | 打开 Diff 视图 / Diff working changes   | 查看工作区改动（左右对比）|
+| `<leader>gD`         | Normal | 打开 Staged Diff / Diff staged changes  | 仅查看已暂存的改动       |
+| `<leader>gh`         | Normal | 当前文件历史 / File history              | 浏览文件的提交历史       |
+| `<leader>gH`         | Normal | 分支历史 / Branch history                | 浏览整个分支的改动       |
+| `<leader>gq`         | Normal | 关闭 Diff 视图 / Close diff view        | 返回正常编辑模式         |
+| `q` (Diffview)       | Normal | 关闭 Diffview / Close Diffview           | 在 diff 视图中关闭       |
+| `<leader>e` (Diffview)| Normal | 收起/展开文件面板 / Toggle file panel   | 增大 diff 可视区域       |
+| `s` / `-` (文件面板) | Normal | Stage/Unstage 文件 / Toggle stage entry  | 在文件面板中暂存/取消    |
+| `S` (文件面板)       | Normal | Stage 所有文件 / Stage all               | 一键暂存所有改动         |
+| `U` (文件面板)       | Normal | Unstage 所有 / Unstage all               | 一键取消所有暂存         |
+| `R` (文件面板)       | Normal | 刷新文件列表 / Refresh files             | 外部改动后刷新           |
+| `]x` / `[x`         | Normal | 下/上一个冲突 / Next/prev conflict       | 合并冲突时快速跳转       |
 
 ### Gitsigns (Hunk 操作) / Gitsigns (Hunk Operations)
 | 快捷键       | 模式   | 功能                                   | 使用场景                   |
 | ------------ | ------ | -------------------------------------- | -------------------------- |
+| `]c`         | Normal | 跳到下一个 hunk / Next git change      | 快速跳转到下一处改动       |
+| `[c`         | Normal | 跳到上一个 hunk / Prev git change      | 快速跳转到上一处改动       |
 | `<leader>hs` | Normal | 暂存 hunk / Stage hunk                 | 暂存当前代码块的改动       |
 | `<leader>hs` | Visual | 暂存选中 hunk / Stage selected hunk    | 暂存选中的改动             |
 | `<leader>hr` | Normal | 重置 hunk / Reset hunk                 | 撤销当前代码块的改动       |
@@ -172,24 +164,17 @@
 | `<leader>hu` | Normal | 撤销暂存 hunk / Undo stage hunk        | 取消暂存                   |
 | `<leader>hR` | Normal | 重置整个文件 / Reset buffer            | 撤销文件的所有改动         |
 | `<leader>hp` | Normal | 预览 hunk / Preview hunk               | 在弹窗中查看改动           |
+| `<leader>hP` | Normal | 预览 hunk 内联 / Preview hunk inline   | 在行内直接显示改动         |
 | `<leader>hb` | Normal | Blame 当前行 / Blame line              | 查看当前行的提交信息       |
 | `<leader>hd` | Normal | Diff 对比索引 / Diff against index     | 对比当前文件和索引         |
 | `<leader>hD` | Normal | Diff 对比 HEAD / Diff against HEAD     | 对比当前文件和 HEAD        |
 | `<leader>tb` | Normal | 切换行 blame / Toggle line blame       | 显示/隐藏每行的 blame 信息 |
-| `<leader>tD` | Normal | 切换显示删除内容 / Toggle show deleted | 显示/隐藏被删除的行        |
+| `<leader>tD` | Normal | 切换显示删除行 / Toggle show deleted   | 显示/隐藏被删除的行       |
 
 ### Git Blame 显示 / Git Blame Display
 | 快捷键       | 模式   | 功能                              | 使用场景                   |
 | ------------ | ------ | --------------------------------- | -------------------------- |
 | `<leader>gb` | Normal | 切换 Git Blame / Toggle git blame | 显示每行代码的提交者和时间 |
-
-### Octo (GitHub PR/Issue) / Octo (GitHub PR/Issue)
-| 快捷键        | 模式   | 功能                      | 使用场景                    |
-| ------------- | ------ | ------------------------- | --------------------------- |
-| `<leader>gpr` | Normal | 列出 PR / List PRs        | 查看仓库的所有 Pull Request |
-| `<leader>gpc` | Normal | 创建 PR / Create PR       | 创建新的 Pull Request       |
-| `<leader>gis` | Normal | 列出 Issue / List issues  | 查看仓库的所有 Issue        |
-| `<leader>gic` | Normal | 创建 Issue / Create issue | 创建新的 Issue              |
 
 ---
 
@@ -200,8 +185,8 @@
 | ----------- | ------ | ---------------------------------- | ------------------------- |
 | `gd`        | Normal | 跳转到定义 / Go to definition      | 查看函数/变量定义         |
 | `gr`        | Normal | 查找引用 / Go to references        | 查看函数/变量被调用的地方 |
-| `gI`        | Normal | 跳转到实现 / Go to implementation  | 查看接口的实现            |
-| `<leader>D` | Normal | 类型定义 / Type definition         | 查看类型定义              |
+| `gi`        | Normal | 跳转到实现 / Go to implementation  | 查看接口的实现            |
+| `gT`        | Normal | 类型定义 / Type definition         | 查看类型定义              |
 | `K`         | Normal | 显示悬浮文档 / Hover documentation | 查看函数/变量的文档       |
 | `gD`        | Normal | 跳转到声明 / Go to declaration     | 查看变量声明              |
 
@@ -239,6 +224,7 @@
 | `<leader>cl` | Normal | LSP 信息 / LSP info               | 查看 LSP 相关信息  |
 | `<leader>xL` | Normal | 位置列表 / Location list          | 打开位置列表       |
 | `<leader>xQ` | Normal | 快速修复列表 / Quickfix list      | 打开快速修复列表   |
+| `<leader>q`  | Normal | 诊断快速修复 / Diagnostic quickfix | 打开诊断列表       |
 
 ### 快速修复导航 / Quickfix Navigation
 | 快捷键 | 模式   | 功能                               | 使用场景             |
@@ -289,20 +275,12 @@
 
 ## 终端 / Terminal
 
-### ToggleTerm 终端管理 / ToggleTerm Terminal
-| 快捷键       | 模式     | 功能                              | 使用场景                |
-| ------------ | -------- | --------------------------------- | ----------------------- |
-| `<c-\>`      | Normal   | 切换终端 / Toggle terminal        | 打开/关闭上次使用的终端 |
-| `<leader>tt` | Normal   | 水平终端 / Horizontal terminal    | 打开水平分屏终端        |
-| `<leader>tf` | Normal   | 浮动终端 / Floating terminal      | 打开浮动窗口终端        |
-| `<esc>` (t)  | Terminal | 退出终端模式 / Exit terminal mode | 从终端切换到普通模式    |
-| `jk` (t)     | Terminal | 退出终端模式 / Exit terminal mode | 从终端切换到普通模式    |
-
-### FTerm 终端 / FTerm Terminal
-| 快捷键       | 模式            | 功能                         | 使用场景                 |
-| ------------ | --------------- | ---------------------------- | ------------------------ |
-| `<C-t>`      | Normal/Terminal | 切换 FTerm / Toggle FTerm    | 打开/关闭 FTerm 浮动终端 |
-| `<leader>tf` | Normal/Terminal | 浮动终端 / Floating terminal | 打开 FTerm 浮动终端      |
+### FTerm 浮动终端 / FTerm Floating Terminal
+| 快捷键       | 模式            | 功能                              | 使用场景                 |
+| ------------ | --------------- | --------------------------------- | ------------------------ |
+| `<C-t>`      | Normal/Terminal | 切换 FTerm / Toggle FTerm         | 打开/关闭 FTerm 浮动终端 |
+| `<leader>tf` | Normal/Terminal | 浮动终端 / Floating terminal      | 打开 FTerm 浮动终端      |
+| `<Esc><Esc>` | Terminal        | 退出终端模式 / Exit terminal mode | 从内置终端返回普通模式   |
 
 ---
 
@@ -340,6 +318,14 @@
 | ------------ | ------ | ----------------------- | -------------------- |
 | `<leader>th` | Normal | 切换主题 / Switch theme | 更换 Neovim 配色主题 |
 
+### AI 工具切换 / AI Tool Toggles
+| 快捷键       | 模式   | 功能                               | 使用场景             |
+| ------------ | ------ | ---------------------------------- | -------------------- |
+| `<leader>ta` | Normal | 切换所有 AI 工具 / Toggle all AI   | 开启/关闭所有 AI 辅助 |
+| `<leader>ts` | Normal | 切换 Sidekick / Toggle Sidekick    | 开启/关闭 Sidekick   |
+| `<leader>tv` | Normal | 切换 Avante / Toggle Avante        | 开启/关闭 Avante     |
+| `<leader>tc` | Normal | 光标定位闪烁 / Track cursor beacon | 大跳转后定位当前行   |
+
 ### 撤销历史 / Undo History
 | 快捷键      | 模式   | 功能                        | 使用场景           |
 | ----------- | ------ | --------------------------- | ------------------ |
@@ -347,27 +333,16 @@
 
 ---
 
-## 其他工具 / Other Tools
-
-### 诊断信息 / Diagnostics
-| 快捷键      | 模式   | 功能                                            | 使用场景         |
-| ----------- | ------ | ----------------------------------------------- | ---------------- |
-| `<leader>q` | Normal | 打开诊断快速修复列表 / Open diagnostic quickfix | 查看所有诊断信息 |
-
-### 终端模式快捷退出 / Terminal Mode Quick Exit
-| 快捷键       | 模式     | 功能                              | 使用场景               |
-| ------------ | -------- | --------------------------------- | ---------------------- |
-| `<Esc><Esc>` | Terminal | 退出终端模式 / Exit terminal mode | 从内置终端返回普通模式 |
-
----
-
 ## 📝 常用工作流示例 / Common Workflow Examples
 
 ### Git 工作流 / Git Workflow
-1. `<leader>gg` - 打开 LazyGit 查看状态
-2. `<leader>gd` - 查看详细的代码改动
-3. `<leader>hs` - 暂存特定 hunk
-4. `<leader>gg` - 返回 LazyGit 提交
+1. `<leader>gs` - 搜索有改动的文件并打开
+2. `]c` / `[c` - 在文件内跳转到改动位置
+3. `<leader>hp` - 预览当前 hunk 改动
+4. `<leader>hs` - 暂存特定 hunk
+5. `<leader>gd` - 打开 Diffview 全局查看改动
+6. `<leader>gD` - 查看已暂存的改动
+7. `<leader>gg` - 打开 LazyGit 提交
 
 ### 代码浏览 / Code Navigation
 1. `<leader>sf` - 搜索文件
@@ -398,4 +373,4 @@
 
 ---
 
-**最后更新 / Last Updated:** 2026-01-04
+**最后更新 / Last Updated:** 2026-05-14

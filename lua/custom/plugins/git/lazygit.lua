@@ -16,7 +16,7 @@ return {
     -- <leader>gg: 打开 LazyGit 主界面，管理整个仓库的 Git 操作
     { '<leader>gg', '<cmd>LazyGit<cr>', desc = 'LazyGit' },
     -- <leader>gf: 打开当前文件的 Git 历史记录，查看文件的提交历史
-    { '<leader>gf', '<cmd>LazyGitCurrentFile<cr>', desc = 'LazyGit file history' },
+    { '<leader>gF', '<cmd>LazyGitCurrentFile<cr>', desc = 'LazyGit file history' },
   },
   config = function()
     -- 浮动窗口占屏幕 90% 大小
