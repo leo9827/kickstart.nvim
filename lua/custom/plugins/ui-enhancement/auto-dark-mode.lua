@@ -3,7 +3,7 @@
 -- Modify these values to change light/dark theme pairs
 -- ============================================
 local LIGHT_THEME = 'flexoki-light'
-local DARK_THEME = 'kanagawa'
+local DARK_THEME = 'zenburn'
 local LIGHT_LUALINE = 'solarized_light'
 local DARK_LUALINE = 'iceberg_dark'
 -- ============================================

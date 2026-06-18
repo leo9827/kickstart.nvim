@@ -8,7 +8,7 @@ return {
       return
     end
     cloak.setup {
-      enabled = true, -- 启用插件
+      enabled = false, -- 默认关闭，需要时手动启用
       cloak_character = '*', -- 用于隐藏敏感信息的字符，默认为星号
       -- 应用于隐藏内容的高亮组（颜色），参见 `:h highlight`。
       highlight_group = 'Comment',
