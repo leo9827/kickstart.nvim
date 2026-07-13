@@ -62,6 +62,17 @@
 | ----------- | ------ | ----------------------------------------------- | -------------- |
 | `<leader>S` | Normal | 替换光标下的单词 / Substitute word under cursor | 批量重命名变量 |
 
+### Spectre 项目搜索替换 / Spectre Search & Replace
+| 快捷键       | 模式          | 功能                                         | 使用场景                     |
+| ------------ | ------------- | -------------------------------------------- | ---------------------------- |
+| `<leader>sp` | Normal        | 切换 Spectre 面板 / Toggle Spectre panel     | 打开项目级搜索替换           |
+| `<leader>sc` | Normal        | 搜索光标下单词 / Search current word         | 在项目中批量替换该词         |
+| `<leader>sc` | Visual        | 搜索选中内容 / Search visual selection       | 替换选中的文本               |
+| `<leader>sF` | Normal        | 当前文件内搜索 / Search in current file      | 只在本文件内替换             |
+| `R`          | Spectre 面板  | 执行全部替换 / Replace all                   | 面板内确认后一次性替换       |
+| `<leader>c`  | Spectre 面板  | 替换当前条目 / Replace current               | 逐条替换                     |
+| `dd`         | Spectre 面板  | 排除/包含结果 / Toggle result                | 跳过不想替换的匹配项         |
+
 ### 其他编辑操作 / Other Editing
 | 快捷键      | 模式   | 功能                                      | 使用场景       |
 | ----------- | ------ | ----------------------------------------- | -------------- |
