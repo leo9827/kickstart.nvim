@@ -20,13 +20,30 @@ local check_version = function()
 end
 
 local check_external_reqs = function()
-  -- Basic utils: `git`, `make`, `unzip`
   for _, exe in ipairs { 'git', 'make', 'unzip', 'rg' } do
     local is_executable = vim.fn.executable(exe) == 1
     if is_executable then
       vim.health.ok(string.format("Found executable: '%s'", exe))
     else
       vim.health.warn(string.format("Could not find executable: '%s'", exe))
+    end
+  end
+
+  for _, exe in ipairs {
+    'mise',
+    'lua-language-server',
+    'gopls',
+    'goimports',
+    'gofumpt',
+    'dlv',
+    'stylua',
+    'markdownlint-cli2',
+    'sqlfluff',
+  } do
+    if vim.fn.executable(exe) == 1 then
+      vim.health.ok(string.format("Found Mise-managed tool: '%s'", exe))
+    else
+      vim.health.warn(string.format("Missing Mise-managed tool: '%s'", exe))
     end
   end
 
@@ -37,11 +54,7 @@ return {
   check = function()
     vim.health.start 'kickstart.nvim'
 
-    vim.health.info [[NOTE: Not every warning is a 'must-fix' in `:checkhealth`
-
-  Fix only warnings for plugins and languages you intend to use.
-    Mason will give warnings for languages that are not installed.
-    You do not need to install, unless you want to use those languages!]]
+    vim.health.info 'External development tools are managed globally through Mise.'
 
     local uv = vim.uv or vim.loop
     vim.health.info('System Information: ' .. vim.inspect(uv.os_uname()))

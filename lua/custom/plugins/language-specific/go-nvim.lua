@@ -32,7 +32,7 @@ return {
       run_in_floaterm = true, -- set to true to run in a float window. :GoTermClose closes the floatterm
       -- float term recommend if you use gotestsum ginkgo with terminal color
       floaterm = { -- position
-        posititon = 'auto', -- one of {`top`, `bottom`, `left`, `right`, `center`, `auto`}
+        position = 'auto', -- one of {`top`, `bottom`, `left`, `right`, `center`, `auto`}
         width = 0.45, -- width of float window if not auto
         height = 0.90, -- height of float window if not auto
         title_colors = 'nord', -- default to nord, one of {'nord', 'tokyo', 'dracula', 'rainbow', 'solarized ', 'monokai'}
@@ -52,5 +52,4 @@ return {
     -- })
   end,
   ft = { 'go', 'gomod', 'gowork', 'gotmpl' }, -- Load on Go file types
-  build = ':lua require("go.install").update_all_sync()', -- Installs/updates all Go binaries used by go.nvim (e.g. gopls, goimports, etc.)
 }

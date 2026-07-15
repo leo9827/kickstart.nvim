@@ -18,9 +18,34 @@ return {
   dependencies = { 'nvim-lua/plenary.nvim' },
   opts = {},
   keys = {
-    { '<leader>sp', function() require('spectre').toggle() end, desc = 'Spectre: 切换面板' },
-    { '<leader>sc', function() require('spectre').open_visual { select_word = true } end, desc = 'Spectre: 搜索当前单词' },
-    { '<leader>sc', function() require('spectre').open_visual() end, mode = 'v', desc = 'Spectre: 搜索选中内容' },
-    { '<leader>sF', function() require('spectre').open_file_search { select_word = true } end, desc = 'Spectre: 当前文件内搜索' },
+    {
+      '<leader>sp',
+      function()
+        require('spectre').toggle()
+      end,
+      desc = 'Spectre: 切换面板',
+    },
+    {
+      '<leader>sc',
+      function()
+        require('spectre').open_visual { select_word = true }
+      end,
+      desc = 'Spectre: 搜索当前单词',
+    },
+    {
+      '<leader>sc',
+      function()
+        require('spectre').open_visual()
+      end,
+      mode = 'v',
+      desc = 'Spectre: 搜索选中内容',
+    },
+    {
+      '<leader>sF',
+      function()
+        require('spectre').open_file_search { select_word = true }
+      end,
+      desc = 'Spectre: 当前文件内搜索',
+    },
   },
 }

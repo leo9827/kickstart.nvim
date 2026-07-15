@@ -7,7 +7,7 @@
 return {
   'nvim-neo-tree/neo-tree.nvim',
   branch = 'v3.x',
-  lazy = false, -- neo-tree will lazily load itself
+  cmd = 'Neotree',
   dependencies = {
     'nvim-lua/plenary.nvim',
     'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
@@ -28,7 +28,7 @@ return {
           -- 在窗口中间显示大字母
           return vim.api.nvim_buf_call(bufnr, function()
             vim.fn.clearmatches()
-            vim.fn.matchaddpos("WindowPicker", {{1, 1, 999}}, 100)
+            vim.fn.matchaddpos('WindowPicker', { { 1, 1, 999 } }, 100)
             vim.api.nvim_win_set_config(win_config.win_id, {
               border = 'rounded',
               zindex = 100,

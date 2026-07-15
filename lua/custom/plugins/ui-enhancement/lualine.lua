@@ -8,7 +8,7 @@ return {
   opts = function()
     return {
       options = {
-        theme = 'solarized_light', -- 主题，'auto' 表示自动跟随 Neovim 主题
+        theme = require('custom.theme').lualine_theme(),
         globalstatus = true, -- 是否在所有窗口显示状态栏
         disabled_filetypes = { statusline = { 'dashboard', 'alpha' } }, -- 在哪些文件类型中禁用状态栏
       },

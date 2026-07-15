@@ -8,8 +8,8 @@ return {
 
       -- 为常用文件类型声明 linter，这里按需添加即可（不会强制安装依赖）
       lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-        sql = { 'sqlfluff' }, -- Mason 已安装 sqlfluff，SQL 文件可直接使用
+        markdown = { 'markdownlint-cli2' },
+        sql = { 'sqlfluff' },
       }
 
       -- 只在对应的可执行文件存在时才触发，以免出现「命令不存在」的噪音
@@ -29,7 +29,7 @@ return {
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
       -- lint.linters_by_ft = lint.linters_by_ft or {}
-      -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
+      -- lint.linters_by_ft['markdown'] = { 'markdownlint-cli2' }
       --
       -- However, note that this will enable a set of default linters,
       -- which will cause errors unless these tools are available:
@@ -61,7 +61,7 @@ return {
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+      vim.api.nvim_create_autocmd({ 'BufReadPost', 'BufWritePost' }, {
         group = lint_augroup,
         callback = function()
           -- Only run the linter in buffers that you can modify in order to

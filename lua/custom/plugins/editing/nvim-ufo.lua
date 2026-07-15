@@ -24,10 +24,11 @@
 return {
   -- 折叠代码插件
   'kevinhwang91/nvim-ufo',
+  event = { 'BufReadPost', 'BufNewFile' },
   dependencies = {
     'kevinhwang91/promise-async', -- 异步支持
   },
-  config = function(_, opts)
+  config = function()
     -- 基础折叠设置
     vim.o.foldcolumn = '1' -- 显示折叠列，'0' 是不显示
     vim.o.foldlevel = 99 -- 默认打开所有折叠
@@ -37,10 +38,7 @@ return {
     -- 配置 ufo
     require('ufo').setup {
       -- 折叠提供者
-      provider_selector = function(bufnr, filetype, buftype)
-        if filetype == 'python' then
-          return ''
-        end
+      provider_selector = function()
         return { 'treesitter', 'indent' } -- 优先使用 treesitter，其次使用缩进
       end,
       -- 折叠预览窗口

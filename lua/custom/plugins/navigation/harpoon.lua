@@ -2,27 +2,65 @@ return {
   'ThePrimeagen/harpoon',
   branch = 'harpoon2',
   dependencies = { 'nvim-lua/plenary.nvim' },
+  keys = {
+    {
+      '<leader>ma',
+      function()
+        require('harpoon'):list():append()
+      end,
+      desc = 'Harpoon: add file',
+    },
+    {
+      '<leader>mf',
+      function()
+        require('harpoon').ui:toggle_quick_menu(require('harpoon'):list())
+      end,
+      desc = 'Harpoon: file menu',
+    },
+    {
+      '<C-1>',
+      function()
+        require('harpoon'):list():select(1)
+      end,
+      desc = 'Harpoon: file 1',
+    },
+    {
+      '<C-2>',
+      function()
+        require('harpoon'):list():select(2)
+      end,
+      desc = 'Harpoon: file 2',
+    },
+    {
+      '<C-3>',
+      function()
+        require('harpoon'):list():select(3)
+      end,
+      desc = 'Harpoon: file 3',
+    },
+    {
+      '<C-n>',
+      function()
+        require('harpoon'):list():next()
+      end,
+      desc = 'Harpoon: next file',
+    },
+    {
+      '<C-p>',
+      function()
+        require('harpoon'):list():prev()
+      end,
+      desc = 'Harpoon: previous file',
+    },
+    {
+      '<leader>md',
+      function()
+        require('harpoon'):list():remove()
+      end,
+      desc = 'Harpoon: remove file',
+    },
+  },
   config = function()
-    -- 调用 setup() 是必须的
-    local harpoon = require 'harpoon'
-    harpoon:setup()
-
-    -- 定义快捷键映射表
-    -- stylua: ignore
-    local keymaps = {
-      { key = '<leader>ma', action = function() harpoon:list():append() end, desc = 'Harpoon: 添加文件', },
-      { key = '<leader>mf', action = function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, desc = 'Harpoon: 打开快速菜单', },
-      { key = '<C-1>', action = function() harpoon:list():select(1) end, desc = 'Harpoon: 跳转到文件 1', },
-      { key = '<C-2>', action = function() harpoon:list():select(2) end, desc = 'Harpoon: 跳转到文件 2', },
-      { key = '<C-3>', action = function() harpoon:list():select(3) end, desc = 'Harpoon: 跳转到文件 3', },
-      { key = '<C-n>', action = function() harpoon:list():next() end, desc = 'Harpoon: 下一个', },
-      { key = '<C-p>', action = function() harpoon:list():prev() end, desc = 'Harpoon: 上一个', },
-      { key = '<leader>md', action = function() harpoon:list():remove() end, desc = 'Harpoon: 移除当前文件', },
-    }
-
-    -- 统一注册所有快捷键
-    for _, keymap in ipairs(keymaps) do
-      vim.keymap.set('n', keymap.key, keymap.action, { desc = keymap.desc })
-    end
+    require('harpoon'):setup()
   end,
 }

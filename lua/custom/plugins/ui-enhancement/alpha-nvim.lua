@@ -5,14 +5,8 @@ return {
   event = 'VimEnter', -- Load on startup
   dependencies = { 'echasnovski/mini.icons', 'nvim-lua/plenary.nvim' },
   config = function()
-    local ok_alpha, alpha = pcall(require, 'alpha')
-    if not ok_alpha then
-      return
-    end
-    local ok_dashboard, dashboard = pcall(require, 'alpha.themes.dashboard')
-    if not ok_dashboard then
-      return
-    end
+    local alpha = require 'alpha'
+    local dashboard = require 'alpha.themes.dashboard'
 
     -- 1. 静态 ASCII 艺术头图 (优化: 避免启动时的 io.popen 调用，节省 ~30-40ms)
     local static_header = {
@@ -66,7 +60,7 @@ return {
       dashboard.button('f', '  Find Files', ':Telescope find_files<CR>'),
       dashboard.button('g', '  Fuzzy Grep', ':Telescope live_grep<CR>'),
       dashboard.button('d', '  Git Changes', ':Telescope git_status<CR>'),
-      dashboard.button('s', '  Restore Session', ':SessionRestore<CR>'),
+      dashboard.button('s', '  Restore Session', ':AutoSession restore<CR>'),
       dashboard.button('n', '  New File', ':ene <BAR> startinsert<CR>'),
       dashboard.button('c', '  Configuration', ':e $MYVIMRC<CR>'),
       dashboard.button('u', '  Update Plugins', ':Lazy update<CR>'),

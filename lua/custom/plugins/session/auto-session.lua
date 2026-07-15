@@ -27,7 +27,7 @@ return {
     -- Session lens configuration for Telescope integration
     session_lens = {
       -- Load session on selection
-      load_on_setup = true,
+      load_on_setup = false,
 
       -- Telescope theme
       theme_conf = { border = true },
