@@ -47,6 +47,25 @@ return {
     close_if_last_window = false, -- 避免 :q 时因未保存 buffer 被 Neo-tree 强行拆窗重开
     popup_border_style = 'rounded',
     sources = { 'filesystem', 'buffers', 'git_status' },
+    -- 仅折叠可明确由源文件生成的伴生文件，避免隐藏测试、lockfile 等重要文件。
+    nesting_rules = {
+      javascript = {
+        pattern = '(.+)%.js$',
+        files = { '%1.js.map', '%1.min.js', '%1.min.js.map' },
+      },
+      css = {
+        pattern = '(.+)%.css$',
+        files = { '%1.css.map', '%1.min.css', '%1.min.css.map' },
+      },
+      stylesheet = {
+        pattern = '(.+)%.s[ac]ss$',
+        files = { '%1.css', '%1.css.map', '%1.min.css', '%1.min.css.map' },
+      },
+      protobuf = {
+        pattern = '(.+)%.proto$',
+        files = { '%1.pb.go', '%1_grpc.pb.go', '%1.pb.gw.go' },
+      },
+    },
     default_component_configs = {
       indent = { padding = 1 },
       icon = {
