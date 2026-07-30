@@ -37,7 +37,6 @@ local check_external_reqs = function()
     'gofumpt',
     'dlv',
     'stylua',
-    'markdownlint-cli2',
     'sqlfluff',
   } do
     if vim.fn.executable(exe) == 1 then

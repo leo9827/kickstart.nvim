@@ -8,7 +8,6 @@ return {
 
       -- 为常用文件类型声明 linter，这里按需添加即可（不会强制安装依赖）
       lint.linters_by_ft = {
-        markdown = { 'markdownlint-cli2' },
         sql = { 'sqlfluff' },
       }
 
