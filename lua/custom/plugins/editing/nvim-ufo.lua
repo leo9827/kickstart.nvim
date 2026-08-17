@@ -38,7 +38,10 @@ return {
     -- 配置 ufo
     require('ufo').setup {
       -- 折叠提供者
-      provider_selector = function()
+      provider_selector = function(_, filetype)
+        if filetype == 'neo-tree' then
+          return ''
+        end
         return { 'treesitter', 'indent' } -- 优先使用 treesitter，其次使用缩进
       end,
       -- 折叠预览窗口
