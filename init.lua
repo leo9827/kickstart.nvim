@@ -189,6 +189,26 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+vim.api.nvim_create_autocmd('BufReadPost', {
+  desc = 'Restore the last cursor position',
+  group = vim.api.nvim_create_augroup('last-position-jump', { clear = true }),
+  callback = function(event)
+    if vim.bo[event.buf].filetype == 'gitcommit' then
+      return
+    end
+
+    local mark = vim.api.nvim_buf_get_mark(event.buf, '"')
+    if mark[1] < 1 or mark[1] > vim.api.nvim_buf_line_count(event.buf) then
+      return
+    end
+
+    local winid = vim.fn.bufwinid(event.buf)
+    if winid ~= -1 then
+      pcall(vim.api.nvim_win_set_cursor, winid, mark)
+    end
+  end,
+})
+
 vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
   desc = 'Check for files changed outside Nvim',
   group = vim.api.nvim_create_augroup('external-file-change-check', { clear = true }),
@@ -281,6 +301,9 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>g', group = '[G]it' },
+        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>m', group = '[M]arks' },
       },
     },
   },
@@ -788,23 +811,23 @@ require('lazy').setup({
       }
     end,
   },
-  { -- Highlight, edit, and navigate code
+  { -- Highlight and indent with Neovim's native Treesitter APIs
     'nvim-treesitter/nvim-treesitter',
-    branch = 'master',
+    branch = 'main',
+    lazy = false,
     build = ':TSUpdate',
-    event = { 'BufReadPost', 'BufNewFile' },
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    dependencies = {
-      { 'nvim-treesitter/nvim-treesitter-textobjects', branch = 'master' },
-    },
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
-    opts = {
-      ensure_installed = {
+    config = function()
+      local treesitter = require 'nvim-treesitter'
+      treesitter.setup {
+        install_dir = vim.fn.stdpath 'data' .. '/site',
+      }
+
+      local parsers = {
         'bash',
         'c',
         'diff',
-        'html',
         'go',
+        'html',
         'lua',
         'luadoc',
         'markdown',
@@ -813,57 +836,126 @@ require('lazy').setup({
         'query',
         'vim',
         'vimdoc',
-      },
-      -- Autoinstall languages that are not installed
-      auto_install = false,
-      highlight = {
-        enable = true,
-        -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
-        --  If you are experiencing weird indenting issues, add the language to
-        --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
-      },
-      indent = {
-        enable = true,
-        disable = { 'ruby' },
-      },
-      textobjects = {
-        select = {
-          enable = true,
-          lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-          keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ['af'] = '@function.outer',
-            ['if'] = '@function.inner',
-            ['ac'] = '@class.outer',
-            ['ic'] = '@class.inner',
-          },
-        },
-        move = {
-          enable = true,
-          set_jumps = true, -- whether to set jumps in the jumplist
-          goto_next_start = {
-            [']m'] = '@function.outer',
-            [']]'] = '@class.outer',
-          },
-          goto_next_end = {
-            [']M'] = '@function.outer',
-            [']['] = '@class.outer',
-          },
-          goto_previous_start = {
-            ['[m'] = '@function.outer',
-            ['[['] = '@class.outer',
-          },
-          goto_previous_end = {
-            ['[M'] = '@function.outer',
-            ['[]'] = '@class.outer',
-          },
-        },
-      },
-    },
-    config = function(_, opts)
-      require('nvim-treesitter.configs').setup(opts)
-      require('custom.compat.treesitter-query').patch()
+      }
+
+      vim.treesitter.language.register('bash', 'sh')
+
+      local function parser_available(lang)
+        return #vim.api.nvim_get_runtime_file('parser/' .. lang .. '.*', false) > 0
+      end
+
+      local function attach(bufnr)
+        if not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_buf_is_loaded(bufnr) then
+          return
+        end
+
+        local filetype = vim.bo[bufnr].filetype
+        local lang = vim.treesitter.language.get_lang(filetype)
+        if not lang or not parser_available(lang) then
+          return
+        end
+
+        if not vim.treesitter.highlighter.active[bufnr] then
+          vim.treesitter.start(bufnr, lang)
+        end
+        if filetype == 'ruby' then
+          vim.bo[bufnr].syntax = 'ON'
+        else
+          vim.bo[bufnr].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end
+
+      vim.api.nvim_create_autocmd('FileType', {
+        group = vim.api.nvim_create_augroup('treesitter-start', { clear = true }),
+        callback = function(event)
+          attach(event.buf)
+        end,
+      })
+
+      local installed = {}
+      for _, parser in ipairs(treesitter.get_installed 'parsers') do
+        installed[parser] = true
+      end
+      local missing = vim.tbl_filter(function(parser)
+        return not installed[parser]
+      end, parsers)
+      if #missing > 0 then
+        if vim.fn.executable 'tree-sitter' == 0 then
+          vim.notify('Treesitter parsers are missing; run `mise install` first', vim.log.levels.WARN)
+        else
+          treesitter.install(missing, { summary = false }):await(function(err, success)
+            vim.schedule(function()
+              if err or not success then
+                vim.notify('Some Treesitter parsers failed to install', vim.log.levels.WARN)
+              end
+              for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                attach(bufnr)
+              end
+            end)
+          end)
+        end
+      end
+    end,
+  },
+  {
+    'nvim-treesitter/nvim-treesitter-textobjects',
+    branch = 'main',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
+    event = { 'BufReadPost', 'BufNewFile' },
+    config = function()
+      require('nvim-treesitter-textobjects').setup {
+        select = { lookahead = true },
+        move = { set_jumps = true },
+      }
+
+      local select = require 'nvim-treesitter-textobjects.select'
+      local swap = require 'nvim-treesitter-textobjects.swap'
+      local move = require 'nvim-treesitter-textobjects.move'
+
+      local function map(mode, lhs, rhs, desc)
+        vim.keymap.set(mode, lhs, rhs, { desc = desc, silent = true })
+      end
+
+      local selections = {
+        { 'af', '@function.outer', 'Select outer function' },
+        { 'if', '@function.inner', 'Select inner function' },
+        { 'ac', '@class.outer', 'Select outer class' },
+        { 'ic', '@class.inner', 'Select inner class' },
+        { 'aC', '@call.outer', 'Select outer call' },
+        { 'iC', '@call.inner', 'Select inner call' },
+        { 'ad', '@conditional.outer', 'Select outer conditional' },
+        { 'id', '@conditional.inner', 'Select inner conditional' },
+        { 'al', '@loop.outer', 'Select outer loop' },
+        { 'il', '@loop.inner', 'Select inner loop' },
+      }
+      for _, selection in ipairs(selections) do
+        map({ 'x', 'o' }, selection[1], function()
+          select.select_textobject(selection[2], 'textobjects')
+        end, selection[3])
+      end
+
+      map('n', '<leader>a', function()
+        swap.swap_next '@parameter.inner'
+      end, 'Swap with next parameter')
+      map('n', '<leader>A', function()
+        swap.swap_previous '@parameter.inner'
+      end, 'Swap with previous parameter')
+
+      local motions = {
+        { ']m', move.goto_next_start, '@function.outer', 'Next function start' },
+        { ']]', move.goto_next_start, '@class.outer', 'Next class start' },
+        { ']M', move.goto_next_end, '@function.outer', 'Next function end' },
+        { '][', move.goto_next_end, '@class.outer', 'Next class end' },
+        { '[m', move.goto_previous_start, '@function.outer', 'Previous function start' },
+        { '[[', move.goto_previous_start, '@class.outer', 'Previous class start' },
+        { '[M', move.goto_previous_end, '@function.outer', 'Previous function end' },
+        { '[]', move.goto_previous_end, '@class.outer', 'Previous class end' },
+      }
+      for _, motion in ipairs(motions) do
+        map({ 'n', 'x', 'o' }, motion[1], function()
+          motion[2](motion[3], 'textobjects')
+        end, motion[4])
+      end
     end,
   },
   require 'kickstart.plugins.debug',
