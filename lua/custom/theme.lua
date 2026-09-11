@@ -51,15 +51,39 @@ end
 function M.setup()
   vim.g.nvconfig = require 'nvconfig'
   vim.g.base46_cache = vim.fn.stdpath 'data' .. '/base46_cache/'
-  require('base46').load_all_highlights()
-  apply_highlights()
+  M.apply(vim.o.background)
+  local group = vim.api.nvim_create_augroup('TerminalTheme', { clear = true })
+  -- Colorscheme setup can disable Neovim's default OSC 11 listener.
+  vim.api.nvim_create_autocmd('TermResponse', {
+    group = group,
+    callback = function(ev)
+      local r, g, b = ev.data.sequence:match '^\027%]11;rgba?:([%x]+)/([%x]+)/([%x]+)'
+      if not r then
+        return
+      end
+      local function component(value)
+        return tonumber(value, 16) / (16 ^ #value - 1)
+      end
+      local luminance = 0.299 * component(r) + 0.587 * component(g) + 0.114 * component(b)
+      M.apply(luminance < 0.5 and 'dark' or 'light')
+    end,
+  })
+  vim.api.nvim_create_autocmd('OptionSet', {
+    group = group,
+    pattern = 'background',
+    callback = function()
+      M.apply(vim.o.background)
+    end,
+  })
 end
 
 function M.apply(background)
   local selected = assert(themes[background], 'unsupported background: ' .. tostring(background))
   local config = require 'nvconfig'
 
-  vim.o.background = background
+  if vim.o.background ~= background then
+    vim.o.background = background
+  end
   config.base46.theme = selected.base46
   vim.g.nvconfig = config
   vim.fn.mkdir(vim.g.base46_cache, 'p')

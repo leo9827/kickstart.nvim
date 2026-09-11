@@ -2,7 +2,6 @@
   "FTerm.nvim": { "branch": "master", "commit": "d1320892cc2ebab472935242d9d992a2c9570180" },
   "aerial.nvim": { "branch": "master", "commit": "28fe6e822ae344544c379d60fcb13c9519a1f08a" },
   "alpha-nvim": { "branch": "main", "commit": "4ba26e41990c11620c96c0e1cff20eab65efde4a" },
-  "auto-dark-mode.nvim": { "branch": "main", "commit": "54058b4fe414bd64bd2904a6f8a63f1f14e3d8df" },
   "auto-session": { "branch": "main", "commit": "c8e6139a2e52a38101fecaba6014d7dd75489044" },
   "base46": { "branch": "v3.0", "commit": "267954c8663607823f03a3259bb8deb15688212f" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
