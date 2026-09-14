@@ -19,6 +19,25 @@ return {
     { '<leader>gF', '<cmd>LazyGitCurrentFile<cr>', desc = 'LazyGit file history' },
   },
   config = function()
+    -- The plugin invokes the binary directly, bypassing the shell theme launcher.
+    local function sync_theme()
+      local config_home = vim.env.XDG_CONFIG_HOME or (vim.env.HOME .. '/.config')
+      local light = vim.o.background == 'light'
+      local pager = vim.env.LAZYGIT_PAGER
+      local suffix = (pager == 'difft' or pager == 'difftastic') and '' or '.delta'
+      vim.g.lazygit_use_custom_config_file_path = 1
+      vim.g.lazygit_config_file_path = config_home .. '/lazygit/config' .. (light and '-light' or '') .. suffix .. '.yml'
+      vim.env.LAZYGIT_LIGHT = light and '1' or '0'
+      vim.env.DFT_BACKGROUND = vim.o.background
+    end
+    sync_theme()
+    local group = vim.api.nvim_create_augroup('LazygitTheme', { clear = true })
+    vim.api.nvim_create_autocmd('OptionSet', { group = group, pattern = 'background', callback = sync_theme })
+    vim.api.nvim_create_autocmd('TermResponse', {
+      group = group,
+      -- Wait for the terminal theme listener to update 'background'.
+      callback = vim.schedule_wrap(sync_theme),
+    })
     -- 浮动窗口占屏幕 90% 大小
     vim.g.lazygit_floating_window_scaling_factor = 0.9
     -- 设置浮动窗口边框字符，使用圆角边框
