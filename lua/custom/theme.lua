@@ -1,4 +1,5 @@
 local M = {}
+local applied_background
 
 local themes = {
   light = {
@@ -79,6 +80,11 @@ end
 
 function M.apply(background)
   local selected = assert(themes[background], 'unsupported background: ' .. tostring(background))
+  if applied_background == background then
+    return
+  end
+  -- Set before changing the option: OptionSet can call back into this function.
+  applied_background = background
   local config = require 'nvconfig'
 
   if vim.o.background ~= background then

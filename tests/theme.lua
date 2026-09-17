@@ -13,12 +13,17 @@ for _, background in ipairs { 'light', 'dark', 'light' } do
   assert(vim.api.nvim_get_hl(0, { name = 'NotifyBackground' }).bg == (dark and 0x3f3f3f or 0xf2f0e5), 'notification background did not follow')
   local variant = dark and '/config.delta.yml' or '/config-light.delta.yml'
   assert(
-    vim.wait(1000, function()
-      return vim.g.lazygit_use_custom_config_file_path == 1 and vim.g.lazygit_config_file_path:sub(-#variant) == variant
-    end),
+    vim.g.lazygit_use_custom_config_file_path == 1 and vim.g.lazygit_config_file_path:sub(-#variant) == variant,
     'lazygit diff config did not follow background'
   )
   assert(vim.env.DFT_BACKGROUND == background, 'difftastic did not follow background')
+
+  -- A repeated terminal reply must not reset highlights customized after loading.
+  vim.api.nvim_set_hl(0, 'FlashLabel', { bg = 0x123456 })
+  vim.api.nvim_exec_autocmds('TermResponse', {
+    data = { sequence = '\027]11;rgb:' .. channel .. '/' .. channel .. '/' .. channel .. '\027\\' },
+  })
+  assert(vim.api.nvim_get_hl(0, { name = 'FlashLabel' }).bg == 0x123456, 'unchanged terminal theme reloaded highlights')
 end
 theme.toggle()
 assert(vim.o.background == 'dark', 'manual toggle failed')

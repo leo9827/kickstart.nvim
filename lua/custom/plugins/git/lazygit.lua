@@ -32,12 +32,7 @@ return {
     end
     sync_theme()
     local group = vim.api.nvim_create_augroup('LazygitTheme', { clear = true })
-    vim.api.nvim_create_autocmd('OptionSet', { group = group, pattern = 'background', callback = sync_theme })
-    vim.api.nvim_create_autocmd('TermResponse', {
-      group = group,
-      -- Wait for the terminal theme listener to update 'background'.
-      callback = vim.schedule_wrap(sync_theme),
-    })
+    vim.api.nvim_create_autocmd('User', { group = group, pattern = 'NvThemeReload', callback = sync_theme })
     -- 浮动窗口占屏幕 90% 大小
     vim.g.lazygit_floating_window_scaling_factor = 0.9
     -- 设置浮动窗口边框字符，使用圆角边框
