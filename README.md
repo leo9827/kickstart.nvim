@@ -27,3 +27,7 @@ Language servers, formatters, linters, and debug adapters are declared globally 
 - `make check` — format, startup, LSP, DAP, and diff checks
 - `:Telescope keymaps` — active mappings
 - `:checkhealth` — diagnostics
+
+## Editing feedback
+
+- Search progress appears in the statusline while search highlighting is active.

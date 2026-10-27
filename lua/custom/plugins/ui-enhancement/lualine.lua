@@ -40,6 +40,14 @@ return {
           { 'fileformat' }, -- 显示文件格式
         },
         lualine_y = {
+          {
+            'searchcount',
+            maxcount = 999,
+            timeout = 20,
+            cond = function()
+              return not vim.b.large_file
+            end,
+          },
           { 'progress', padding = 1 },
           { 'location', padding = 1 },
         },
