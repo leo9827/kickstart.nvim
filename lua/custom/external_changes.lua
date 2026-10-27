@@ -29,16 +29,21 @@ local function changed(event)
   local change = { before = before, after = after, filetype = vim.bo[bufnr].filetype }
   latest[bufnr] = change
   api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
-  local hunks = vim.text.diff(table.concat(before, '\n') .. '\n', table.concat(after, '\n') .. '\n', { result_type = 'indices' })
+  local before_text = table.concat(before, '\n') .. '\n'
+  local after_text = table.concat(after, '\n') .. '\n'
+  local hunks = vim.text.diff(before_text, after_text, { result_type = 'indices' })
   local marked = 0
   for _, hunk in ipairs(hunks) do
-    local start = hunk[4] == 0 and math.max(1, hunk[3]) or hunk[3]
-    for line = start, math.min(#after, start + math.max(1, hunk[4]) - 1) do
+    local new_start, new_count = hunk[3], hunk[4]
+    local deleted = new_count == 0
+    local start = deleted and math.max(1, new_start) or new_start
+    local finish = math.min(#after, start + math.max(1, new_count) - 1)
+    for line = start, finish do
       if marked >= 200 then
         break
       end
       api.nvim_buf_set_extmark(bufnr, namespace, line - 1, 0, {
-        line_hl_group = hunk[4] == 0 and 'DiffDelete' or 'DiffChange',
+        line_hl_group = deleted and 'DiffDelete' or 'DiffChange',
         priority = 210,
       })
       marked = marked + 1

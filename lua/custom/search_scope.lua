@@ -1,6 +1,7 @@
 local M = {}
 local scope = 'project'
 local choices = { 'project', 'folder', 'open files' }
+local titles = { find_files = 'Files', live_grep = 'Grep', grep_string = 'Word' }
 
 function M.choose()
   vim.ui.select(choices, { prompt = 'Search scope (current: ' .. scope .. ')' }, function(choice)
@@ -13,8 +14,12 @@ end
 
 function M.search(kind)
   local folder = vim.bo.buftype == '' and vim.fs.dirname(vim.api.nvim_buf_get_name(0)) or nil
-  local cwd = (scope == 'folder' and folder) or vim.fs.root(0, { '.git', 'go.mod', 'package.json' }) or vim.fn.getcwd()
-  local opts = { cwd = cwd, prompt_title = ({ find_files = 'Files', live_grep = 'Grep', grep_string = 'Word' })[kind] .. ' · ' .. scope .. ' · ' .. cwd }
+  local cwd
+  if scope == 'folder' then
+    cwd = folder
+  end
+  cwd = cwd or vim.fs.root(0, { '.git', 'go.mod', 'package.json' }) or vim.fn.getcwd()
+  local opts = { cwd = cwd, prompt_title = titles[kind] .. ' · ' .. scope .. ' · ' .. cwd }
   local builtin = require 'telescope.builtin'
   if scope == 'open files' then
     if kind == 'find_files' then

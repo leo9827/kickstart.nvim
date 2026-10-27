@@ -22,14 +22,18 @@ local function feedback(bufnr)
 end
 
 function M.on_save(bufnr)
-  if vim.b[bufnr].autoformat_disabled or vim.b[bufnr].large_file or vim.tbl_contains({ 'c', 'cpp' }, vim.bo[bufnr].filetype) then
+  local filetype = vim.bo[bufnr].filetype
+  local unsupported_style = filetype == 'c' or filetype == 'cpp'
+  if vim.b[bufnr].autoformat_disabled or vim.b[bufnr].large_file or unsupported_style then
     return
   end
-  if #require('conform').list_formatters_for_buffer(bufnr) == 0 and #vim.lsp.get_clients { bufnr = bufnr, method = 'textDocument/formatting' } == 0 then
+  local has_formatter = #require('conform').list_formatters_for_buffer(bufnr) > 0
+  local has_lsp_formatter = #vim.lsp.get_clients { bufnr = bufnr, method = 'textDocument/formatting' } > 0
+  if not has_formatter and not has_lsp_formatter then
     return
   end
   return {
-    timeout_ms = vim.bo[bufnr].filetype == 'go' and 2000 or 500,
+    timeout_ms = filetype == 'go' and 2000 or 500,
     lsp_format = 'fallback',
     quiet = true,
   }, feedback(bufnr)

@@ -46,7 +46,8 @@ function M.restore()
   end
   api.nvim_win_set_buf(0, ticket.buf)
   local view = vim.deepcopy(ticket.view)
-  view.topline = math.max(1, view.topline + pos[1] + 1 - view.lnum)
+  local line_shift = pos[1] + 1 - view.lnum
+  view.topline = math.max(1, view.topline + line_shift)
   view.lnum, view.col = pos[1] + 1, pos[2]
   vim.fn.winrestview(view)
   require('custom.jump_beacon').pulse()

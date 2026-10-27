@@ -99,12 +99,11 @@ function M.setup()
       if not previous then
         return
       end
-      local moved = current.buf ~= previous.buf or current.line ~= previous.line or current.col ~= previous.col
-      local jumped = current.buf ~= previous.buf
-        or current.jump ~= previous.jump
-        or math.abs(current.line - previous.line) >= (vim.g.jump_cursor_beacon_min_distance or 8)
-      local cooled = vim.uv.now() - (last_pulse[winid] or 0) >= (vim.g.jump_cursor_beacon_cooldown_ms or 120)
-      if moved and jumped and (cooled or current.buf ~= previous.buf) and not scheduled[winid] then
+      local changed_buffer = current.buf ~= previous.buf
+      local moved = changed_buffer or current.line ~= previous.line or current.col ~= previous.col
+      local jumped = changed_buffer or current.jump ~= previous.jump or math.abs(current.line - previous.line) >= (vim.g.jump_cursor_beacon_min_distance or 8)
+      local cooldown_elapsed = vim.uv.now() - (last_pulse[winid] or 0) >= (vim.g.jump_cursor_beacon_cooldown_ms or 120)
+      if moved and jumped and (cooldown_elapsed or changed_buffer) and not scheduled[winid] then
         scheduled[winid] = true
         vim.schedule(function()
           scheduled[winid] = nil

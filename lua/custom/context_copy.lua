@@ -5,11 +5,12 @@ function M.copy(diagnostics)
   local mode = vim.fn.mode()
   local first, last, lines
   if mode == 'v' or mode == 'V' or mode == '\22' then
-    local a, b = vim.fn.getpos 'v', vim.fn.getpos '.'
+    local anchor = vim.fn.getpos 'v'
+    local cursor = vim.fn.getpos '.'
     local opts = { type = mode, exclusive = vim.o.selection == 'exclusive' }
-    local region = vim.fn.getregionpos(a, b, opts)
+    local region = vim.fn.getregionpos(anchor, cursor, opts)
     first, last = region[1][1][2], region[#region][2][2]
-    lines = vim.fn.getregion(a, b, opts)
+    lines = vim.fn.getregion(anchor, cursor, opts)
   else
     first = api.nvim_win_get_cursor(0)[1]
     last, lines = first, { api.nvim_get_current_line() }
@@ -32,7 +33,9 @@ function M.copy(diagnostics)
       return a.lnum < b.lnum
     end)
     for _, diagnostic in ipairs(found) do
-      if diagnostic.lnum < last and (diagnostic.end_lnum or diagnostic.lnum) >= first - 1 then
+      local diagnostic_end = diagnostic.end_lnum or diagnostic.lnum
+      local overlaps_selection = diagnostic.lnum < last and diagnostic_end >= first - 1
+      if overlaps_selection then
         result[#result + 1] = ('- Line %d [%s]: %s'):format(
           diagnostic.lnum + 1,
           vim.diagnostic.severity[diagnostic.severity],

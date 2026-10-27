@@ -33,13 +33,35 @@ local function detect(bufnr)
   return false
 end
 
+local function update_breadcrumbs(bufnr, large, previous)
+  if not package.loaded.dropbar then
+    return
+  end
+  local bar = require 'dropbar.utils.bar'
+  if large then
+    bar.exec('del', { buf = bufnr })
+  end
+  for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
+    if large and vim.wo[win].winbar:find('v:lua.dropbar', 1, true) then
+      saved[bufnr].winbars[win] = vim.wo[win].winbar
+      vim.wo[win].winbar = ''
+    elseif not large and previous and vim.wo[win].winbar == '' then
+      if previous.winbars[win] then
+        vim.wo[win].winbar = previous.winbars[win]
+      else
+        bar.attach(bufnr, win)
+      end
+    end
+  end
+end
+
 local function apply(bufnr)
   if not api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= '' then
     return
   end
   local large = M.is_large(bufnr)
   local previous = saved[bufnr]
-  local transition = large ~= (previous ~= nil)
+  local mode_changed = large ~= (previous ~= nil)
   if large then
     saved[bufnr] = saved[bufnr]
       or {
@@ -72,30 +94,14 @@ local function apply(bufnr)
   if package.loaded.ibl then
     require('ibl').refresh(bufnr)
   end
-  if package.loaded['render-markdown'] and (large or previous and previous.rendering) then
+  local restore_markdown = previous and previous.rendering
+  if package.loaded['render-markdown'] and (large or restore_markdown) then
     api.nvim_buf_call(bufnr, function()
       require('render-markdown').set_buf(not large)
     end)
   end
-  if package.loaded.dropbar then
-    local bar = require 'dropbar.utils.bar'
-    if large then
-      bar.exec('del', { buf = bufnr })
-    end
-    for _, win in ipairs(vim.fn.win_findbuf(bufnr)) do
-      if large and vim.wo[win].winbar:find('v:lua.dropbar', 1, true) then
-        saved[bufnr].winbars[win] = vim.wo[win].winbar
-        vim.wo[win].winbar = ''
-      elseif not large and previous and vim.wo[win].winbar == '' then
-        if previous.winbars[win] then
-          vim.wo[win].winbar = previous.winbars[win]
-        else
-          bar.attach(bufnr, win)
-        end
-      end
-    end
-  end
-  if transition and package.loaded['treesitter-context'] then
+  update_breadcrumbs(bufnr, large, previous)
+  if mode_changed and package.loaded['treesitter-context'] then
     local context = require 'treesitter-context'
     if context.enabled() then
       context.enable()
