@@ -31,3 +31,6 @@ Language servers, formatters, linters, and debug adapters are declared globally 
 ## Editing feedback
 
 - Search progress appears in the statusline while search highlighting is active.
+- `Space t F` pauses/resumes automatic formatting for the current file (`FMT OFF`).
+  Manual formatting with `Space f` still works. Failures notify once until the
+  formatter recovers or the error changes; `:ConformInfo` shows details.

@@ -720,37 +720,24 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
+        '<leader>tF',
+        function()
+          require('custom.formatting').toggle()
+        end,
+        desc = 'Toggle file autoformat',
+      },
+      {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
+          require('custom.formatting').format()
         end,
         mode = '',
         desc = '[F]ormat buffer',
       },
     },
     opts = {
-      notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = {
-          c = true,
-          cpp = true,
-        }
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          return nil
-        else
-          local timeout_ms = 500
-          if vim.bo[bufnr].filetype == 'go' then
-            timeout_ms = 2000
-          end
-          return {
-            timeout_ms = timeout_ms,
-            lsp_format = 'fallback',
-          }
-        end
-      end,
+      notify_on_error = false, -- custom.formatting reports each failure once
+      format_on_save = require('custom.formatting').on_save,
       formatters_by_ft = {
         lua = { 'stylua' },
         go = { 'goimports', 'gofumpt' },

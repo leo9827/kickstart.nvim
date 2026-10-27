@@ -35,6 +35,12 @@ return {
           },
         },
         lualine_x = {
+          {
+            function()
+              return vim.b.autoformat_disabled and 'FMT OFF' or ''
+            end,
+            color = 'DiagnosticWarn',
+          },
           { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } }, -- 显示文件类型图标
           { 'encoding' }, -- 显示文件编码
           { 'fileformat' }, -- 显示文件格式
