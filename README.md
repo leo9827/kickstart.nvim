@@ -2,6 +2,8 @@
 
 My Neovim setup, based on Kickstart and built for Neovim 0.12.
 
+Release notes are in the [changelog](CHANGELOG.md).
+
 ## Setup and maintenance
 
 You'll need `git`, `make`, `rg`, `fd`, `lazygit`, a C compiler, a Nerd Font,
