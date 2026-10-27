@@ -637,15 +637,15 @@ require('lazy').setup({
         float = {
           border = 'rounded',
           source = 'if_many',
-          severity = vim.diagnostic.severity.WARN,
+          severity = { min = vim.diagnostic.severity.WARN },
         },
 
         underline = {
-          severity = vim.diagnostic.severity.WARN,
+          severity = { min = vim.diagnostic.severity.WARN },
         },
 
         signs = vim.g.have_nerd_font and {
-          severity = vim.diagnostic.severity.WARN,
+          severity = { min = vim.diagnostic.severity.WARN },
           text = {
             [vim.diagnostic.severity.ERROR] = '󰅚 ',
             [vim.diagnostic.severity.WARN] = '󰀪 ',
@@ -657,7 +657,7 @@ require('lazy').setup({
         virtual_text = {
           source = 'if_many',
           spacing = 2,
-          -- severity = vim.diagnostic.severity.WARN,
+          -- severity = { min = vim.diagnostic.severity.WARN },
           format = function(diagnostic)
             local diagnostic_message = {
               [vim.diagnostic.severity.ERROR] = diagnostic.message,
