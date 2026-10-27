@@ -617,6 +617,13 @@ require('lazy').setup({
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
         severity_sort = true,
+        jump = {
+          on_jump = function(diagnostic)
+            if diagnostic then
+              require('custom.jump_beacon').pulse()
+            end
+          end,
+        },
 
         float = {
           border = 'rounded',

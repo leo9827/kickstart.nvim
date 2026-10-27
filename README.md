@@ -38,3 +38,5 @@ Language servers, formatters, linters, and debug adapters are declared globally 
   latest before/after snapshots in a separate diff tab; `q` closes it. Snapshots
   exclude later edits and are kept only for files below 1 MiB.
   Unsaved conflicts retain Neovim's normal confirmation behavior.
+- Search, diagnostic, picker, Git, and cross-file jumps briefly highlight the
+  destination.
