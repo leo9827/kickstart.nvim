@@ -7,7 +7,9 @@ return {
     require('dropbar').setup {
       -- 常规设置
       bar = {
-        enable = true, -- 是否启用插件
+        enable = function(bufnr)
+          return vim.bo[bufnr].buftype == '' and not require('custom.large_file').is_large(bufnr)
+        end, -- 是否启用插件
         attach_events = { 'BufReadPost', 'BufNewFile' }, -- 在哪些事件时启用
       },
       -- 图标设置

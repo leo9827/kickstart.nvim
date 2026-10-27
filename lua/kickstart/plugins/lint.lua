@@ -66,7 +66,7 @@ return {
           -- Only run the linter in buffers that you can modify in order to
           -- avoid superfluous noise, notably within the handy LSP pop-ups that
           -- describe the hovered symbol using Markdown.
-          if vim.bo.modifiable then
+          if vim.bo.modifiable and not vim.b.large_file then
             local active_linters = get_available_linters()
             if active_linters and #active_linters > 0 then
               lint.try_lint(active_linters)

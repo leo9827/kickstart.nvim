@@ -4,6 +4,9 @@ return {
   dependencies = { 'nvim-treesitter/nvim-treesitter' },
   event = { 'BufReadPost', 'BufNewFile' },
   opts = {
+    on_attach = function(bufnr)
+      return not require('custom.large_file').is_large(bufnr)
+    end,
     max_lines = 3,
     multiline_threshold = 1,
     trim_scope = 'outer',

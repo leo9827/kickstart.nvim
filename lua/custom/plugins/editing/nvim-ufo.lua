@@ -38,8 +38,8 @@ return {
     -- 配置 ufo
     require('ufo').setup {
       -- 折叠提供者
-      provider_selector = function(_, filetype)
-        if filetype == 'neo-tree' then
+      provider_selector = function(bufnr, filetype)
+        if filetype == 'neo-tree' or require('custom.large_file').is_large(bufnr) then
           return ''
         end
         return { 'treesitter', 'indent' } -- 优先使用 treesitter，其次使用缩进

@@ -36,7 +36,11 @@ Language servers, formatters, linters, and debug adapters are declared globally 
   formatter recovers or the error changes; `:ConformInfo` shows details.
 - External file updates briefly highlight changed lines. `Space w e` opens the
   latest before/after snapshots in a separate diff tab; `q` closes it. Snapshots
-  exclude later edits and are kept only for files below 1 MiB.
+  exclude later edits and are kept only for files below 1 MiB outside light mode.
   Unsaved conflicts retain Neovim's normal confirmation behavior.
 - Search, diagnostic, picker, Git, and cross-file jumps briefly highlight the
   destination.
+- Files at least 1 MiB, 20,000 lines, or with a line at least 2,000 bytes enter
+  `LIGHT` mode when opened or saved. This reduces highlighting, folding, analysis,
+  completion, and decorations, and skips automatic formatting. `Space t l`
+  toggles it for the current file; the override lasts until the buffer is wiped.

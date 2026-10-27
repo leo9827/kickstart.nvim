@@ -13,6 +13,7 @@ vim.o.synmaxcol = 300
 -- Match Nvim's Lua queries with its bundled parser before plugins extend runtimepath.
 vim.treesitter.language.add 'lua'
 
+require('custom.large_file').setup()
 require('custom.external_changes').setup()
 
 -- Disable the built-in matchparen plugin (Treesitter/LSP are usually enough)
@@ -532,6 +533,9 @@ require('lazy').setup({
           clear = true,
         }),
         callback = function(event)
+          if require('custom.large_file').is_large(event.buf) then
+            return
+          end
           -- NOTE: Remember that Lua is a real programming language, and as such it is possible
           -- to define small helper and utility functions so you don't have to repeat yourself.
           --
@@ -744,6 +748,9 @@ require('lazy').setup({
     --- @module 'blink.cmp'
     --- @type blink.cmp.Config
     opts = {
+      enabled = function()
+        return not vim.b.large_file
+      end,
       keymap = {
         preset = 'default',
       },
@@ -837,7 +844,7 @@ require('lazy').setup({
       end
 
       local function attach(bufnr)
-        if not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_buf_is_loaded(bufnr) then
+        if not vim.api.nvim_buf_is_valid(bufnr) or not vim.api.nvim_buf_is_loaded(bufnr) or require('custom.large_file').is_large(bufnr) then
           return
         end
 

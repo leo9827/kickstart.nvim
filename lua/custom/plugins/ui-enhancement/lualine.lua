@@ -37,6 +37,12 @@ return {
         lualine_x = {
           {
             function()
+              return vim.b.large_file and 'LIGHT' or ''
+            end,
+            color = 'DiagnosticWarn',
+          },
+          {
+            function()
               return vim.b.autoformat_disabled and 'FMT OFF' or ''
             end,
             color = 'DiagnosticWarn',
