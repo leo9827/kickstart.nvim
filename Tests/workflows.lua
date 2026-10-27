@@ -302,6 +302,121 @@ eq(api.nvim_buf_get_mark(buf, 'z'), { 3, 0 }, 'join preserves z bookmark')
 keys '=ap'
 eq(api.nvim_buf_get_mark(buf, 'a'), { 3, 0 }, 'indent preserves a bookmark')
 
+-- Real Go processes: pass, fail location, nearest selection, rerun, stale results,
+-- compilation error, unsaved guard and cancellation of the spawned test binary.
+local go = require 'custom.go_tests'
+vim.fn.writefile({ 'module workflow.test', '', 'go 1.22' }, dir .. '/go.mod')
+local source = {
+  'package workflow',
+  'import ("testing"; "time"; "os")',
+  'func TestPass(t *testing.T) { t.Log("ok") }',
+  'func TestFail(t *testing.T) { t.Fatal("expected failure") }',
+  'func TestSlow(t *testing.T) { time.Sleep(3*time.Second); os.WriteFile("orphan", []byte("bad"), 0600) }',
+}
+local path = dir .. '/pkg/workflow_test.go'
+vim.fn.writefile(source, path)
+vim.cmd.edit { args = { path }, bang = true }
+vim.b.autoformat_disabled = true
+buf = api.nvim_get_current_buf()
+vim.treesitter.start(buf, 'go')
+vim.treesitter.get_parser(buf):parse()
+local function finish()
+  check(
+    vim.wait(60000, function()
+      return not go.status():find('running', 1, true)
+    end, 20),
+    'Go test timeout'
+  )
+end
+local function go_at(row)
+  api.nvim_set_current_buf(buf)
+  api.nvim_win_set_cursor(0, { row, 25 })
+  go.run 'nearest'
+  finish()
+end
+vim.wait(150, function()
+  return false
+end)
+local win = api.nvim_get_current_win()
+go_at(3)
+check(go.status():find('pass', 1, true), 'real passing test')
+eq(api.nvim_get_current_win(), win, 'test completion does not steal focus')
+vim.fn.mkdir(dir .. '/other', 'p')
+local other_path = dir .. '/other/broken_test.go'
+vim.fn.writefile({ 'package other', 'import "testing"', 'func TestBroken(t *testing.T) { t.Fatal("broken") }' }, other_path)
+vim.cmd.edit { args = { other_path }, bang = true }
+eq(go.status(), '', 'untested package must not inherit passing result')
+go.output()
+check(table.concat(lines(), '\n'):find('TEST pass', 1, true), 'output keeps last result outside tested package')
+keys 'q'
+api.nvim_set_current_buf(buf)
+eq(go.status(), 'TEST pass', 'returning to tested package shows result')
+api.nvim_buf_set_lines(buf, 2, 3, false, { 'func TestRenamed(t *testing.T) { t.Log("ok") }' })
+vim.cmd.write()
+go.rerun()
+finish()
+eq(go.status(), 'TEST no matching tests', 'renamed test must not report pass')
+check(messages[#messages]:find('no matching tests', 1, true), 'missing test notification')
+go_at(3)
+eq(go.status(), 'TEST pass', 'running renamed test explicitly recovers')
+go_at(4)
+check(go.status():find('FAIL', 1, true), 'real failing test')
+go.failures()
+local failures = vim.fn.getqflist()
+check(#failures > 0 and failures[1].lnum == 4 and api.nvim_buf_get_name(failures[1].bufnr) == path, 'failure resolves exact file and line')
+vim.cmd.cclose()
+api.nvim_set_current_buf(buf)
+api.nvim_buf_set_lines(buf, 3, 4, false, { 'func TestFail(t *testing.T) { t.Log("fixed") }' })
+api.nvim_exec_autocmds('TextChanged', { buffer = buf })
+check(go.status():find('stale', 1, true), 'editing marks result stale')
+go.rerun()
+check(messages[#messages]:find('Save Go changes', 1, true), 'unsaved changes do not run old code')
+vim.cmd.write()
+go.rerun()
+finish()
+check(go.status() == 'TEST pass', 'rerun uses saved code and clears stale marker')
+api.nvim_buf_set_lines(buf, -1, -1, false, { 'func broken(' })
+vim.cmd.write()
+go.run 'package'
+finish()
+check(go.status():find('FAIL', 1, true), 'compilation failure status')
+go.failures()
+check(#vim.fn.getqflist() > 0, 'compilation failure locations')
+vim.cmd.cclose()
+api.nvim_set_current_buf(buf)
+api.nvim_buf_set_lines(buf, -2, -1, false, {})
+vim.cmd.write()
+api.nvim_win_set_cursor(0, { 5, 25 })
+vim.treesitter.get_parser(buf):parse()
+go.run 'nearest'
+check(go.status():find('running', 1, true), 'slow test started')
+vim.wait(1000, function()
+  return false
+end)
+go.cancel()
+finish()
+check(go.status():find('cancelled', 1, true), 'cancel status')
+vim.wait(3200, function()
+  return false
+end)
+check(vim.fn.filereadable(dir .. '/pkg/orphan') == 0, 'cancel leaves no orphan test subprocess')
+go.output()
+check(not vim.bo.modifiable and vim.bo.buftype == 'nofile', 'test output is read-only')
+keys 'q'
+
+-- A package without tests and a skipped test must not be advertised as passing.
+vim.fn.mkdir(dir .. '/empty', 'p')
+local empty_path = dir .. '/empty/empty.go'
+vim.fn.writefile({ 'package empty' }, empty_path)
+vim.cmd.edit { args = { empty_path }, bang = true }
+go.run 'package'
+finish()
+eq(go.status(), 'TEST no tests', 'package without tests is explicit')
+vim.fn.writefile({ 'package empty', 'import "testing"', 'func TestSkipped(t *testing.T) { t.Skip("intentional") }' }, dir .. '/empty/empty_test.go')
+go.run 'package'
+finish()
+eq(go.status(), 'TEST skipped', 'skipped tests are distinguished from passes')
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do

@@ -37,6 +37,11 @@ return {
         lualine_x = {
           {
             function()
+              return require('custom.go_tests').status()
+            end,
+          },
+          {
+            function()
               return vim.b.large_file and 'LIGHT' or ''
             end,
             color = 'DiagnosticWarn',
