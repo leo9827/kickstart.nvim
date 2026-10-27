@@ -61,23 +61,7 @@ function M.review()
     vim.notify('No external change captured for this file', vim.log.levels.INFO)
     return
   end
-  local function fill(lines, title)
-    vim.bo.buftype = 'nofile'
-    vim.bo.bufhidden = 'wipe'
-    vim.bo.swapfile = false
-    vim.bo.buflisted = false
-    api.nvim_buf_set_lines(0, 0, -1, false, lines)
-    vim.bo.filetype = change.filetype
-    vim.bo.modifiable = false
-    vim.bo.modified = false
-    vim.wo.winbar = title
-    vim.cmd.diffthis()
-    vim.keymap.set('n', 'q', '<cmd>tabclose<CR>', { buffer = true, desc = 'Close external change review' })
-  end
-  vim.cmd.tabnew()
-  fill(change.before, ' Before external update')
-  vim.cmd.vnew()
-  fill(change.after, ' After external update')
+  require('custom.diff_review').open(change.before, change.after, change.filetype, { 'Before external update', 'After external update' })
 end
 
 function M.setup()

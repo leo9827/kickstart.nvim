@@ -214,6 +214,30 @@ for _, case in ipairs {
 end
 history.clear()
 
+-- Checkpoints retain unsaved baseline and comparison buffers cannot modify sources.
+local checkpoint = require 'custom.checkpoint'
+buf = new({ 'already uncommitted', 'keep' }, dir .. '/checkpoint.txt')
+checkpoint.save()
+api.nvim_buf_set_lines(buf, 0, 1, false, { 'experiment' })
+vim.ui.select = function(items, _, callback)
+  callback(items[1])
+end
+checkpoint.save() -- Default keeps the original checkpoint.
+checkpoint.review()
+local snapshots = {}
+for _, win in ipairs(api.nvim_tabpage_list_wins(0)) do
+  local snapshot = api.nvim_win_get_buf(win)
+  check(not vim.bo[snapshot].modifiable and vim.bo[snapshot].buftype == 'nofile', 'checkpoint is read-only')
+  snapshots[#snapshots + 1] = api.nvim_buf_get_lines(snapshot, 0, 1, false)[1]
+end
+check(vim.tbl_contains(snapshots, 'already uncommitted') and vim.tbl_contains(snapshots, 'experiment'), 'checkpoint retains dirty baseline')
+keys 'q'
+eq(api.nvim_buf_get_lines(buf, 0, -1, false), { 'experiment', 'keep' }, 'review leaves source intact')
+api.nvim_set_current_buf(buf)
+checkpoint.clear()
+checkpoint.review()
+check(messages[#messages]:find('No checkpoints', 1, true), 'checkpoint clearing')
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do

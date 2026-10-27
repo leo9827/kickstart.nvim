@@ -56,11 +56,14 @@ Run `make check-experience` for the feedback and file-update regression checks.
 | `Space p` | Paste the latest explicit copy in normal mode. Visual-mode `Space p` keeps its existing behavior. |
 | `]y` / `[y` | Replace that paste with an older / newer copy. Stops after another edit or undo; each replacement is undoable. |
 | `Space s y` / `Space c X` | Choose a copy by source and preview / clear copy history. |
+| `Space w c` / `Space w v` / `Space w C` | Capture this file's checkpoint / choose a checkpoint to compare / clear this file's checkpoint. |
 
 Tickets are kept only in this Nvim process.
 
 Context copy writes only to the clipboard.
 
 Copy history records the last 30 explicit yanks up to 100 KiB each; deletes and external clipboard changes are excluded. Native `p` / `P` are unchanged. History lasts only in this Nvim process.
+
+Checkpoints include unsaved edits and keep one baseline per buffer (up to 20 files below 1 MiB each) in this Nvim process. Comparisons are read-only snapshots; `q` closes the comparison. Wiping a buffer clears its checkpoint.
 
 Run `make check-workflows` for the workflow regression checks.
