@@ -2,9 +2,22 @@ local M = {}
 local api = vim.api
 local last
 
-local function belongs(buf, root)
-  local name = api.nvim_buf_get_name(buf)
-  return vim.fs.relpath(root, name) ~= nil and (name:match '%.go$' or name:match '/go%.mod$' or name:match '/go%.sum$' or name:match '/go%.work$')
+local function is_module_source(buf, root)
+  local path = api.nvim_buf_get_name(buf)
+  if not vim.fs.relpath(root, path) then
+    return false
+  end
+  local filename = vim.fs.basename(path)
+  return path:match '%.go$' or filename == 'go.mod' or filename == 'go.sum' or filename == 'go.work'
+end
+
+local function is_test_name(name)
+  if not name then
+    return false
+  end
+  local is_test = name == 'Test' or name:match '^Test[^a-z]'
+  local is_fuzz_test = name == 'Fuzz' or name:match '^Fuzz[^a-z]'
+  return is_test or is_fuzz_test or name:match '^Example'
 end
 
 local function nearest()
@@ -16,7 +29,7 @@ local function nearest()
     if node:type() == 'function_declaration' then
       local name = node:field('name')[1]
       name = name and vim.treesitter.get_node_text(name, 0)
-      if name and (name == 'Test' or name:match '^Test[^a-z]' or name:match '^Example' or name == 'Fuzz' or name:match '^Fuzz[^a-z]') then
+      if is_test_name(name) then
         return name
       end
       return
@@ -25,7 +38,7 @@ local function nearest()
   end
 end
 
-local function append(run, text, test)
+local function append_output(run, text, test)
   for line in (text .. '\n'):gmatch '(.-)\n' do
     if line ~= '' then
       line = #line > 4096 and line:sub(1, 4096) .. ' [truncated]' or line
@@ -49,14 +62,14 @@ local function append(run, text, test)
   end
 end
 
-local function event(run, line)
+local function read_test_event(run, line)
   local ok, value = pcall(vim.json.decode, line)
   if not ok or type(value) ~= 'table' then
-    append(run, line)
+    append_output(run, line)
     return
   end
   if value.Output then
-    append(run, value.Output, value.Test)
+    append_output(run, value.Output, value.Test)
   end
   if value.Test and value.Action == 'fail' then
     run.failed[value.Test] = true
@@ -104,14 +117,74 @@ local function summary(run)
   return 'TEST ' .. outcome(run) .. (run.stale and ' (stale)' or '')
 end
 
-local function start(spec)
+local function read_output_chunk(run, channel, err, data)
+  if err then
+    append_output(run, tostring(err))
+  end
+  if not data then
+    return
+  end
+  local combined = run.pending_output[channel] .. data
+  local start_at = 1
+  while true do
+    local ending = combined:find('\n', start_at, true)
+    if not ending then
+      break
+    end
+    local line = combined:sub(start_at, ending - 1)
+    if channel == 'stdout' then
+      read_test_event(run, line)
+    else
+      append_output(run, line)
+    end
+    start_at = ending + 1
+  end
+  run.pending_output[channel] = combined:sub(start_at)
+  if #run.pending_output[channel] > 1024 * 1024 then
+    run.pending_output[channel] = ''
+    append_output(run, '[Oversized output omitted]')
+  end
+  vim.cmd.redrawstatus()
+end
+
+local function finish_run(run, result)
+  for channel, tail in pairs(run.pending_output) do
+    if tail ~= '' then
+      if channel == 'stdout' then
+        read_test_event(run, tail)
+      else
+        append_output(run, tail)
+      end
+    end
+  end
+  run.running, run.code = false, result.code
+  for buf, tick in pairs(run.ticks) do
+    if not api.nvim_buf_is_loaded(buf) or api.nvim_buf_get_changedtick(buf) ~= tick then
+      run.stale = true
+    end
+  end
+  local status = outcome(run)
+  vim.notify(
+    ('Go test %s · %d passed, %d failed, %d skipped%s · Space To for output'):format(
+      status,
+      run.counts.pass,
+      run.counts.fail,
+      run.counts.skip,
+      run.stale and ' (stale)' or ''
+    ),
+    (status == 'pass' or status == 'skipped' or run.cancelled) and vim.log.levels.INFO or vim.log.levels.WARN
+  )
+  vim.cmd.redrawstatus()
+end
+
+local function start_run(spec)
   if last and last.running then
     vim.notify('A Go test is running · Space Tk to cancel', vim.log.levels.WARN)
     return
   end
   local ticks = {}
   for _, buf in ipairs(api.nvim_list_bufs()) do
-    if api.nvim_buf_is_loaded(buf) and belongs(buf, spec.root) then
+    if api.nvim_buf_is_loaded(buf) and is_module_source(buf, spec.root) then
       if vim.bo[buf].modified then
         vim.notify('Save Go changes before testing: ' .. vim.fn.fnamemodify(api.nvim_buf_get_name(buf), ':t'), vim.log.levels.WARN)
         return
@@ -122,6 +195,7 @@ local function start(spec)
   local run = vim.tbl_extend('force', spec, {
     running = true,
     counts = { pass = 0, fail = 0, skip = 0 },
+    pending_output = { stdout = '', stderr = '' },
     log = {},
     locations = {},
     failed = {},
@@ -133,38 +207,6 @@ local function start(spec)
     vim.list_extend(command, { '-run', '^' .. spec.test .. '$' })
   end
   command[#command + 1] = '.'
-  local partial = { stdout = '', stderr = '' }
-  local function stream(channel)
-    return vim.schedule_wrap(function(err, data)
-      if err then
-        append(run, tostring(err))
-      end
-      if not data then
-        return
-      end
-      local combined = partial[channel] .. data
-      local start_at = 1
-      while true do
-        local ending = combined:find('\n', start_at, true)
-        if not ending then
-          break
-        end
-        local line = combined:sub(start_at, ending - 1)
-        if channel == 'stdout' then
-          event(run, line)
-        else
-          append(run, line)
-        end
-        start_at = ending + 1
-      end
-      partial[channel] = combined:sub(start_at)
-      if #partial[channel] > 1024 * 1024 then
-        partial[channel] = ''
-        append(run, '[Oversized output omitted]')
-      end
-      vim.cmd.redrawstatus()
-    end)
-  end
   local ok, process = pcall(
     vim.system,
     command,
@@ -172,42 +214,20 @@ local function start(spec)
       cwd = run.cwd,
       text = true,
       detach = true,
-      stdout = stream 'stdout',
-      stderr = stream 'stderr',
+      stdout = vim.schedule_wrap(function(err, data)
+        read_output_chunk(run, 'stdout', err, data)
+      end),
+      stderr = vim.schedule_wrap(function(err, data)
+        read_output_chunk(run, 'stderr', err, data)
+      end),
     },
     vim.schedule_wrap(function(result)
-      for channel, tail in pairs(partial) do
-        if tail ~= '' then
-          if channel == 'stdout' then
-            event(run, tail)
-          else
-            append(run, tail)
-          end
-        end
-      end
-      run.running, run.code = false, result.code
-      for buf, tick in pairs(run.ticks) do
-        if not api.nvim_buf_is_loaded(buf) or api.nvim_buf_get_changedtick(buf) ~= tick then
-          run.stale = true
-        end
-      end
-      local status = outcome(run)
-      vim.notify(
-        ('Go test %s · %d passed, %d failed, %d skipped%s · Space To for output'):format(
-          status,
-          run.counts.pass,
-          run.counts.fail,
-          run.counts.skip,
-          run.stale and ' (stale)' or ''
-        ),
-        (status == 'pass' or status == 'skipped' or run.cancelled) and vim.log.levels.INFO or vim.log.levels.WARN
-      )
-      vim.cmd.redrawstatus()
+      finish_run(run, result)
     end)
   )
   if not ok then
     run.running, run.code = false, -1
-    append(run, tostring(process))
+    append_output(run, tostring(process))
     vim.notify('Could not start Go tests: ' .. tostring(process), vim.log.levels.ERROR)
     return
   end
@@ -226,12 +246,12 @@ function M.run(kind)
     vim.notify 'Place the cursor inside a test, example, or fuzz function; Space Tp runs the package'
     return
   end
-  start { cwd = vim.fs.dirname(file), root = vim.fs.root(0, { 'go.mod', '.git' }) or vim.fs.dirname(file), test = test }
+  start_run { cwd = vim.fs.dirname(file), root = vim.fs.root(0, { 'go.mod', '.git' }) or vim.fs.dirname(file), test = test }
 end
 
 function M.rerun()
   if last then
-    start { cwd = last.cwd, root = last.root, test = last.test }
+    start_run { cwd = last.cwd, root = last.root, test = last.test }
   else
     vim.notify 'No previous Go test run'
   end
@@ -257,9 +277,12 @@ function M.output()
   local lines = { 'Go test · ' .. last.cwd .. ' · ' .. (last.test or 'package'), summary(last), '' }
   vim.list_extend(lines, last.log)
   vim.cmd 'botright 12new'
-  vim.bo.buftype, vim.bo.bufhidden, vim.bo.swapfile = 'nofile', 'wipe', false
+  vim.bo.buftype = 'nofile'
+  vim.bo.bufhidden = 'wipe'
+  vim.bo.swapfile = false
   api.nvim_buf_set_lines(0, 0, -1, false, lines)
-  vim.bo.modifiable, vim.bo.modified = false, false
+  vim.bo.modifiable = false
+  vim.bo.modified = false
   vim.keymap.set('n', 'q', '<cmd>close<CR>', { buffer = true, desc = 'Close test output' })
 end
 
@@ -270,7 +293,9 @@ function M.failures()
   end
   local items = {}
   for _, location in ipairs(last.locations) do
-    if last.failed[location.test] or not location.test and last.code ~= 0 then
+    local failed_test = last.failed[location.test]
+    local build_error = not location.test and last.code ~= 0
+    if failed_test or build_error then
       local item = vim.deepcopy(location)
       item.test = nil
       items[#items + 1] = item
@@ -288,12 +313,13 @@ function M.setup()
   local group = api.nvim_create_augroup('go-test-feedback', { clear = true })
   api.nvim_create_autocmd({ 'TextChanged', 'TextChangedI', 'BufWritePost', 'FileChangedShellPost' }, {
     group = group,
-    callback = function(e)
-      if
-        last
-        and belongs(e.buf, last.root)
-        and (last.ticks[e.buf] ~= api.nvim_buf_get_changedtick(e.buf) or e.event ~= 'TextChanged' and e.event ~= 'TextChangedI')
-      then
+    callback = function(event)
+      if not last or not is_module_source(event.buf, last.root) then
+        return
+      end
+      local text_changed = last.ticks[event.buf] ~= api.nvim_buf_get_changedtick(event.buf)
+      local file_reloaded_or_saved = event.event == 'BufWritePost' or event.event == 'FileChangedShellPost'
+      if text_changed or file_reloaded_or_saved then
         last.stale = true
         vim.cmd.redrawstatus()
       end
