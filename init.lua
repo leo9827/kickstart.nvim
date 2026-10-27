@@ -321,7 +321,7 @@ require('lazy').setup({
       {
         '<leader>sf',
         function()
-          require('telescope.builtin').find_files()
+          require('custom.search_scope').search 'find_files'
         end,
         desc = '[S]earch [F]iles',
       },
@@ -335,14 +335,14 @@ require('lazy').setup({
       {
         '<leader>sw',
         function()
-          require('telescope.builtin').grep_string()
+          require('custom.search_scope').search 'grep_string'
         end,
         desc = '[S]earch current [W]ord',
       },
       {
         '<leader>sg',
         function()
-          require('telescope.builtin').live_grep()
+          require('custom.search_scope').search 'live_grep'
         end,
         desc = '[S]earch by [G]rep',
       },

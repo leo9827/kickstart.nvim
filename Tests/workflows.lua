@@ -238,6 +238,60 @@ checkpoint.clear()
 checkpoint.review()
 check(messages[#messages]:find('No checkpoints', 1, true), 'checkpoint clearing')
 
+-- Scope changes feed the existing picker without changing the editor directory.
+local scope = require 'custom.search_scope'
+vim.fn.writefile({ 'search needle' }, dir .. '/pkg/search.txt')
+new({ 'search needle' }, dir .. '/pkg/search.txt')
+local builtin = require 'telescope.builtin'
+local originals, calls = {}, {}
+for _, method in ipairs { 'find_files', 'live_grep', 'grep_string', 'buffers' } do
+  originals[method] = builtin[method]
+  builtin[method] = function(opts)
+    calls[#calls + 1] = { method, opts }
+  end
+end
+local cwd = vim.fn.getcwd()
+scope.search 'find_files'
+eq(calls[#calls][2].cwd, dir, 'project search root')
+vim.ui.select = function(items, _, callback)
+  callback(items[2])
+end
+scope.choose()
+scope.search 'live_grep'
+eq(calls[#calls][2].cwd, dir .. '/pkg', 'folder search root')
+vim.ui.select = function(items, _, callback)
+  callback(items[3])
+end
+scope.choose()
+scope.search 'find_files'
+eq(calls[#calls][1], 'buffers', 'open buffer files scope')
+scope.search 'grep_string'
+eq(calls[#calls][2].search_dirs, { dir .. '/pkg/search.txt' }, 'open file search excludes unnamed / unsaved buffers')
+eq(vim.fn.getcwd(), cwd, 'scope does not change cwd')
+for method, original in pairs(originals) do
+  builtin[method] = original
+end
+-- Exercise the actual picker and inspect its results, not just option routing.
+vim.ui.select = function(items, _, callback)
+  callback(items[2])
+end
+scope.choose()
+scope.search 'find_files'
+local prompt = api.nvim_get_current_buf()
+local picker = require('telescope.actions.state').get_current_picker(prompt)
+check(
+  vim.wait(3000, function()
+    return picker.manager and picker.manager:num_results() > 0
+  end),
+  'real scoped picker results'
+)
+for entry in picker.manager:iter() do
+  check(entry.value == 'search.txt', 'folder picker leaked files outside scope')
+end
+require('telescope.actions').close(prompt)
+keys '<Esc>'
+vim.ui.select = select
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do
