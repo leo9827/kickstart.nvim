@@ -389,7 +389,7 @@ require('lazy').setup({
         '<leader>/',
         function()
           require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-            winblend = 10,
+            winblend = 0,
             lnum_highlight_group = 'LineNr',
             previewer = false,
           })
@@ -464,6 +464,9 @@ require('lazy').setup({
         -- },
         -- 使用 flex 策略实现响应式布局,并调整了排序方式
         defaults = {
+          border = true,
+          borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+          winblend = 0,
           -- 1. 改变排序策略：让结果从上往下排列，输入框固定在顶部
           -- 这样你的视线不需要在屏幕上下反复横跳
           sorting_strategy = 'ascending', -- descending or ascending
@@ -474,8 +477,8 @@ require('lazy').setup({
             prompt_position = 'top',
 
             -- 3. 整体窗口大小设置 (百分比)
-            width = 0.90, -- 占用屏幕宽度的 90%
-            height = 0.85, -- 占用屏幕高度的 85%
+            width = 0.80,
+            height = 0.75,
 
             -- 4. 横向布局配置 (宽屏时)
             horizontal = {
@@ -770,11 +773,13 @@ require('lazy').setup({
       },
 
       completion = {
+        menu = { border = 'rounded', winblend = 5 },
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
         documentation = {
           auto_show = false,
           auto_show_delay_ms = 500,
+          window = { border = 'rounded', winblend = 5 },
         },
       },
 
@@ -795,6 +800,7 @@ require('lazy').setup({
       -- Shows a signature help window while you type arguments for a function
       signature = {
         enabled = true,
+        window = { border = 'rounded', winblend = 5 },
       },
     },
   },

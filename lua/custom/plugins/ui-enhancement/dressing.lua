@@ -7,7 +7,7 @@ return {
         relative = 'cursor',
         anchor = 'NW',
         border = 'rounded',
-        winblend = 5,
+        win_options = { winblend = 5 },
         max_width = 80,
       },
       select = {
@@ -17,7 +17,7 @@ return {
           relative = 'cursor',
           anchor = 'NW',
           border = 'rounded',
-          winblend = 5,
+          win_options = { winblend = 5 },
         },
       },
     }

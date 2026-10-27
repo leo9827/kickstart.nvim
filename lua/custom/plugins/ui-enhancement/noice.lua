@@ -27,8 +27,8 @@ return {
       merge_duplicates = true,
       background_colour = 'NotifyBackground',
       fps = 60,
-      timeout = 3000,
-      stages = 'fade_in_slide_out',
+      timeout = 2000,
+      stages = 'fade',
       render = 'minimal', -- 推荐尝试 "minimal" 或 "compact"，比默认更清爽
     }
 
@@ -37,38 +37,34 @@ return {
       views = {
         cmdline_popup = {
           position = {
-            row = '45%', -- 绝对居中通常比 40% 更舒服，或者 40% 也可以
+            row = '45%',
             col = '50%',
           },
           size = {
-            width = '50%', -- 改为 50%，不再局促
+            width = '50%',
             height = 'auto',
           },
           border = {
-            -- double | none | rounded | shadow | single | solid
-            -- style = 'solid',
             style = 'rounded',
             padding = { 0, 1 },
           },
+          win_options = { winblend = 5 },
         },
         popupmenu = {
-          relative = 'editor',
-          position = {
-            row = 8,
-            col = '50%',
-          },
-          size = {
-            width = 60,
-            height = 10,
-          },
           border = {
-            style = 'solid',
+            style = 'rounded',
             padding = { 0, 1 },
           },
           win_options = {
-            winhighlight = 'Normal:Normal,FloatBorder:DiagnosticInfo',
+            winblend = 5,
           },
         },
+        cmdline_popupmenu = {
+          win_options = {
+            winhighlight = { Normal = 'NormalFloat', FloatBorder = 'FloatBorder' },
+          },
+        },
+        hover = { win_options = { winblend = 5 } },
       },
 
       -- 3. 路由规则：过滤噪音 (让体验变顺畅的关键)
@@ -144,12 +140,11 @@ return {
       },
 
       presets = {
-        -- 让搜索框也居中，保持视线不用上下跳
         bottom_search = false,
         -- bottom_search = true, -- use a classic bottom cmdline for search
 
-        -- 更好地整合 cmdline 和 popupmenu
-        command_palette = true, -- position the cmdline and popupmenu together
+        -- Let completion follow the centered input instead of pinning it to the top.
+        command_palette = false,
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = true,
