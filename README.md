@@ -52,7 +52,10 @@ Run `make check-experience` for the feedback and file-update regression checks.
 | Keys | Action |
 | --- | --- |
 | `Space m b` / `Space m r` | Save / return to a ticket in this tab. Restores the original window and view; the position follows edits above it. |
+| `Space c y` / `Space c Y` | Copy the selected text (or current line) with file path and line range; uppercase `Y` also includes diagnostics in that range. |
 
 Tickets are kept only in this Nvim process.
+
+Context copy writes only to the clipboard.
 
 Run `make check-workflows` for the workflow regression checks.

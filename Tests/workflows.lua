@@ -80,6 +80,41 @@ api.nvim_buf_delete(buf, { force = true })
 ticket.restore()
 check(messages[#messages]:find('No return ticket', 1, true), 'deleted ticket handled')
 
+-- Exact visual text, Unicode, Markdown fences, and diagnostics in the copy.
+buf = new({ 'αβ ``` tail', 'second line', 'third line' }, dir .. '/pkg/context.lua')
+vim.bo.filetype = 'lua'
+local ns = api.nvim_create_namespace 'workflow-diagnostics'
+vim.diagnostic.set(ns, buf, {
+  { lnum = 0, col = 0, message = 'relevant error', severity = vim.diagnostic.severity.ERROR },
+  { lnum = 2, col = 0, message = 'unrelated error', severity = vim.diagnostic.severity.ERROR },
+})
+keys 'gg0v7l'
+require('custom.context_copy').copy(true)
+local copied = vim.fn.getreg '+'
+check(copied:find('pkg/context.lua:1-1', 1, true), 'relative copy source')
+check(copied:find('````lua', 1, true), 'embedded Markdown fence escaped')
+check(copied:find('αβ', 1, true), 'Unicode copy')
+check(copied:find('relevant error', 1, true) and not copied:find('unrelated error', 1, true), 'copy diagnostic range')
+keys '<Esc>'
+vim.diagnostic.reset(ns)
+
+-- Exclusive selections use the actual copied lines in both source and diagnostics.
+local selection = vim.o.selection
+vim.o.selection = 'exclusive'
+vim.diagnostic.set(ns, buf, {
+  { lnum = 1, col = 0, message = 'excluded second line', severity = vim.diagnostic.severity.ERROR },
+})
+for _, motion in ipairs { 'gg0vj0', 'gg0jvkg0' } do
+  keys(motion)
+  require('custom.context_copy').copy(true)
+  copied = vim.fn.getreg '+'
+  check(copied:find('pkg/context.lua:1-1', 1, true), 'exclusive selection source range')
+  check(not copied:find('excluded second line', 1, true), 'exclusive selection excludes endpoint diagnostics')
+  keys '<Esc>'
+end
+vim.o.selection = selection
+vim.diagnostic.reset(ns)
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do

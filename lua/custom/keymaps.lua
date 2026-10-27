@@ -26,3 +26,4 @@ vim.keymap.set('n', '<leader>th', require('custom.theme').toggle, { desc = 'Togg
 require('custom.jump_beacon').setup()
 
 require('custom.return_ticket').setup()
+require('custom.context_copy').setup()
