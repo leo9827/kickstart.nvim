@@ -7,19 +7,34 @@ local function label(entry)
   return ('%s:%d · %s'):format(entry.source, entry.line, vim.fn.strcharpart(preview, 0, 100))
 end
 
+-- Keep a copy of the affected lines while native put reports byte-level edits.
+local function update_mirror(mirror, first, old_count, replacement)
+  local new_count = #replacement
+  for i = 1, math.min(old_count, new_count) do
+    mirror[first + i - 1] = replacement[i]
+  end
+  for _ = new_count + 1, old_count do
+    table.remove(mirror, first + new_count)
+  end
+  for i = old_count + 1, new_count do
+    table.insert(mirror, first + i - 1, replacement[i])
+  end
+end
+
 -- Record native put edits so cycling removes only inserted text, preserving
 -- marks in the surrounding text (including return tickets and diagnostics).
-local function put(index)
-  local entry = active.entries[index]
-  api.nvim_win_set_cursor(0, active.cursor)
-  local base = active.cursor[1] - 1
+local function put_with_inverse(bufnr, cursor, entry)
+  api.nvim_win_set_cursor(0, cursor)
+  local base = cursor[1] - 1
   local mirror = api.nvim_buf_get_lines(0, base, math.min(api.nvim_buf_line_count(0), base + #entry.lines), false)
   local inverse, recording = {}, true
-  api.nvim_buf_attach(active.buf, false, {
+  api.nvim_buf_attach(bufnr, false, {
     on_bytes = function(_, buf, _, row, col, _, old_rows, old_col, _, new_rows, new_col)
       if not recording then
         return true
       end
+      -- End rows are relative to the start; end columns are relative only
+      -- for same-line edits. Convert them before storing the inverse edit.
       local linewise = col == 0 and old_col == 0 and new_col == 0 and (old_rows > 0 or new_rows > 0)
       local first = row - base + 1
       -- Block puts beyond EOF report the appended newline as a byte column.
@@ -43,23 +58,23 @@ local function put(index)
         linewise = linewise,
       }
       local replacement = api.nvim_buf_get_lines(buf, row, row + new_count, false)
-      for i = 1, math.min(old_count, new_count) do
-        mirror[first + i - 1] = replacement[i]
-      end
-      for _ = new_count + 1, old_count do
-        table.remove(mirror, first + new_count)
-      end
-      for i = old_count + 1, new_count do
-        table.insert(mirror, first + i - 1, replacement[i])
-      end
+      update_mirror(mirror, first, old_count, replacement)
     end,
   })
   local ok, err = pcall(api.nvim_put, entry.lines, entry.type, true, true)
-  recording, mirror = false, nil
-  active.inverse, inverse = inverse, nil
+  recording = false
+  mirror = nil
+  local edits = inverse
+  inverse = nil
   if not ok then
     error(err)
   end
+  return edits
+end
+
+local function put(index)
+  local entry = active.entries[index]
+  active.inverse = put_with_inverse(active.buf, active.cursor, entry)
   active.index = index
   active.tick = api.nvim_buf_get_changedtick(0)
   vim.notify(('Paste %d/%d · %s'):format(index, #active.entries, label(entry)))
@@ -112,7 +127,9 @@ function M.choose()
     vim.notify 'Copy history is empty'
     return
   end
-  local buf, tick, cursor = api.nvim_get_current_buf(), api.nvim_buf_get_changedtick(0), api.nvim_win_get_cursor(0)
+  local buf = api.nvim_get_current_buf()
+  local tick = api.nvim_buf_get_changedtick(buf)
+  local cursor = api.nvim_win_get_cursor(0)
   local entries = vim.list_slice(history)
   vim.ui.select(entries, { prompt = 'Paste copied text', format_item = label }, function(entry)
     if not entry then
@@ -149,10 +166,12 @@ function M.setup()
       if #table.concat(lines, '\n') > 100 * 1024 then
         return
       end
+      local path = api.nvim_buf_get_name(0)
+      local source = path == '' and '[No Name]' or vim.fn.fnamemodify(path, ':~:.')
       local entry = {
         lines = lines,
         type = event.regtype,
-        source = api.nvim_buf_get_name(0) == '' and '[No Name]' or vim.fn.fnamemodify(api.nvim_buf_get_name(0), ':~:.'),
+        source = source,
         line = vim.fn.getpos("'[")[2],
       }
       for i = #history, 1, -1 do
