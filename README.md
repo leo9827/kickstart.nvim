@@ -46,3 +46,13 @@ Language servers, formatters, linters, and debug adapters are declared globally 
   toggles it for the current file; the override lasts until the buffer is wiped.
 
 Run `make check-experience` for the feedback and file-update regression checks.
+
+## Editing workflows
+
+| Keys | Action |
+| --- | --- |
+| `Space m b` / `Space m r` | Save / return to a ticket in this tab. Restores the original window and view; the position follows edits above it. |
+
+Tickets are kept only in this Nvim process.
+
+Run `make check-workflows` for the workflow regression checks.

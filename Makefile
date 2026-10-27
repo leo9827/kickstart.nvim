@@ -1,11 +1,14 @@
-.PHONY: check check-experience
+.PHONY: check check-experience check-workflows
+
+check-workflows:
+	nvim --headless -n -i NONE "+lua require('custom.check').run(function() dofile('Tests/workflows.lua') end)"
 
 check-experience:
 	nvim --headless -n -i NONE "+lua require('custom.check').run(function() dofile('Tests/experience.lua') end)"
 
 check:
 	mise exec -- stylua --check init.lua lua ftplugin
-	$(MAKE) check-experience
+	$(MAKE) check-experience check-workflows
 	nvim --headless +qa
 	nvim --headless "+lua require('custom.check').run(function() local mappings = { '<leader>u', '<leader>wp' }; for _, lhs in ipairs(mappings) do assert(vim.fn.maparg(lhs, 'n') ~= '', lhs .. ' mapping is missing') end; local groups = {}; for _, spec in ipairs(require('which-key.config').options.spec) do groups[spec[1]] = spec.group end; assert(groups['<leader>g'] == '[G]it', 'Git which-key group is missing'); assert(groups['<leader>w'] == '[W]orkspace', 'Workspace which-key group is missing'); assert(groups['<leader>m'] == '[M]arks', 'Marks which-key group is missing'); local plugins = require('lazy.core.config').plugins; assert(plugins['telescope-undo.nvim'], 'telescope-undo plugin is missing'); assert(plugins['nvim-dap-virtual-text'], 'DAP virtual text plugin is missing'); assert(plugins['nvim-treesitter'].branch == 'main' and plugins['nvim-treesitter'].lazy == false, 'Treesitter must use non-lazy main'); assert(plugins['nvim-treesitter-textobjects'].branch == 'main', 'Treesitter textobjects must use main'); local version = vim.system({ 'tree-sitter', '--version' }, { text = true }):wait(); local parsed = vim.version.parse(version.stdout or ''); assert(version.code == 0 and parsed and vim.version.ge(parsed, '0.26.1'), 'tree-sitter CLI 0.26.1 or newer is required') end)" +qa
 	nvim --headless "+Lazy load telescope-undo.nvim" "+enew" "+lua require('custom.check').run(function() vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'first' }); vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'second' }); require('telescope').extensions.undo.undo(); assert(vim.bo.filetype == 'TelescopePrompt', 'undo picker did not open') end)" +qa!

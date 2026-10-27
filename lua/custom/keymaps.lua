@@ -24,3 +24,5 @@ vim.keymap.set('n', '<leader>gs', '<cmd>Telescope git_status<CR>', { desc = 'Git
 vim.keymap.set('n', '<leader>th', require('custom.theme').toggle, { desc = 'Toggle light/dark theme' })
 
 require('custom.jump_beacon').setup()
+
+require('custom.return_ticket').setup()
