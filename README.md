@@ -17,6 +17,16 @@ lists the tools for this project. Nvim finds them through Mise shims.
 | `:Telescope keymaps` | Find active shortcuts                    |
 | `make check`         | Run all formatting and regression checks |
 
+Run `make install-hooks` once per clone to enable the Git hooks in `.githooks/`.
+The pre-commit hook needs Python 3 and StyLua, either on `PATH` or through Mise.
+It formats staged Lua files before committing and stops if formatting fails.
+
+Fully staged files are also formatted on disk. For partially staged files, the
+hook leaves the working copy alone, so your unstaged edits stay yours. You may
+see formatting differences in `git diff` afterward. Commits with file arguments
+(such as `git commit --only file.lua`) must already be formatted; otherwise,
+format first or use `git add` followed by `git commit`.
+
 ## Configuration layout
 
 - `init.lua`: editor defaults and shared plugin settings.
@@ -152,6 +162,7 @@ You can also run each group on its own:
 | `make check-experience` | Diagnostics, formatting, external changes, and navigation   |
 | `make check-workflows`  | Tickets, copies, checkpoints, search, and real Go test runs |
 | `make check-theme`      | Terminal-driven light/dark themes and plugin surfaces       |
+| `make check-hooks`      | Automatic formatting and preservation of unstaged edits     |
 
 The cases in `Tests/config.lua` each run in a fresh Nvim process.
 `Tests/config_preload.lua` sets up the test for asynchronous parser installation.

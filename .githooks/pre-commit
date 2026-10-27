@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+"""Format staged Lua without adding unstaged edits to the commit."""
+
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+
+def git(*args, input=None):
+    return subprocess.run(
+        ["git", *args], input=input, stdout=subprocess.PIPE, check=True
+    ).stdout
+
+
+def staged_lua_files():
+    changed = set(
+        git("diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z", "--", "*.lua")
+        .split(b"\0")
+    )
+    for entry in git("ls-files", "--stage", "-z").split(b"\0"):
+        if not entry:
+            continue
+        metadata, filename = entry.split(b"\t", 1)
+        mode, object_id, stage = metadata.split()
+        if filename in changed and stage == b"0" and mode in (b"100644", b"100755"):
+            yield mode, object_id, os.fsdecode(filename)
+
+
+def formatter_command():
+    if shutil.which("stylua"):
+        return ["stylua"]
+    if shutil.which("mise"):
+        return ["mise", "exec", "--", "stylua"]
+    raise RuntimeError("StyLua is unavailable; install it or add it to PATH.")
+
+
+def main():
+    files = list(staged_lua_files())
+    if not files:
+        return
+    formatter = formatter_command()
+    changes = []
+
+    # Finish every format before updating the index, so a syntax error leaves
+    # all staged files untouched.
+    for mode, object_id, filename in files:
+        original = git("cat-file", "blob", object_id.decode())
+        result = subprocess.run(
+            [*formatter, "--stdin-filepath", filename, "-"],
+            input=original,
+            stdout=subprocess.PIPE,
+        )
+        if result.returncode:
+            raise RuntimeError(f"StyLua failed for {filename!r}; staged files are unchanged.")
+        if result.stdout != original:
+            changes.append((mode, filename, original, result.stdout))
+
+    if not changes:
+        return
+
+    index_file = os.environ.get("GIT_INDEX_FILE")
+    git_dir = Path(os.fsdecode(git("rev-parse", "--absolute-git-dir").rstrip(b"\n")))
+    if index_file and Path(index_file).resolve() != (git_dir / "index").resolve():
+        # File-only commits keep a second index that Git later restores. Updating
+        # just the hook's index would leave formatting reversals staged afterward.
+        raise RuntimeError(
+            "Lua needs formatting, but this commit uses a temporary or alternate index. "
+            "Format the files first, or stage them and commit without file arguments."
+        )
+
+    entries = []
+    for mode, filename, original, formatted in changes:
+        object_id = git("hash-object", "-w", "--stdin", input=formatted).strip()
+        entries.append(mode + b" " + object_id + b"\t" + os.fsencode(filename) + b"\0")
+    # Git locks and replaces the index once for all formatted files.
+    git("update-index", "-z", "--index-info", input=b"".join(entries))
+
+    for mode, filename, original, formatted in changes:
+        path = Path(filename)
+        if not path.is_symlink() and path.is_file() and path.read_bytes() == original:
+            path.write_bytes(formatted)
+            print(f"StyLua: formatted {filename!r}", file=sys.stderr)
+        else:
+            print(
+                f"StyLua: formatted staged {filename!r}; unstaged contents left unchanged.",
+                file=sys.stderr,
+            )
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
+        print(f"pre-commit: {error}", file=sys.stderr)
+        sys.exit(1)

@@ -1,4 +1,4 @@
-.PHONY: check check-config check-experience check-workflows check-theme
+.PHONY: check check-config check-experience check-workflows check-theme check-hooks install-hooks
 
 CONFIG_CHECKS := plugins undo window-picker last-position textobjects ruby \
 	parser-install dap lua-lsp go-lsp plugin-options folds
@@ -24,8 +24,15 @@ check-theme:
 	nvim --headless \
 		"+lua vim.schedule(function() require('custom.check').run(function() dofile('tests/theme.lua') end); vim.cmd('qa') end)"
 
+install-hooks:
+	git config --local core.hooksPath .githooks
+
+check-hooks:
+	python3 Tests/hooks.py
+
 check:
 	mise exec -- stylua --check .
+	$(MAKE) check-hooks
 	$(MAKE) check-experience
 	$(MAKE) check-workflows
 	$(MAKE) check-config
