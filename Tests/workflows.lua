@@ -115,6 +115,105 @@ end
 vim.o.selection = selection
 vim.diagnostic.reset(ns)
 
+-- Copy history records yanks, not deletes; supports character, line and block puts.
+local history = require 'custom.yank_history'
+history.clear()
+new { 'alpha', 'beta', 'gone' }
+keys 'ggyyj0yw' -- beta is charwise, alpha is linewise.
+keys 'jdd'
+new { 'target' }
+api.nvim_win_set_cursor(0, { 1, 0 })
+local register = vim.fn.getreg '"'
+history.paste()
+eq(lines(), { 'tbetaarget' }, 'latest yank pasted (delete excluded)')
+history.cycle(1)
+eq(lines(), { 'target', 'alpha' }, 'cycle to linewise copy')
+eq(vim.fn.getreg '"', register, 'paste preserves unnamed register')
+vim.cmd.undo()
+eq(lines(), { 'tbetaarget' }, 'cycle is independently undoable')
+api.nvim_buf_set_lines(0, 0, 1, false, { 'user edit' })
+history.cycle(1)
+eq(lines(), { 'user edit' }, 'cycle refuses intervening edit')
+history.clear()
+new { 'ABxx', 'CDyy' }
+keys 'gg0<C-v>jly'
+new { '123', '456' }
+history.paste()
+eq(lines(), { '1AB23', '4CD56' }, 'blockwise copy preserves shape')
+-- Mixing multiline, block and linewise copies must restore the entire original slice.
+new { 'last line' }
+keys 'ggyy'
+new { 'end' }
+history.paste()
+eq(lines(), { 'end', 'last line' }, 'linewise EOF paste')
+history.cycle(1)
+eq(lines(), { 'eABnd', ' CD' }, 'blockwise cycling extends EOF')
+history.cycle(1)
+eq(lines(), { 'end', 'last line' }, 'cycle removes extra block lines')
+vim.cmd.undo()
+eq(lines(), { 'eABnd', ' CD' }, 'block cycle undo')
+vim.cmd.redo()
+eq(lines(), { 'end', 'last line' }, 'block cycle redo')
+history.clear()
+
+-- Cycling must preserve a return ticket anchored in surviving original text.
+new { 'AAA', 'longer' }
+keys 'gg0ywj0yw'
+new { 'original text', 'second line' }
+api.nvim_win_set_cursor(0, { 1, 9 })
+ticket.save()
+api.nvim_win_set_cursor(0, { 1, 0 })
+history.paste()
+ticket.restore()
+eq(api.nvim_win_get_cursor(0), { 1, 15 }, 'ticket follows first paste')
+history.cycle(1)
+ticket.restore()
+eq(api.nvim_win_get_cursor(0), { 1, 12 }, 'ticket survives cycling to shorter copy')
+history.cycle(-1)
+ticket.restore()
+eq(api.nvim_win_get_cursor(0), { 1, 15 }, 'ticket survives cycling back')
+vim.cmd.undo()
+ticket.restore()
+eq(api.nvim_win_get_cursor(0), { 1, 12 }, 'ticket survives cycle undo')
+history.clear()
+
+-- Compare cycling with native puts across multiline, Unicode, tab and EOF cases.
+local copies = {}
+for _, copy in ipairs {
+  { { 'one', 'two' }, 'ggVjy' },
+  { { 'aβ', '中z' }, 'gg0vjly' },
+  { { 'XY', 'ZW' }, 'gg0<C-v>jly' },
+} do
+  new(copy[1])
+  keys(copy[2])
+  table.insert(copies, 1, { lines = vim.fn.getreg('"', 1, true), kind = vim.fn.getregtype '"' })
+end
+for _, case in ipairs {
+  { { '' }, { 1, 0 } },
+  { { 'tail' }, { 1, 3 } },
+  { { 'αβγ', 'next' }, { 1, 2 } },
+  { { 'x\tend', '\tx' }, { 1, 0 } },
+  { { 'long line', 'x', 'last' }, { 1, 5 } },
+} do
+  new(case[1])
+  api.nvim_win_set_cursor(0, case[2])
+  history.paste()
+  for index, copy in ipairs(copies) do
+    if index > 1 then
+      history.cycle(1)
+    end
+    local expected = api.nvim_create_buf(false, true)
+    api.nvim_buf_set_lines(expected, 0, -1, false, case[1])
+    api.nvim_buf_call(expected, function()
+      api.nvim_win_set_cursor(0, case[2])
+      api.nvim_put(copy.lines, copy.kind, true, true)
+    end)
+    eq(lines(), api.nvim_buf_get_lines(expected, 0, -1, false), 'cycle matches native put for ' .. vim.inspect(case))
+    api.nvim_buf_delete(expected, { force = true })
+  end
+end
+history.clear()
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do

@@ -27,3 +27,4 @@ require('custom.jump_beacon').setup()
 
 require('custom.return_ticket').setup()
 require('custom.context_copy').setup()
+require('custom.yank_history').setup()

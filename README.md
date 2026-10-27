@@ -53,9 +53,14 @@ Run `make check-experience` for the feedback and file-update regression checks.
 | --- | --- |
 | `Space m b` / `Space m r` | Save / return to a ticket in this tab. Restores the original window and view; the position follows edits above it. |
 | `Space c y` / `Space c Y` | Copy the selected text (or current line) with file path and line range; uppercase `Y` also includes diagnostics in that range. |
+| `Space p` | Paste the latest explicit copy in normal mode. Visual-mode `Space p` keeps its existing behavior. |
+| `]y` / `[y` | Replace that paste with an older / newer copy. Stops after another edit or undo; each replacement is undoable. |
+| `Space s y` / `Space c X` | Choose a copy by source and preview / clear copy history. |
 
 Tickets are kept only in this Nvim process.
 
 Context copy writes only to the clipboard.
+
+Copy history records the last 30 explicit yanks up to 100 KiB each; deletes and external clipboard changes are excluded. Native `p` / `P` are unchanged. History lasts only in this Nvim process.
 
 Run `make check-workflows` for the workflow regression checks.
