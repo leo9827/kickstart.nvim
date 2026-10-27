@@ -1,19 +1,4 @@
--- noice.nvim - 优雅的通知和命令行UI管理插件
--- 主要功能：
---   1. 优化命令行界面外观和交互
---   2. 美化通知提示样式
---   3. 改进 LSP 消息显示
---
--- 常用命令:
---   :Noice - 查看通知历史
---   :NoiceDisable - 临时禁用
---   :NoiceEnable - 重新启用
---
--- 常用快捷键:
---   <C-f> - 在较长消息中向前滚动
---   <C-b> - 在较长消息中向后滚动
---   <Enter> - 确认当前选择
---   <Esc> - 关闭弹出窗口
+-- Notification history: :Noice. Toggle temporarily with :NoiceDisable / :NoiceEnable.
 return {
   'folke/noice.nvim',
   event = 'VeryLazy',
@@ -22,18 +7,16 @@ return {
     'rcarriga/nvim-notify',
   },
   config = function()
-    -- 1. Notify 配置优化
     require('notify').setup {
       merge_duplicates = true,
       background_colour = 'NotifyBackground',
       fps = 60,
       timeout = 2000,
       stages = 'fade',
-      render = 'minimal', -- 推荐尝试 "minimal" 或 "compact"，比默认更清爽
+      render = 'minimal',
     }
 
     require('noice').setup {
-      -- 2. 核心视图与几何调整
       views = {
         cmdline_popup = {
           position = {
@@ -67,10 +50,8 @@ return {
         hover = { win_options = { winblend = 5 } },
       },
 
-      -- 3. 路由规则：过滤噪音 (让体验变顺畅的关键)
       routes = {
-        -- Neovim 0.12 在部分终端/复用器下收不到 DSR 响应，会发出启动告警。
-        -- 这条消息本身不影响编辑，但被 notify 动画接管后会让 dashboard 看起来卡几秒。
+        -- Missing terminal DSR replies are harmless here; avoid animating a startup warning.
         {
           filter = {
             event = 'msg_show',
@@ -85,29 +66,27 @@ return {
           },
           opts = { skip = true },
         },
-        -- 将 "写入文件" 等消息重定向到 mini view (底部小横条)，不弹窗
+        -- Suppress routine save messages; search counts are shown in the statusline.
         {
           filter = {
             event = 'msg_show',
             kind = '',
             find = 'written',
           },
-          opts = { skip = true }, -- 或者 view = "mini"
+          opts = { skip = true },
         },
-        -- 也可以把 search_count 放到 mini view
         {
           filter = {
             event = 'msg_show',
             kind = 'search_count',
           },
-          opts = { skip = true }, -- 搜索计数通常不需要弹窗
+          opts = { skip = true },
         },
       },
 
       cmdline = {
         view = 'cmdline_popup',
         format = {
-          -- 可以在这里自定义图标，看起来更顺眼
           cmdline = { pattern = '^:', icon = '', lang = 'vim' },
           search_down = { pattern = '^/', icon = '', lang = 'regex' },
           search_up = { pattern = '^%?', icon = '', lang = 'regex' },
@@ -115,12 +94,10 @@ return {
       },
 
       lsp = {
-        -- 保持原有的配置
         override = {
           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
           ['vim.lsp.util.stylize_markdown'] = true,
         },
-        -- 悬浮文档的边框优化
         hover = {
           enabled = true,
           silent = true, -- set to true to not show a message if hover is not available
@@ -128,7 +105,7 @@ return {
           opts = {}, -- merged with defaults from documentation
         },
         signature = {
-          enabled = false, -- 关闭 Noice 的签名窗口，避免弹窗抢占输入焦点
+          enabled = false, -- Avoid stealing focus while typing.
           auto_open = {
             enabled = true,
             trigger = true, -- Automatically show signature help when typing a trigger character from the LSP
@@ -141,7 +118,6 @@ return {
 
       presets = {
         bottom_search = false,
-        -- bottom_search = true, -- use a classic bottom cmdline for search
 
         -- Let completion follow the centered input instead of pinning it to the top.
         command_palette = false,

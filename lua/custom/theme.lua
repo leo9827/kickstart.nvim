@@ -63,18 +63,19 @@ local function refresh_lualine()
 end
 
 local function apply_highlights()
-  for group, spec in pairs(current().highlights) do
+  local palette = current()
+  for group, spec in pairs(palette.highlights) do
     vim.api.nvim_set_hl(0, group, spec)
   end
-  local colors = current().statusline
-  local float = current().float
+  local colors = palette.statusline
+  local float = palette.float
   vim.api.nvim_set_hl(0, 'StatusLine', { fg = colors.fg, bg = 'NONE' })
   vim.api.nvim_set_hl(0, 'StatusLineNC', { fg = colors.muted, bg = 'NONE' })
   vim.api.nvim_set_hl(0, 'NormalFloat', { fg = colors.fg, bg = float.bg })
   vim.api.nvim_set_hl(0, 'FloatBorder', { fg = float.border, bg = float.bg })
   vim.api.nvim_set_hl(0, 'FloatTitle', { fg = colors.normal, bg = float.bg, bold = true })
   vim.api.nvim_set_hl(0, 'FloatSelection', { fg = colors.fg, bg = float.selection, bold = true })
-  local telescope = current().telescope or float
+  local telescope = palette.telescope or float
   vim.api.nvim_set_hl(0, 'TelescopeNormal', { fg = colors.fg, bg = telescope.bg })
   vim.api.nvim_set_hl(0, 'TelescopeBorder', { fg = telescope.border, bg = telescope.bg })
   vim.api.nvim_set_hl(0, 'TelescopeTitle', { fg = colors.normal, bg = telescope.bg, bold = true })

@@ -7,29 +7,28 @@ return {
         theme = require('custom.theme').lualine_theme(),
         section_separators = '',
         component_separators = '',
-        globalstatus = true, -- 是否在所有窗口显示状态栏
-        disabled_filetypes = { statusline = { 'dashboard', 'alpha' } }, -- 在哪些文件类型中禁用状态栏
+        globalstatus = true,
+        disabled_filetypes = { statusline = { 'dashboard', 'alpha' } },
       },
-      extensions = { 'neo-tree', 'lazy' }, -- 扩展，支持 neo-tree 和 lazy 插件
+      extensions = { 'neo-tree', 'lazy' },
       sections = {
         lualine_a = {
           { 'mode', padding = 1 },
         },
         lualine_b = {
-          { 'branch', icon = '' }, -- 显示 Git 分支
-          { 'diff', icons_enabled = true }, -- 显示 Git 差异
+          { 'branch', icon = '' },
+          { 'diff', icons_enabled = true },
         },
         lualine_c = {
-          { 'filename', file_status = true, path = 1 }, -- 显示文件名和路径
-          { 'diagnostics', sources = { 'nvim_diagnostic' } }, -- 显示诊断信息
+          { 'filename', file_status = true, path = 1 },
+          { 'diagnostics', sources = { 'nvim_diagnostic' } },
           {
-            -- 定义一个函数获取和展示录制状态
             function()
-              local reg = vim.fn.reg_recording()
-              if reg == '' then
+              local register = vim.fn.reg_recording()
+              if register == '' then
                 return ''
-              end -- 如果没在录制，返回空
-              return '  @' .. reg -- 显示图标和寄存器名
+              end
+              return '  @' .. register
             end,
             color = 'DiagnosticWarn',
           },
@@ -52,9 +51,9 @@ return {
             end,
             color = 'DiagnosticWarn',
           },
-          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } }, -- 显示文件类型图标
-          { 'encoding' }, -- 显示文件编码
-          { 'fileformat' }, -- 显示文件格式
+          { 'filetype', icon_only = true, separator = '', padding = { left = 1, right = 0 } },
+          { 'encoding' },
+          { 'fileformat' },
         },
         lualine_y = {
           {
