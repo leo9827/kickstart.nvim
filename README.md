@@ -44,3 +44,5 @@ Language servers, formatters, linters, and debug adapters are declared globally 
   `LIGHT` mode when opened or saved. This reduces highlighting, folding, analysis,
   completion, and decorations, and skips automatic formatting. `Space t l`
   toggles it for the current file; the override lasts until the buffer is wiped.
+
+Run `make check-experience` for the feedback and file-update regression checks.
