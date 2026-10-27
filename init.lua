@@ -13,6 +13,8 @@ vim.o.synmaxcol = 300
 -- Match Nvim's Lua queries with its bundled parser before plugins extend runtimepath.
 vim.treesitter.language.add 'lua'
 
+require('custom.external_changes').setup()
+
 -- Disable the built-in matchparen plugin (Treesitter/LSP are usually enough)
 vim.g.loaded_matchparen = 1
 
@@ -214,24 +216,6 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     if winid ~= -1 then
       pcall(vim.api.nvim_win_set_cursor, winid, mark)
     end
-  end,
-})
-
-vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold', 'CursorHoldI' }, {
-  desc = 'Check for files changed outside Nvim',
-  group = vim.api.nvim_create_augroup('external-file-change-check', { clear = true }),
-  callback = function()
-    if vim.fn.mode() == 'c' then
-      return
-    end
-
-    vim.schedule(function()
-      if vim.fn.mode() == 'c' then
-        return
-      end
-
-      vim.cmd 'checktime'
-    end)
   end,
 })
 

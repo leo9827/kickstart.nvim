@@ -34,3 +34,7 @@ Language servers, formatters, linters, and debug adapters are declared globally 
 - `Space t F` pauses/resumes automatic formatting for the current file (`FMT OFF`).
   Manual formatting with `Space f` still works. Failures notify once until the
   formatter recovers or the error changes; `:ConformInfo` shows details.
+- External file updates briefly highlight changed lines. `Space w e` opens the
+  latest before/after snapshots in a separate diff tab; `q` closes it. Snapshots
+  exclude later edits and are kept only for files below 1 MiB.
+  Unsaved conflicts retain Neovim's normal confirmation behavior.
