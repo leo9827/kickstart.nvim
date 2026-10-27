@@ -1,0 +1,184 @@
+-- Each case runs in a fresh Nvim process to keep lazy loading and startup checks isolated.
+local checks = {}
+
+checks['plugins'] = function()
+  local mappings = { '<leader>u', '<leader>wp' }
+  for _, lhs in ipairs(mappings) do
+    assert(vim.fn.maparg(lhs, 'n') ~= '', lhs .. ' mapping is missing')
+  end
+  local groups = {}
+  for _, spec in ipairs(require('which-key.config').options.spec) do
+    groups[spec[1]] = spec.group
+  end
+  assert(groups['<leader>g'] == '[G]it', 'Git which-key group is missing')
+  assert(groups['<leader>w'] == '[W]orkspace', 'Workspace which-key group is missing')
+  assert(groups['<leader>m'] == '[M]arks', 'Marks which-key group is missing')
+  local plugins = require('lazy.core.config').plugins
+  assert(plugins['telescope-undo.nvim'], 'telescope-undo plugin is missing')
+  assert(plugins['nvim-dap-virtual-text'], 'DAP virtual text plugin is missing')
+  assert(plugins['nvim-treesitter'].branch == 'main' and plugins['nvim-treesitter'].lazy == false, 'Treesitter must use non-lazy main')
+  assert(plugins['nvim-treesitter-textobjects'].branch == 'main', 'Treesitter textobjects must use main')
+  local version = vim.system({ 'tree-sitter', '--version' }, { text = true }):wait()
+  local parsed = vim.version.parse(version.stdout or '')
+  assert(version.code == 0 and parsed and vim.version.ge(parsed, '0.26.1'), 'tree-sitter CLI 0.26.1 or newer is required')
+end
+
+checks['undo'] = function()
+  vim.cmd 'Lazy load telescope-undo.nvim'
+  vim.cmd 'enew'
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'first' })
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'second' })
+  require('telescope').extensions.undo.undo()
+  assert(vim.bo.filetype == 'TelescopePrompt', 'undo picker did not open')
+end
+
+checks['window-picker'] = function()
+  vim.cmd 'Lazy load nvim-window-picker'
+  vim.cmd 'vsplit'
+  local target = vim.api.nvim_get_current_win()
+  vim.cmd 'wincmd p'
+  package.loaded['window-picker'] = {
+    pick_window = function()
+      return target
+    end,
+  }
+  vim.fn.maparg('<leader>wp', 'n', false, true).callback()
+  assert(vim.api.nvim_get_current_win() == target, 'window picker mapping did not switch windows')
+end
+
+checks['last-position'] = function()
+  vim.cmd 'enew'
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'first', 'second', 'third' })
+  vim.api.nvim_buf_set_mark(0, '"', 2, 0, {})
+  vim.api.nvim_win_set_cursor(0, { 1, 0 })
+  vim.api.nvim_exec_autocmds('BufReadPost', { buffer = 0 })
+  assert(vim.api.nvim_win_get_cursor(0)[1] == 2, 'last position was not restored')
+end
+
+checks['textobjects'] = function()
+  vim.cmd 'enew'
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'local function add(a, b)', '  return a + b', 'end', '', 'local result = call(first, second)' })
+  vim.cmd 'setfiletype lua'
+  vim.cmd 'doautocmd BufReadPost'
+  assert(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()], 'Treesitter highlighter is inactive')
+  for _, lhs in ipairs { 'af', 'if', 'ac', 'ic', 'aC', 'iC', 'ad', 'id', 'al', 'il' } do
+    assert(vim.fn.maparg(lhs, 'x') ~= '', lhs .. ' textobject is missing')
+  end
+  for _, lhs in ipairs { 'ab', 'ib', 'as', 'is' } do
+    assert(vim.fn.maparg(lhs, 'x') == '' and vim.fn.maparg(lhs, 'o') == '', lhs .. ' must remain native')
+  end
+  vim.api.nvim_win_set_cursor(0, { 2, 4 })
+  vim.fn.maparg('af', 'x', false, true).callback()
+  assert(vim.api.nvim_get_mode().mode == 'v', 'function textobject did not enter visual mode')
+  assert(vim.fn.getpos('v')[2] == 1, 'function textobject starts on the wrong line')
+  assert(vim.api.nvim_win_get_cursor(0)[1] == 3, 'function textobject ends on the wrong line')
+  vim.api.nvim_feedkeys(vim.keycode '<Esc>', 'nx', false)
+  vim.api.nvim_win_set_cursor(0, { 5, 20 })
+  vim.fn.maparg('<leader>a', 'n', false, true).callback()
+  vim.api.nvim_feedkeys('', 'x', false)
+  assert(vim.api.nvim_get_current_line() == 'local result = call(second, first)', 'parameter swap failed')
+end
+
+checks['ruby'] = function()
+  vim.cmd 'enew'
+  vim.treesitter.language.register('lua', 'ruby')
+  vim.cmd 'setfiletype ruby'
+  assert(vim.treesitter.highlighter.active[vim.api.nvim_get_current_buf()], 'Ruby Treesitter highlighter is inactive')
+  assert(vim.bo.syntax == 'ON', 'Ruby regex highlighting is disabled')
+  assert(not vim.bo.indentexpr:find 'nvim%-treesitter', 'Ruby Treesitter indentation is enabled')
+end
+
+checks['parser-install'] = function()
+  vim.cmd 'enew'
+  vim.cmd 'setfiletype python'
+  assert(not vim.b.ts_test_attached, 'missing parser attached too early')
+  assert(type(_G.ts_install_done) == 'function', 'install completion callback is missing')
+  _G.ts_parser_ready = true
+  _G.ts_install_done(nil, true)
+  assert(
+    vim.wait(1000, function()
+      return vim.b.ts_test_attached
+    end),
+    'buffer was not attached after parser installation'
+  )
+end
+
+checks['dap'] = function()
+  vim.cmd 'Lazy load nvim-dap'
+  local dap = require 'dap'
+  assert(package.loaded['nvim-dap-virtual-text'], 'DAP virtual text did not load with DAP')
+  assert(vim.fn.exists ':DapVirtualTextToggle' == 2, 'DAP virtual text commands are missing')
+  assert(dap.listeners.after.event_terminated['nvim-dap-virtual-text'], 'DAP virtual text listeners are missing')
+  assert(vim.fn.executable 'dlv' == 1, 'dlv is unavailable')
+end
+
+checks['lua-lsp'] = function()
+  vim.cmd.edit 'init.lua'
+  assert(
+    vim.wait(5000, function()
+      return #vim.lsp.get_clients { bufnr = 0, name = 'lua_ls' } > 0
+    end),
+    'lua_ls did not attach'
+  )
+  assert(vim.fn.maparg('<C-t>', 'n') == '', '<C-t> must remain native')
+  assert(vim.fn.maparg('<leader>tf', 'n') ~= '', 'FTerm mapping is missing')
+  assert(vim.fn.maparg('<leader>x', 'n') == '', '<leader>x must remain a prefix')
+  assert(vim.fn.maparg('<leader>cx', 'n') ~= '', 'executable mapping is missing')
+  assert(vim.fn.maparg('<leader>th', 'n') ~= '', 'theme toggle mapping is missing')
+end
+
+checks['go-lsp'] = function()
+  vim.cmd 'enew'
+  vim.cmd 'setfiletype go'
+  assert(
+    vim.wait(7000, function()
+      return #vim.lsp.get_clients { bufnr = 0, name = 'gopls' } > 0
+    end),
+    'gopls did not attach'
+  )
+  local formatters = require('conform').list_formatters(0)
+  assert(formatters[1].name == 'goimports' and formatters[2].name == 'gofumpt', 'unexpected Go formatter chain')
+end
+
+checks['plugin-options'] = function()
+  vim.cmd 'Lazy load neoscroll.nvim'
+  vim.cmd 'Lazy load nvim-ufo'
+  vim.cmd 'Lazy load aerial.nvim'
+  vim.cmd 'Lazy load nvim-lint'
+  local scroll = require('neoscroll.config').opts
+  assert(
+    scroll.easing == 'sine' and scroll.duration_multiplier == 0.6 and scroll.easing_function == nil and scroll.performance_options == nil,
+    'invalid Neoscroll configuration'
+  )
+  local provider_selector = require('ufo.config').provider_selector
+  local providers = provider_selector(0, 'python', '')
+  assert(providers[1] == 'treesitter' and providers[2] == 'indent', 'Python folding provider is disabled')
+  assert(provider_selector(0, 'neo-tree', 'nofile') == '', 'Neo-tree folding provider is enabled')
+  require('aerial').sync_load()
+  local aerial = require 'aerial.config'
+  assert(aerial.layout.min_width == 24 and aerial.layout.max_width[1] == 48 and aerial.show_numbers == nil, 'invalid Aerial configuration')
+  for _, autocmd in ipairs(vim.api.nvim_get_autocmds { group = 'lint' }) do
+    assert(autocmd.event ~= 'InsertLeave' and autocmd.event ~= 'BufEnter', 'lint runs too frequently')
+  end
+end
+
+checks['folds'] = function()
+  vim.cmd 'enew'
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'def outer():', '    if True:', '        return 1', '', 'outer()' })
+  vim.bo.filetype = 'python'
+  vim.cmd 'doautocmd BufReadPost'
+  vim.wo.foldlevel = 0
+  assert(
+    vim.wait(2000, function()
+      return vim.fn.foldlevel(1) > 0
+    end),
+    'Python folds were not produced'
+  )
+  assert(vim.fn.foldclosed(1) == 1, 'Python fold did not close')
+end
+
+local name = assert(vim.env.NVIM_CHECK_CASE, 'NVIM_CHECK_CASE is required')
+local check = assert(checks[name], 'Unknown configuration check: ' .. name)
+check()
+print('configuration check passed: ' .. name)
+vim.cmd 'qa!'
