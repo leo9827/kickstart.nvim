@@ -10,6 +10,9 @@ vim.g.have_nerd_font = true
 -- Reduce overhead from very long lines when using regex-based syntax
 vim.o.synmaxcol = 300
 
+-- Match Nvim's Lua queries with its bundled parser before plugins extend runtimepath.
+vim.treesitter.language.add 'lua'
+
 -- Disable the built-in matchparen plugin (Treesitter/LSP are usually enough)
 vim.g.loaded_matchparen = 1
 
