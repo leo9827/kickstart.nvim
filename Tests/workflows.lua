@@ -292,6 +292,16 @@ require('telescope.actions').close(prompt)
 keys '<Esc>'
 vim.ui.select = select
 
+-- J and =ap keep user bookmarks; count joining and cursor placement still work.
+buf = new { 'one', 'two', 'three', '', 'four' }
+api.nvim_buf_set_mark(buf, 'z', 5, 0, {})
+api.nvim_buf_set_mark(buf, 'a', 5, 0, {})
+keys 'gg03J'
+eq(lines()[1], 'one two three', 'counted join')
+eq(api.nvim_buf_get_mark(buf, 'z'), { 3, 0 }, 'join preserves z bookmark')
+keys '=ap'
+eq(api.nvim_buf_get_mark(buf, 'a'), { 3, 0 }, 'indent preserves a bookmark')
+
 vim.ui.select, vim.notify = select, notify
 -- Unload fixture buffers before deleting files so deferred checktime cannot reload them.
 for _, fixture in ipairs(api.nvim_list_bufs()) do

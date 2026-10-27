@@ -1,7 +1,15 @@
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move line down' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move line up' })
-vim.keymap.set('n', 'J', 'mzJ`z', { desc = 'Join lines' })
-vim.keymap.set('n', '=ap', "ma=ap'a", { desc = 'Format paragraph' })
+vim.keymap.set('n', 'J', function()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  vim.cmd.normal { args = { (vim.v.count > 0 and tostring(vim.v.count) or '') .. 'J' }, bang = true }
+  vim.api.nvim_win_set_cursor(0, cursor)
+end, { desc = 'Join lines' })
+vim.keymap.set('n', '=ap', function()
+  local view = vim.fn.winsaveview()
+  vim.cmd.normal { args = { '=ap' }, bang = true }
+  vim.fn.winrestview(view)
+end, { desc = 'Format paragraph' })
 
 vim.keymap.set('x', '<leader>p', [["_dP]], { desc = 'Paste without yanking' })
 vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y]], { desc = 'Yank to system clipboard' })
